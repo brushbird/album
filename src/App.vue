@@ -18,6 +18,7 @@ export default {
       list:{
         '/hello': {href: '/hello', des: "Hello Vue.js"},
         '/test': {href: '/test', des: "测试"},
+        '/test1': {href: '/test1', des: "测试1"},
       }
     }
   }

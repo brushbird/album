@@ -47,7 +47,7 @@
               <th>发送时间</th>
               <th>充值单号</th>
               <th>金额（元）</th>
-              <th>详情</th>
+              <th />
             </tr>
             <tr class="trStyle" v-for="item in depositList">
               <td>
@@ -83,6 +83,7 @@
 
 
 export default {
+
   data(){
     return {
       content:"",
@@ -121,9 +122,9 @@ export default {
     
   },
   mounted: function() {
+
   },
-  components:{
-  }
+  components:{  }
 }
 
 
