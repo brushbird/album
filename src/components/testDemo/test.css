@@ -1,0 +1,157 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+.content {
+  width: 960px;
+  height: 540px;
+  display: block;
+  margin: 0 auto;
+}
+.content .account-center-title {
+  font-size: 14px;
+  color: #626262;
+  margin: 50px 0 15px;
+}
+.content .account-center-pretitle {
+  font-size: 14px;
+  color: #626262;
+  margin: 50px 0 15px;
+  color: #aaa;
+}
+.content .account-content-left {
+  width: 35%;
+  height: 500px;
+  float: left;
+  margin-right: 1px;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.12);
+  background-color: #fdfdfd;
+  position: relative;
+}
+.content .account-content-left .changeLeft {
+  width: 41%;
+  height: 40%;
+  position: relative;
+  top: 30%;
+  left: 29%;
+  text-align: center;
+}
+.content .account-content-left .changeLeft h1 {
+  font-size: 24px;
+  padding: 10px;
+}
+.content .account-content-left .changeLeft span {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #bbb;
+  line-height: 20px;
+}
+.content .account-content-left .changeLeft span i {
+  font-size: 18px;
+  color: #33bcfc;
+  font-style: normal;
+}
+.content .account-content-left .changeLeft .F-logo {
+  display: inline-block;
+  width: 104px;
+  height: 104px;
+  border-radius: 104px;
+  background-position: -13px -438px;
+}
+.content .changeRight {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.content .changeRight .back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  color: #aaa;
+  line-height: 16px;
+}
+.content .changeRight .back .logo-back {
+  float: left;
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+.content .changeRight .back:hover {
+  background-position-y: -51px;
+}
+.content .changeRight .vipdetail {
+  position: absolute;
+  width: 80%;
+  left: 50px;
+  top: 25%;
+  top: 15%;
+}
+.content .changeRight .vipdetail .vipList .vipList-head {
+  width: 100%;
+  height: 64px;
+  float: left;
+  display: block;
+}
+.content .changeRight .vipdetail .vipList .vipList-head .vip-label {
+  float: left;
+  display: block;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #cdcdcd;
+  line-height: 2;
+}
+.content .changeRight .vipdetail .vipList .vipList-head .on {
+  color: #343434;
+  font-style: bold;
+}
+.content .changeRight .vipdetail .vipList .vipList-head .vip-btn {
+  float: right;
+  background-color: #FFF;
+  color: #9b9b9b;
+  border: 2px solid;
+  padding: 10px 25px;
+}
+.content .changeRight .vipdetail .vipList .listTable {
+  float: left;
+  border-collapse: collapse;
+  text-align: left;
+  width: 100%;
+}
+.content .changeRight .vipdetail .vipList .listTable .trStyle {
+  box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.24);
+  background-color: #fafafa;
+}
+.content .changeRight .vipdetail .vipList .listTable .trStyle .pre {
+  font-size: 12px;
+  display: block;
+  line-height: 1;
+}
+.content .changeRight .vipdetail .vipList .listTable .trStyle .nor {
+  font-size: 14px;
+  display: block;
+}
+.content .changeRight .vipdetail .vipList .listTable .trStyle:hover {
+  background-color: #fff;
+}
+.content .changeRight .vipdetail .vipList .listTable .tr-title {
+  background-color: #e7e7e7;
+  color: #9b9b9b;
+}
+.content .changeRight .vipdetail .vipList .listTable th {
+  text-align: left;
+  padding: 10px 0 10px 30px;
+}
+.content .changeRight .vipdetail .vipList .listTable td {
+  padding: 15px 0 15px 30px;
+  color: #626262;
+}
+.content .content-right {
+  width: 64%;
+  height: 500px;
+  float: left;
+  background-color: #fbfbfb;
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.12);
+}
