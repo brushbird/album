@@ -5,6 +5,7 @@
       <div class="changeLeft">
         <input type="text" name="" v-model="content">
         <p>{{content}}</p>
+        <canvas id="c" @click="addRect"></canvas>
       </div>
     </div>
     <div class="content-right">
@@ -80,8 +81,6 @@
 </style>
 
 <script>
-
-
 export default {
 
   data(){
@@ -106,6 +105,23 @@ export default {
     inputResultTotal:function(){
 
     },
+    addRect:function(){
+       let canvas = new fabric.Canvas("c");
+       let rect = new fabric.Rect({
+        left: 100,
+        top: 100,
+        fill: '#07aefc',
+        width: 20,
+        height: 20
+      });
+       let radius = new fabric.Circle({
+        radius:30,
+        top: 10,
+        left: 10,
+        fill: 'red',
+       })
+       canvas.add(rect,radius);
+    },
     onDep:function(){
       this.ifVip=false;
       document.getElementsByClassName("vip-label")[0].classList.remove("on");
@@ -124,7 +140,9 @@ export default {
   mounted: function() {
 
   },
-  components:{  }
+  components:{
+    
+  },
 }
 
 

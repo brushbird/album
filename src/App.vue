@@ -4,7 +4,6 @@
         <li v-for="value in list">
           <router-link :to="value.href">{{ value.des }}</router-link>
         </li>
-        <div :style="decPosition" class="dec"></div>
       </ul>
     <router-view></router-view>
   </div>
@@ -16,9 +15,7 @@ export default {
   data(){
     return{
       list:{
-        '/hello': {href: '/hello', des: "Hello Vue.js"},
         '/test': {href: '/test', des: "测试"},
-        '/test1': {href: '/test1', des: "测试1"},
       }
     }
   }
