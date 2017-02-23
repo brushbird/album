@@ -16,6 +16,7 @@ export default {
     return{
       list:{
         '/test': {href: '/test', des: "测试"},
+        '/itextbar': {href: '/itextbar', des:'文字工具'},
       }
     }
   }

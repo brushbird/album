@@ -124,6 +124,7 @@ export default {
     },
     onDep:function(){
       this.ifVip=false;
+      console.log(this);
       document.getElementsByClassName("vip-label")[0].classList.remove("on");
       document.getElementsByClassName("vip-label")[1].classList.add("on");
     },
