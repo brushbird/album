@@ -16,6 +16,7 @@ export default {
     return{
       list:{
         '/test': {href: '/test', des: "测试"},
+        '/canvasmodule': {href: '/canvasmodule', des: "测试canvas"},
       }
     }
   }
