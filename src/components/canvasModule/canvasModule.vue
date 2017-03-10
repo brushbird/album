@@ -1,30 +1,27 @@
 <template>
   <div class="content">
-	<div class="canvasContent">
+  	<header>
+  		<button @click="addJson">保存</button>
+  	</header>
+	<fileCom @drag="drag" @allowDrop="allowDrop"></fileCom>
+	<div class="canvasContent">		
+		<div class="main-list" >
+			<div v-for="(item,index) in canvasList" v-show="isActive == index" @drop='drop($event,index)' @dragover='allowDrop($event)'>
+				<canvas :id="item.id" height="460px" width="820px"></canvas>
+			</div>
+			
+		</div>
 		<div class="left-list">
 			<ul>
 				<li v-for="(item,index) in canvasList" @click="setActive(index)" :class="{cur : isActive == index}">
 					<img :src="item.dataUrl">
 				</li>
+				<li class="addCanvas" @click="addCanvas">添加</li>
 			</ul>
 		</div>
-		<div class="main-list" >
-			<div v-for="(item,index) in canvasList" v-show="isActive == index" @drop='drop($event,index)' @dragover='allowDrop($event)'>
-				<canvas :id="item.id" height="500px" width="500px"></canvas>
-			</div>
-		</div>
+		<canvas id="test" height="460px" width="820px"></canvas>
 	</div>
-	<div class="fileContent">
-		<div id="images" class="images">
-		  <div class="imgContainer" v-for="(item,index) in imageList" @dragstart='drag($event)'>
-    		<img draggable="true" :src="item" width="135">
-    		<span class="del" @click="delImg(index)">删除</span>
-    	  </div>
-		</div>
-		<div class="fileBtn">上传图片
-			<input type="file" name="" value="文件" multiple="true" @change="addPic" id="file">
-		</div>
-	</div>
+	
   </div>
 </template>
 
@@ -33,54 +30,48 @@
 </style>
 
 <script>
+	import fileCom from "../fileModules/fileModules.vue";
 	let dom = null,canvas = [];
 	export default{
 		data(){
 			return{
-				picValue:"",
 				isActive:0,
 				canvasList:[
 					{index: 1, id: "a", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},circle:{radius: 20, fill: "blue", left: 50, top: 0},dataUrl:"",isShow:false
 					},
 					{index: 2, id: "b", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},dataUrl:"",isShow:false}
 				],
-				imageList:[],
+				canvasJson:[]
 			}
 		},
 		computed:{
+			
 
 		},
 		methods:{
+			addCanvas:function(){
+				let length = this.canvasList.length;
+				this.canvasList.push("");
+				this.isActive = length;
+				console.log(this.isActive);
+			},
+			addJson:function(){
+				let that = this;
+				let index = canvas.length;
+				for(let i = 0; i<index; i++)
+				{
+					that.canvasJson.push(canvas[i].toJSON());
+				}		
+				console.log(this.canvasJson[0]);
+				// let canvas1 = new fabric.Canvas("test");
+				// let json = this.canvasJson[0];
+				// canvas1.loadFromJSON(json, canvas1.renderAll.bind(canvas1), function(o, object) {
+   	// 				//console.log(o, object);
+  		// 		});
+			},
 			setActive:function(index){
 				this.isActive = index;
 			},
-			triger:function(){
-
-			},
-			addPic:function(e){
-				let files = e.target.files || e.dataTransfer.files;
-                if (!files.length)return; 
-                this.createImage(files);
-            },
-            delImg:function(index){
-            	this.imageList.splice(index,1);
-            },
-            createImage(file) {
-                if(typeof FileReader==='undefined'){
-                    alert('您的浏览器不支持图片上传，请升级您的浏览器');
-                    return false;
-                }
-                let image = new Image();         
-                let vm = this;
-                let leng=file.length;
-                for(let i=0;i<leng;i++){
-                    let reader = new FileReader();
-                    reader.readAsDataURL(file[i]); 
-                    reader.onload =function(e){
-                    	vm.imageList.push(e.target.result);                              
-                    };                 
-                }                        
-            },
             drag:function(e){
             	dom = e.target;
             },
@@ -95,13 +86,16 @@
    				let newImage = new fabric.Image(dom, {
        				width: dom.width,
        				height: dom.height,
-       				left: e.layerX,
-       				top: e.layerY
+       				left: e.offsetX,
+       				top: e.offsetY,
    				});
    				canvas[index].add(newImage);
 				that.canvasList[index].dataUrl=canvas[index].toDataURL();
    				return false;
             },
+		},
+		beforeMount:function(){
+			
 		},
 		mounted: function(){
 			for(let i=0; i<this.canvasList.length; i++)
@@ -135,6 +129,7 @@
 				});
 		}
 	},
+	components:{fileCom}
 	}
 
 </script>

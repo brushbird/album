@@ -2,88 +2,79 @@
     margin: 0;
     padding: 0;
 }
-
+::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-button {
+        opacity: 0;
+        width: 5px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track-piece {
+        display: none;
+    }
+    ::-webkit-scrollbar-thumb {
+        width: 8px;
+        border-radius: 10px;
+        background-color: #cdcdcd;
+    }
 .content {
-    width: 1366px;
+    width: 100%;
     height: 100%;
+    header{
+    	width: 100%;
+    	height: 40px;
+    	background-color: #cff8f2;
+    }
     .canvasContent {
-        width: 980px;
-        height: 600px;
+        width: 75%;
+        height: 100%;
         float: left;
+        position: relative;
         .left-list {
-            float: left;
-            width: 20%;
-            height: 100%;
-            overflow-y: scroll;
-            border: 1px solid;
+            width: 60%;
+            overflow-x: scroll;
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            background-color: #fafafa;
+            position: fixed;
+			bottom: 20px;
+			margin-left: 20px;
             li {
-                width: 80%;
-                margin: 10px auto;
-                box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.24);
+                width: 164px;
+                margin: 10px;
+                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.24);
                 list-style: none;
+                float: left;
                 img {
-                    width: 100%;
+                    width: 164px;
                 }
+            }
+            .addCanvas{
+            	width: 50px;
+            	height: 50px;
+            	border-radius: 50px;
+            	display: block;
+            	border:1px solid rgba(0, 0, 0, 0.5);
+            	margin: 30px;
+            	float: left;
+            	line-height: 3;
+            	cursor: pointer;
             }
             .cur {
                 box-shadow: 0 0 8px 0 rgba(0, 174, 255, 1);
             }
         }
         .main-list {
-            float: left;
-            width: 75%;
-            height: 100%;
+            padding: 10px;
+            background-color: #fafafa;
+            position: absolute;
+            left: 30%;
+            top: 20%;
+            transform: translate(-30%, -20%);
             .canvas-container {
                 margin: auto;
                 line-height: 1.5;
                 box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.24);
-            }
-        }
-    }
-    .fileContent {
-        width: 300px;
-        height: 600px;
-        box-shadow: 0 0px 2px 1px rgba(0, 0, 0, 0.24); 
-        float: left;
-        .images {
-            width: 100%;
-            float: left;
-            vertical-align: top;
-            .imgContainer {
-                width: 135px;
-                position: relative;
-                margin: 10px 0px 0px 10px;
-                float: left; 
-                box-shadow: 0 0px 2px 1px rgba(0, 0, 0, 0.24); 
-                .del {
-                    position: absolute;
-                    top: 5px;
-                    right: 5px;
-                    cursor: pointer;
-                }
-            }
-        }
-        .fileBtn {
-            width: 100px;
-            height: 30px;
-            margin: auto;
-            border: 0;
-            background-color: #07aefc;
-            color: #fff;
-            text-align: center;
-            line-height: 30px;
-            position: relative;
-            margin: 20px 100px;
-            cursor: pointer;
-            float: left;
-            #file{
-            	opacity: 0;
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				left: 0;
-				top: 0;
-				cursor: pointer;
             }
         }
     }

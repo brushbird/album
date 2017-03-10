@@ -76,7 +76,7 @@
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
   @import "test.less";
 </style>
 
