@@ -1,15 +1,11 @@
 <template>
   <div id="app">
-    <ul>
-        <li v-for="value in list">
-          <router-link :to="value.href">{{ value.des }}</router-link>
-        </li>
-      </ul>
-    <router-view></router-view>
+    <canvasmodule></canvasmodule>
   </div>
 </template>
 
 <script>
+import canvasmodule from "components/canvasModule/canvasModule.vue";
 export default {
   name: 'app',
   data(){
@@ -20,7 +16,8 @@ export default {
         '/canvasmodule': {href: '/canvasmodule', des: "测试canvas"},
       }
     }
-  }
+  },
+  components:{canvasmodule}
 }
 </script>
 
@@ -31,6 +28,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #ddd;
+  overflow: hidden;
 }
 </style>
