@@ -13,7 +13,7 @@
 		</div>
 		<div id="color1"  v-show="c">
 		    	<canvas id="color" width="286px" height="256px"></canvas>
-		    	<em id="cur" style="left: 98px; top: 47px; "></em> 
+		    	<!-- <em id="cur" style="left: 98px; top: 47px; "></em>  -->
 		    	<div class="color_panel">
 		    	 	<div id="color_show"></div>
 		    		<label>rgb

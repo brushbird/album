@@ -154,7 +154,7 @@
             colorBar:function(e){
             	let ev = e;
             	let that=this;
-            	let cur = document.getElementById('cur');
+            	//let cur = document.getElementById('cur');
 		   		let show = document.getElementById('color_show');//颜色演示
 		    	let canColor = new fabric.Canvas('color');	
 		    	colorTag = canColor;
@@ -216,9 +216,16 @@
 				 // cur.style.top = o.e.clientY + 'px';
 				 // cur.style.border = '1px solid black';
 				}
+				else if(chooseC == 'no'){
+
+					show.style.backgroundColor = 'rgb(0,0,0)';
+					e.Tcolor = '0,0,0';
+					textevent.set({fill:  'rgb(0,0,0)'});
+					canvas[that.isActive].renderAll();
+				}
 				else{
-					 cur.style.left = o.e.clientX+'px';
-					 cur.style.top = o.e.clientY + 'px';
+					// cur.style.left = o.e.clientX+'px';
+					// cur.style.top = o.e.clientY + 'px';
 				  // cur.style.border = '1px solid black';
 					let rgb = poscolor.slice(0,3).join();
 					show.style.backgroundColor = 'rgb('+rgb+')';
@@ -234,15 +241,18 @@
 				 	y : option.e.offsetY,
 				 }
 				 if(pos.x>=0 && pos.x<20 && pos.y>=0 && pos.y<256){
-				 	var imgData = colorTag.contextContainer.getImageData(pos.x,pos.y,20,256);
+				 	var imgData = colorTag.contextContainer.getImageData(pos.x,pos.y,1,1);
 					 	chooseC = true;				 	
 					 }
 				else if(pos.x>=30 && pos.x<286 && pos.y>=0 && pos.y<256){
-				 	var imgData = colorTag.contextContainer.getImageData(30,0,256,256);
+				 	var imgData = colorTag.contextContainer.getImageData(pos.x,pos.y,1,1);
 					 	chooseC = false;
+				}else{
+					var imgData = colorTag.contextContainer.getImageData(0,0,1,1)
+				  	chooseC = 'no';
 				}
 				let data = imgData.data;
-				let dataIndex = (pos.y*imgData.width + pos.x)*4;
+				let dataIndex = 0;
 				return[
 				 	data[dataIndex],
 				 	data[dataIndex+1],
