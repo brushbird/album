@@ -63,6 +63,7 @@
 	import fileCom from "../fileModules/fileModules.vue";
 	import itextBar from "../itextbar/itextbar.vue";
 	let dom = null,canvas = [], textevent= null, colorTag,chooseC;
+	
 	export default{
 		data(){
 			return{
@@ -131,22 +132,35 @@
 					top:50,
 					fontFamily:'SimHei ',
 				});
+			
+
 				text.on("editing:entered",function(){
 					// let ev = e.target;
 					// console.log(this.isEditing);
 					this.hiddenTextarea.focus();
 					this.selectAll();
 				});
-				// text.on("selected",function(){
-				// 	that.showTool= true;
-				// });
-				// text.on("deselected",function(){
-				// 	that.showTool= false;
-				// 	// console.log("out");
-				// })
+				text.on("selected",function(){
+					that.showTool= true;
+					this.setControlsVisibility({ 
+						mt: false, 
+						mr: false,
+   						mb: false,
+   					    ml: false,
+   					    tl: false,
+   					    tr: false,
+   					    bl: false,
+   					});
+   					this.set('transparentCorners', false);
+				});
+				text.on("deselected",function(){
+					that.showTool= false;
+					console.log("out");
+				})
 
 				canvas[index].add(text);
 				canvas[index].setActiveObject(text);
+
 				textevent = text;
 				this.canvasList[index].dataUrl=canvas[index].toDataURL();
 				// this.preView.push(textevent.toDataURL());
@@ -242,9 +256,12 @@
             colorBar:function(e){
             	let ev = e;
             	let that=this;
-            	//let cur = document.getElementById('cur');
+            	let cur = document.getElementById('cur');
+            	let Tcolor = document.getElementById('Tcolor');
 		   		let show = document.getElementById('color_show');//颜色演示
+		   		let poscolor;
 		    	let canColor = new fabric.Canvas('color');	
+		    	
 		    	colorTag = canColor;
 				let gradientBar = new fabric.Rect({
 					left:0,
@@ -286,9 +303,67 @@
 				canColor.add(gradientBar,gradientBar1);
 				canColor.item(0).selectable = false;
 				canColor.item(1).selectable = false;
+
 				canColor.on('mouse:down',function(option){
-					let o = option;
-					let poscolor=that.colorSet(o);
+					 let o = option;	
+					
+					 poscolor=that.colorSet(o);
+					 if(o.e.offsetX>30 &&o.e.offsetX<286 && o.e.offsetY>0 &&o.e.offsetY<256)
+					 {
+					 	 cur.style.left = o.e.offsetX+'px';
+					 	cur.style.top  =  o.e.offsetY + 'px';
+					    if(poscolor[0]>256/2 || poscolor[1]>256/2 || poscolor[2]>256/2)
+						 {
+							cur.style.outlineColor="#000";
+						 }
+					  else
+					       cur.style.outlineColor="#fff";
+					 }
+					 else if(o.e.offsetX>0 &&o.e.offsetX<20 && o.e.offsetY>0 &&o.e.offsetY<256)
+					 {
+					 	gradientBar1.setGradient('fill',{
+						 x1: 30,
+						 y1: 0,
+						 x2: 286,
+						 y2: 256,
+						 colorStops: {
+						    0: 'rgba(255,255,255,1)',						
+						    1: 'rgba('+poscolor+')',
+			  			}
+			  			});
+					 }
+					
+
+					 canColor.on("mouse:move",function(option){
+						let pos = {
+								x: option.e.offsetX,
+								y: option.e.offsetY,
+							};
+					 	if(pos.x>30 && pos.x<286 && pos.y>0 && pos.y<256)
+					 	{
+					 		
+							console.log(pos.x,pos.y);
+							poscolor = that.movecolor(pos);
+							cur.style.left = pos.x+'px';
+						    cur.style.top  = pos.y + 'px';
+						    if(poscolor[0]>256/2 || poscolor[1]>256/2 || poscolor[2]>256/2)
+								 {
+									cur.style.outlineColor="#000";
+								 }
+								 else
+								  	cur.style.outlineColor="#fff";
+								   
+								let rgb = poscolor.slice(0,3).join();
+								show.style.backgroundColor = 'rgb('+rgb+')';
+								Tcolor.value = rgb;	
+						 	}
+							
+					});	
+
+				});
+
+				canColor.on('mouse:up',function(){
+					canColor.off('mouse:move');
 					if(chooseC){
 						gradientBar1.setGradient('fill',{
 						 x1: 30,
@@ -299,34 +374,109 @@
 						    0: 'rgba(255,255,255,1)',						
 						    1: 'rgba('+poscolor+')',
 			  			}
-				});
-				 // cur.style.left = o.e.clientX+'px';
-				 // cur.style.top = o.e.clientY + 'px';
-				 // cur.style.border = '1px solid black';
-				}
-				else if(chooseC == 'no'){
+						});
+				  
+					  let curposcolor = that.curcolorSet();
+					  console.log(curposcolor);
+					  
+					  let rgb = curposcolor.slice(0,3).join();
+					  show.style.backgroundColor = 'rgb('+rgb+')';
+					  Tcolor.value = rgb;
+					  textevent.set({fill:  'rgb('+rgb+')'});
+						
+					  canvas[that.isActive].renderAll();
+					  
+					}
+					else if(chooseC == 'no'){
 
-					show.style.backgroundColor = 'rgb(0,0,0)';
-					e.Tcolor = '0,0,0';
-					textevent.set({fill:  'rgb(0,0,0)'});
-					canvas[that.isActive].renderAll();
-				}
-				else{
-					// cur.style.left = o.e.clientX+'px';
-					// cur.style.top = o.e.clientY + 'px';
-				  // cur.style.border = '1px solid black';
-					let rgb = poscolor.slice(0,3).join();
-					show.style.backgroundColor = 'rgb('+rgb+')';
-					e.Tcolor = rgb;
-					textevent.set({fill:  'rgb('+rgb+')'});
-					canvas[that.isActive].renderAll();
-				}
-			});
+						show.style.backgroundColor = 'rgb(0,0,0)';
+						Tcolor.value = '0,0,0';
+						textevent.set({fill:  'rgb(0,0,0)'});
+						canvas[that.isActive].renderAll();
+					}
+					else{
+					   	
+						let rgb = poscolor.slice(0,3).join();
+						show.style.backgroundColor = 'rgb('+rgb+')';
+						Tcolor.value = rgb;
+						textevent.set({fill:  'rgb('+rgb+')'});
+						
+						canvas[that.isActive].renderAll();
+					}	
+
+				});
+
+			},
+			movecolor:function(pos){
+				var imgData = colorTag.contextContainer.getImageData(pos.x,pos.y,1,1);
+				 let data = imgData.data;
+				 let dataIndex = 0;
+				 return[
+				 	data[dataIndex],
+				 	data[dataIndex+1],
+				 	data[dataIndex+2],
+				 	(data[dataIndex+3] / 255).toFixed(2),
+				 ];
+
+
+			},
+			curcolorSet:function(){
+				 let ex;
+				 let ey;
+				 if(cur.style.left != null)
+				 {
+				 	switch(cur.style.left.length)
+				 	{
+				 		case 3:
+				 			ex = cur.style.left.substr(0,1);
+				 			break;
+				 		case 4:
+				 			ex = cur.style.left.substr(0,2);
+				 			break;
+				 		case 5:
+				 		  	ex = cur.style.left.substr(0,3);
+				 		  	break;
+				 	}  
+				 }
+
+				 if(cur.style.top != null)
+				 {
+				 	switch(cur.style.top.length)
+				 	{
+				 		case 3:
+				 			ey = cur.style.top.substr(0,1);
+				 			break;
+				 		case 4:
+				 			ey = cur.style.top.substr(0,2);
+				 			break;
+				 		case 5:
+				 		  	ey = cur.style.top.substr(0,3);
+				 		  	break;
+				 	}  
+
+				 }
+
+				 let pos = {
+				 	x : ex,
+				 	y : ey,
+				 }
+				 var imgData = colorTag.contextContainer.getImageData(pos.x,pos.y,1,1);
+				 let data = imgData.data;
+				 let dataIndex = 0;
+				 return[
+				 	data[dataIndex],
+				 	data[dataIndex+1],
+				 	data[dataIndex+2],
+				 	(data[dataIndex+3] / 255).toFixed(2),
+				 ];
 			},
 			colorSet:function(option){
+				
+				
+
 				 let pos = {
-				 	x : option.e.offsetX,
-				 	y : option.e.offsetY,
+				 	x : option.e.offsetX ,
+				 	y : option.e.offsetY ,
 				 }
 				 if(pos.x>=0 && pos.x<20 && pos.y>=0 && pos.y<256){
 				 	var imgData = colorTag.contextContainer.getImageData(pos.x,pos.y,1,1);
@@ -361,12 +511,14 @@
 				// this.preView.push();
 			}
 		},
-		// watch: {  
-  //       	'isActive': 'setPreView',  
-  //   	},
+		
+		},
+
+
 		beforeMount:function(){
 			
 		},
+
 		mounted: function(){
 			for(let i=0; i<this.canvasList.length; i++)
 			{
