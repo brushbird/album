@@ -3,14 +3,15 @@
     padding: 0;
 }
 .fileModules{
-	width: 274px;
-	height: 100%;
+
+	width: 20%;
+	height: 87%;
 	position: relative;
 	float: left;
 	.navbar{
-		width: 42px;
+		width: 16%;
 		height: 100%;
-		background-color: #2e343c;
+		background-color: #fff;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -18,27 +19,36 @@
 		.base{
 			display: block;
 			list-style: none;
-			width: 30px;
-			height: 30px;
-			padding: 5px;
-			color: #fff;
+			width: 100%;
+			height: 60px;
+			padding: 0px;
+			color: #ff66b2;
 			float: left;
 			font-size: 12px;
 			line-height: 30px;
 			cursor: pointer;
+			margin-top: 25px;
+			.logo{
+				width: 30px;
+				height: 30px;
+				border-radius: 30px;
+				border: 1px solid;
+				margin: 5px auto 0;
+				display: block;
+			}
 		}
 		.active{
 			color: #07aefc;
 			border-right: 2px solid #07aefc;
 		}
 	}
-	.fileContent,.moduleContent{
-		width: 234px;
+	.fileContent,.moduleContent,.itextContent{
+		width: 84%;
 		height: 100%;
 		position: absolute;
-		left: 40px;
+		left: 16%;
 		top: 0;
-		background-color: #3e454d;
+		background-color: #fea6a6;
 		z-index: 9;
 	}
 	.fileContent{
@@ -49,7 +59,7 @@
             .imgContainer {
                 width: 100px;
                 position: relative;
-                margin: 10px 0px 0px 10px;
+                margin: 10px 5px;
                 float: left; 
                 box-shadow: 0 0px 2px 1px rgba(0, 0, 0, 0.24); 
                 .del {
@@ -61,18 +71,18 @@
             }
         }
         .fileBtn {
-            width: 100px;
-            height: 30px;
-            margin: auto;
+            width: 128px;
+            height: 40px;
+            margin: 20px auto;
             border: 0;
             background-color: #07aefc;
             color: #fff;
             text-align: center;
-            line-height: 30px;
+            line-height: 40px;
             position: relative;
-            margin: 20px 67px;
+            // margin: 20px 67px;
             cursor: pointer;
-            float: left;
+            // float: left;
             #file{
             	opacity: 0;
 				width: 100%;
@@ -83,5 +93,15 @@
 				cursor: pointer;
             }
         }
+	}
+	.itextContent{
+		.addfont{
+			width: auto;
+			display: inline-block;
+			margin: 10px auto;
+			font-size: 16px;
+			cursor: pointer;
+			border: 2px dashed;
+		}
 	}
 }
