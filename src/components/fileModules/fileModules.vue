@@ -2,11 +2,15 @@
   <div class="fileModules">
 	<div class="navbar">
 		<ul>
-			<li :class="{active: isActive}" class="base" @click="setActive($event)">图库</li>
-			<li :class="{active: !isActive}" class="base" @click="setActive($event)">模板</li>
+			<li v-for="(item, index) in mainList" :class="{active: index==activeIndex}" class="base" @click="setActive(index)">
+				<div class="logo"></div>
+				<span>{{item.name}}</span>
+			</li>
+			<!-- <li :class="{active: !isActive}" class="base" @click="setActive($event)">模板</li>
+			<li :class="{active: !isActive}" class="base" @click="setActive($event)">字体</li> -->
 		</ul>
 	</div>
-	<div class="fileContent" v-show="isActive">
+	<div class="fileContent" v-show="activeIndex==0">
 		<div class="fileBtn">上传图片
 			<input type="file" name="" value="文件" multiple="true" @change="addPic" id="file">
 		</div>
@@ -17,8 +21,11 @@
     	  </div>
 		</div>
 	</div>
-	<div class="moduleContent" v-show="!isActive">
+	<div class="moduleContent" v-show="activeIndex==1">
 		
+	</div>
+	<div class="itextContent" v-show="activeIndex==2">
+		<span @click='creatIText' class="addfont">点击创建默认文字</span>
 	</div>
   </div>
 </template>
@@ -31,18 +38,26 @@
 	export default{
 		data(){
 			return{
-				isActive:true,
+				activeIndex:0,
 				imageList:[],
+				mainList:[
+					{name: "图库"},
+					{name: "模板"},
+					{name: "字体"}
+				]
 				
 			}
 		},
 		computed:{
-
+			isActive:function(index){
+				if(index == this.activeIndex)
+					return true;
+				return false;
+			}
 		},
 		methods:{
-			setActive:function(e){
-				if(!e.target.classList.contains("active"))
-					this.isActive = !this.isActive;
+			setActive:function(index){
+				this.activeIndex=index;
 			},
 			drag:function(e){
             	this.$emit('drag',e);
@@ -74,6 +89,9 @@
                     };                 
                 }                        
             },
+            creatIText:function(){
+            	this.$emit("creatIText");
+            }
 		},
 		mounted: function(){
 		// 	for(let i=0; i<this.canvasList.length; i++)

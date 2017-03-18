@@ -31,7 +31,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #ddd;
+  background-color: #fdebeb;
   overflow: hidden;
 }
 </style>

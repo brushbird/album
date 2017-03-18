@@ -2,6 +2,27 @@
     margin: 0;
     padding: 0;
 }
+// @mainColor: '#fff';
+.placeholder(@a){
+      &::-webkit-input-placeholder { /* WebKit browsers */
+            @a();
+      }
+      &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            @a();
+      }
+      &::-moz-placeholder { /* Mozilla Firefox 19+ */
+            @a();
+      }
+      &:-ms-input-placeholder { /* Internet Explorer 10+ */
+            @a();
+      }
+};
+
+input{
+    .placeholder({
+          color:#fff;
+    })
+}
 ::-webkit-scrollbar {
         width: 8px;
     }
@@ -23,28 +44,73 @@
     height: 100%;
     header{
     	width: 100%;
-    	height: 40px;
-    	background-color: #cff8f2;
+    	height: 8%;
+    	background-color: #fd87c3;
+        color: #fff;
+        .mainName{
+            height: 50%;
+            width: 300px;
+            text-align: center;
+            border: 0;
+            background-color: #fd87c3;
+            margin: 20px auto;
+            font-size: 16px;
+            color: #fff;
+            &:focus{
+                .placeholder({
+                    color:#fff;
+                    opacity: 0.4;
+                })
+            }
+        }
+        .toolList{
+            height: 100%;
+            position: absolute;
+            top: 0;
+            right: 0;
+            .tool{
+                width: 60px;
+                height: 100%;
+                float: right;
+                cursor: pointer;
+                text-align: center;
+                font-size: 12px;
+                margin: 0 5px;
+                .tool-logo{
+                    width: 30px;
+                    height: 30px;
+                    border: 1px solid;
+                    border-radius: 30px;
+                    margin: 5px auto;
+                }
+                span{
+
+                }
+            }
+        }
     }
     .canvasContent {
-        width: 75%;
-        height: 100%;
+        width: 60%;
+        height: 87%;
         float: left;
         position: relative;
         .left-list {
-            width: 60%;
+            width: 100%;
+            height: 132px;
+            overflow: hidden;
             overflow-x: scroll;
             border: 1px solid rgba(0, 0, 0, 0.5);
-            background-color: #fafafa;
-            position: fixed;
-			bottom: 20px;
-			margin-left: 20px;
+            background-color: #ffcc99;
+            position: absolute;
+			bottom: 0;
+			left: 2%;
             li {
                 width: 164px;
                 margin: 10px;
                 box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.24);
                 list-style: none;
                 float: left;
+                background-color: #fff;
                 img {
                     width: 164px;
                 }
@@ -68,13 +134,69 @@
             padding: 10px;
             background-color: #fafafa;
             position: absolute;
-            left: 30%;
-            top: 20%;
-            transform: translate(-30%, -20%);
+            left: 2%;
+            top: 4%;
+            // transform: translate(-30%, -20%);
             .canvas-container {
                 margin: auto;
                 line-height: 1.5;
-                box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.24);
+                border: 2px dashed; 
+            }
+        }
+    }
+    .preView{
+        width: 20%;
+        // float: right;
+        position: fixed;
+        top: 12%;
+        right: 0;
+        .preView-title{
+            float: right;
+            width: 210px;
+            padding: 10px 5px;
+            background-color: #ffcc99;
+            text-align: center;
+            h2{
+                color: #fff;
+            }
+        }
+        // position: relative; 
+        .view-list{
+            list-style: none;
+            display: block;
+            float: right;
+            width: 210px;
+            height: 50px;
+            padding: 10px 5px;
+            background-color: #ffcc99;
+            .view{
+                width: 50px;
+                height: 50px;
+                float: right;
+                position: relative;
+                img{
+                    width: 30px;
+                    position: absolute;
+                    left: 10px;
+                    top: 10px;
+                    // transform
+                }
+            }
+            .operate{
+                width: 100px;
+                height: 50px;
+                display: block;
+                float: right;
+                background-color: #fdebeb;
+            }
+            .del{
+                width: 40px;
+                height: 50px;
+                display: block;
+                float: right;
+                background-color: #fd87c2;
+                cursor: pointer;
+                border-radius: 0px 10px 10px 0px;
             }
         }
     }

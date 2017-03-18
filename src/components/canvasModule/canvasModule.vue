@@ -1,9 +1,20 @@
 <template>
   <div class="content">
   	<header>
-  		<button @click="addJson">保存</button>
+  		<input type="text" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
+  		<!-- <button @click="addJson">保存</button> -->
+  		<div class="toolList">
+  			<div class="tool" @click="addJson">
+  				<div class="tool-logo"></div>
+  				<span>保存</span>
+  			</div>
+  			<div class="tool" @click="addJson">
+  				<div class="tool-logo"></div>
+  				<span>下载</span>
+  			</div>
+  		</div>
   	</header>
-	<fileCom @drag="drag" @allowDrop="allowDrop"></fileCom>
+	<fileCom @creatIText="creatIText" @drag="drag" @allowDrop="allowDrop"></fileCom>
 	<div class="canvasContent">		
 		<div class="main-list" >
 			<div v-for="(item,index) in canvasList" v-show="isActive == index" @drop='drop($event,index)' @dragover='allowDrop($event)'>
@@ -21,10 +32,26 @@
 		</div>
 		<canvas id="test" height="460px" width="820px"></canvas>
 	</div>
-	<div class="text">
-		<button @click='creatIText'>文字</button>
-		<itextBar  @colorBar="colorBar" @optionchange="optionchange" v-show="showTool"></itextBar>
+	
+	<div class="preView">
+		<div class="preView-title">
+			<h2>历史纪录</h2>
+		</div>
+		<ul>
+		<li class="view-list" v-for="(item,index) in preView">
+			<span class="del" @click="delObj(index)"></span>
+			<div class="operate">
+				<div class="text" v-show="judgeItext(index)">
+					<itextBar @click="setTextevent(index)" @colorBar="colorBar" @optionchange="optionchange"></itextBar>
+				</div>
+			</div>
+			<div class="view">
+				<img :src="item">
+			</div>
+		</li>
+		</ul>
 	</div>
+	<!-- <button @click="addSVG">addSVG</button> -->
   </div>
 </template>
 
@@ -40,6 +67,7 @@
 		data(){
 			return{
 				showTool:false,
+
 				see: true,
 				isActive:0,
 				canvasList:[
@@ -47,13 +75,54 @@
 					},
 					{index: 2, id: "b", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},dataUrl:"",isShow:false}
 				],
-				canvasJson:[]
+				canvasJson:[],
+				preView:[]
 			}
 		},
 		computed:{
 			
 		},
 		methods:{
+			judgeItext:function(index){
+				if(canvas[this.isActive].getObjects()[index].get('type')==='i-text')
+					return true;
+			},
+			setTextevent:function(index){
+				textevent = canvas[this.isActive].getObjects()[index];
+			},
+			addSVG:function(){
+				var group = [];
+				 let that = this;
+				 this.$http.get('../guangmu/photo/insertphoto.s',{_dataType:'json'}).then(response => {
+        			if(response == 1)
+        			{
+        				console.log("success");
+        			}
+      			}, response => {
+        			console.log("error");
+      			});
+// fabric.loadSVGFromURL("static/accountCenter.svg",function(objects,options)
+// {
+//   var loadedObjects = new fabric.Group(group);
+ 
+//   loadedObjects.set({
+//     left: 0,
+//     top: 0,
+//     width:100,
+//     height:100
+//   });
+//   canvas[that.isActive].add(loadedObjects);
+//   canvas[that.isActive].renderAll();
+// },
+// function(item, object) {
+//   object.set('id', item.getAttribute('id'));
+//   group.push(object);
+// });
+				fabric.loadSVGFromURL('static/accountCenter.svg', function(objects, options) {
+  					var obj = fabric.util.groupSVGElements(objects, options);
+  					canvas[that.isActive].add(obj).renderAll();
+				})
+			},
 			creatIText:function(){
 				let index = this.isActive;
 				let that = this;
@@ -64,23 +133,27 @@
 				});
 				text.on("editing:entered",function(){
 					// let ev = e.target;
-					console.log(this.isEditing);
+					// console.log(this.isEditing);
 					this.hiddenTextarea.focus();
 					this.selectAll();
 				});
-				text.on("selected",function(){
-					that.showTool= true;
-				});
-				text.on("deselected",function(){
-					that.showTool= false;
-					console.log("out");
-				})
+				// text.on("selected",function(){
+				// 	that.showTool= true;
+				// });
+				// text.on("deselected",function(){
+				// 	that.showTool= false;
+				// 	// console.log("out");
+				// })
 
 				canvas[index].add(text);
 				canvas[index].setActiveObject(text);
 				textevent = text;
 				this.canvasList[index].dataUrl=canvas[index].toDataURL();
-
+				// this.preView.push(textevent.toDataURL());
+				// console.log(this.preView);
+				this.preView=[];
+				this.setPreView();
+				// console.log(this.preView);
 			},
 			setCid:function(index){
 					return "a"+index;
@@ -89,30 +162,35 @@
 				let length = this.canvasList.length;
 				this.canvasList.push("");
 				this.isActive = length;
-				console.log(this.isActive);
+				// console.log(this.isActive);
 			},
 			addJson:function(){
 				let that = this;
 				let index = canvas.length;
 				for(let i = 0; i<index; i++)
 				{
-					that.canvasJson.push(JSON.stringify(canvas[i].toJSON()));
+					that.canvasJson.push(canvas[i].toJSON());
 				}		
 				//console.log(this.canvasJson[0]);
 				// canvas[1].loadFromJSON(this.canvasJson[0]);
 				// canvas[1].renderAll();
-  				// this.$http.get('../photo/insertphoto.s',{_dataType:'json',m_js: this.canvasList}).then(response => {
-      //   				if(response == 1)
-      //   				{
-      //   					console.log("success");
-      //   				}
-
-      // 			}, response => {
-      //   			console.log('error');
-      // 			});
+				this.preView=[];
+				this.setPreView();
+  				this.$http.post('../guangmu/photo/insertphoto.s',{_dataType:'json',m_js: that.canvasJson[0]},{'headers': {'Content-Type': 'Application/json'}}).then(response => {
+        				if(response == 1)
+        				{
+        					console.log("success");
+        					console.log(response);
+        				}
+        				console.log(response);
+      			}, response => {
+        			console.log(that.canvasJson[0]);
+      			});
 			},
 			setActive:function(index){
 				this.isActive = index;
+				this.preView=[];
+				this.setPreView();
 			},
             drag:function(e){
             	dom = e.target;
@@ -133,6 +211,8 @@
    				});
    				canvas[index].add(newImage);
 				that.canvasList[index].dataUrl=canvas[index].toDataURL();
+				this.preView=[];
+				this.setPreView();
    				return false;
             },
             dropBg:function(e,index){
@@ -150,6 +230,14 @@
             	let ev  = event.target;
 				textevent.set({fontFamily : ev.value});
 				canvas[that.isActive].renderAll();
+				this.preView=[];
+				this.setPreView();
+            },
+            delObj:function(index){
+            	canvas[this.isActive].getObjects()[index].remove();
+            	this.canvasList[this.isActive].dataUrl=canvas[this.isActive].toDataURL();
+            	this.preView=[];
+            	this.setPreView();
             },
             colorBar:function(e){
             	let ev = e;
@@ -259,8 +347,23 @@
 				 	data[dataIndex+2],
 				 	(data[dataIndex+3] / 255).toFixed(2),
 				 ];
+			},
+			setPreView:function(){
+				let length = canvas[this.isActive].getObjects().length;
+				let that = this;
+				let list=[];
+				for(let j=0; j<length; j++)
+				{
+					list.push(canvas[that.isActive].getObjects()[j].toDataURL());
+					// console.log(canvas[that.isActive].getObjects()[j]);
+				}
+				this.preView = list;
+				// this.preView.push();
 			}
 		},
+		// watch: {  
+  //       	'isActive': 'setPreView',  
+  //   	},
 		beforeMount:function(){
 			
 		},
@@ -294,6 +397,11 @@
 					let ev = e.target;
 					that.canvasList[i].dataUrl=canvas[i].toDataURL();
 				});
+				this.preView=[];
+				this.setPreView();
+				// this.setPreView();
+				
+				// this.preView[i]=canvas[i].getObjects()[0].toDataURL();
 		}
 	},
 	components:{fileCom,itextBar}
