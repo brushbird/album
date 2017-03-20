@@ -9,7 +9,7 @@
 				</select>
 			</div>
 		<!--更改文字颜色  -->
-			<div class="text_bar_item"><button @click='creatColor'>颜色</button></div>
+			<!-- <div class="text_bar_item"><button @click='creatColor'>颜色</button></div>
 		</div>
 		<div id="color1"  v-show="c">
 		    	<canvas id="color" width="286px" height="256px"></canvas>
@@ -17,33 +17,22 @@
 		    	<div class="color_panel">
 		    	 	<div id="color_show"></div>
 		    		<label>rgb
-		    		 <!-- 用vue绑定文字框颜色信息 -->
 		    		<input type="text" class="color_input" id="Tcolor" placeholder="0,0,0"> 
 		    		</label>
-		    	</div>
-		</div>
+		    	</div>-->
+		</div> 
 	</div>
 </template>
 
 
 <style type="text/css">
 
-	/*.canvas{
-		position: relative;
-		margin: 0px auto;
-		
-	}*/
-
-	#can{
-		border: 1px solid black;	
-	}
+	
 	.text_bar_item{
 		display: inline-block;
 	}
-	#show_color{
-		background-color: rgb(207,151,151);
-	}
-	#color{
+	
+	/*#color{
 		border: 1px solid black;
 		
 	}
@@ -75,7 +64,7 @@
 		margin-top: -1px;
 		position: absolute;
 
-	}
+	}*/
 </style>
 
 <script>
@@ -112,18 +101,18 @@
 		},
 		methods:{
 			//生成文字画布
-			creatIText:function(){
-				this.$emit('creatIText');
-			},
+			// creatIText:function(){
+			// 	this.$emit('creatIText');
+			// },
 			//选择事件，判断选择项的响应对象
 			optionchange:function(event){
 				
 				this.$emit('optionchange',event);
 			},
-			creatColor:function(event){
-				this.c= !this.c;
-				this.$emit('colorBar',event);
-			},
+			// creatColor:function(event){
+			// 	this.c= !this.c;
+			// 	this.$emit('colorBar',event);
+			// },
 		}
 
 

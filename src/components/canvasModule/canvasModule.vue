@@ -42,7 +42,8 @@
 			<span class="del" @click="delObj(index)"></span>
 			<div class="operate">
 				<div class="text" v-show="judgeItext(index)">
-					<itextBar @click="setTextevent(index)" @colorBar="colorBar" @optionchange="optionchange"></itextBar>
+					<itextBar   @optionchange="optionchange"></itextBar>
+					<div class="text_bar_item"><button @click='colorBar'>颜色</button></div>
 				</div>
 			</div>
 			<div class="view">
@@ -50,7 +51,22 @@
 			</div>
 		</li>
 		</ul>
+
 	</div>
+	<div id="color1"  v-show="c">
+					<canvas id="color" width="286px" height="256px"></canvas>
+		    		
+		    		 <em id="cur" style="left: 98px; top: 47px; "></em>  
+		    		<div class="color_panel">
+		    	 		<div id="color_show"></div>
+		    			<label>rgb
+		    			 <!-- 用vue绑定文字框颜色信息 -->
+		    			<input type="text" class="color_input" id="Tcolor" placeholder="0,0,0"> 
+		    			</label>
+		    		</div>
+	</div>
+			
+	
 	<!-- <button @click="addSVG">addSVG</button> -->
   </div>
 </template>
@@ -68,7 +84,7 @@
 		data(){
 			return{
 				showTool:false,
-
+				c:false,
 				see: true,
 				isActive:0,
 				canvasList:[
@@ -252,6 +268,7 @@
             	this.canvasList[this.isActive].dataUrl=canvas[this.isActive].toDataURL();
             	this.preView=[];
             	this.setPreView();
+            	this.c = false;
             },
             colorBar:function(e){
             	let ev = e;
@@ -260,9 +277,14 @@
             	let Tcolor = document.getElementById('Tcolor');
 		   		let show = document.getElementById('color_show');//颜色演示
 		   		let poscolor;
-		    	let canColor = new fabric.Canvas('color');	
-		    	
-		    	colorTag = canColor;
+		   		that.c = !that.c;		   		
+		    	let canColor;
+		    	if(canColor == null)
+		    	{
+					canColor = new fabric.Canvas('color');	
+					colorTag = canColor;
+		    	}
+			    		    	
 				let gradientBar = new fabric.Rect({
 					left:0,
 					top:0,
@@ -512,7 +534,7 @@
 			}
 		},
 		
-		},
+		
 
 
 		beforeMount:function(){
