@@ -8,18 +8,6 @@
 					<option v-for="option in options_style" :value="option.value">{{ option.text }}</option>
 				</select>
 			</div>
-		<!--更改文字颜色  -->
-			<!-- <div class="text_bar_item"><button @click='creatColor'>颜色</button></div>
-		</div>
-		<div id="color1"  v-show="c">
-		    	<canvas id="color" width="286px" height="256px"></canvas>
-		    	 <em id="cur" style="left: 98px; top: 47px; "></em>  
-		    	<div class="color_panel">
-		    	 	<div id="color_show"></div>
-		    		<label>rgb
-		    		<input type="text" class="color_input" id="Tcolor" placeholder="0,0,0"> 
-		    		</label>
-		    	</div>-->
 		</div> 
 	</div>
 </template>
@@ -27,53 +15,24 @@
 
 <style type="text/css">
 
-	
 	.text_bar_item{
 		display: inline-block;
 	}
 	
-	/*#color{
-		border: 1px solid black;
-		
-	}
-	#color1{
-		width: 286px;
-		height: 300px;
-		position: fixed;
-		right: 0;
-		margin: 0px auto;
-		border: 1px solid black;
-		cursor: crosshair;
 	
-	}
-	
-		
-	
-	#color_show{
-		margin-top: 5px; 
-		width: 20px;
-		height: 20px;
-		border: 1px solid black;
-		display: inline-block;
-	}
-	#cur{
-		width: 3px;
-		height: 3px;
-		outline: 2px solid #535353;
-		margin-left: -1px;
-		margin-top: -1px;
-		position: absolute;
-
-	}*/
 </style>
 
 <script>
-   
+    let vueobject;
+    let colorTag;//颜色选择器
+    let chooseC;//判断是从哪个部分进行的事件响应；
+    let colorb = document.getElementById('color1');
 	export default{
 
 		data(){
 			return{
 				strict:true,
+				see:false,
 				c:false,
 				Tcolor:"",
 				options_style:[{
@@ -106,15 +65,10 @@
 			// },
 			//选择事件，判断选择项的响应对象
 			optionchange:function(event){
-				
 				this.$emit('optionchange',event);
 			},
-			// creatColor:function(event){
-			// 	this.c= !this.c;
-			// 	this.$emit('colorBar',event);
-			// },
-		}
 
+		}
 
 	}
 </script>
