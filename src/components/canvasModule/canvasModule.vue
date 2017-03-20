@@ -16,14 +16,13 @@
   	</header>
 	<fileCom @creatIText="creatIText" @drag="drag" @allowDrop="allowDrop"></fileCom>
 	<div class="canvasContent">		
-		<div class="main-list" >
+		<div class="main-list" v-if="canvasList.length>0">
 			<div v-for="(item,index) in canvasList" v-show="isActive == index" @drop='drop($event,index)' @dragover='allowDrop($event)'>
 				<canvas :id="setCid(index)" height="460px" width="820px"></canvas>
 			</div>
-			
 		</div>
 		<div class="left-list">
-			<ul>
+			<ul v-if="canvasList.length>0">
 				<li v-for="(item,index) in canvasList" @click="setActive(index)" :class="{cur : isActive == index}"  @drop='dropBg($event,index)' @dragover='allowDrop($event)'>
 					<img :src="item.dataUrl">
 				</li>
@@ -71,17 +70,29 @@
 
 				see: true,
 				isActive:0,
-				canvasList:[
-					{index: 1, id: "a", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},circle:{radius: 20, fill: "blue", left: 50, top: 0},dataUrl:"",isShow:false
-					},
-					{index: 2, id: "b", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},dataUrl:"",isShow:false}
-				],
+				start: 0,
+				// canvasList:[],
+					// {index: 1, id: "a", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},circle:{radius: 20, fill: "blue", left: 50, top: 0},dataUrl:"",isShow:false
+					// },
+					// {index: 2, id: "b", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},dataUrl:"",isShow:false}
 				canvasJson:[],
 				preView:[]
 			}
 		},
+		props: {
+			canvasList:{
+				required: true,
+				default: {}
+			}
+		},
 		computed:{
-			
+			// // canvasList:function(){
+			// // 	return this.canvasList;
+			// // }
+			// canvasListLg:function(){
+			// 	console.log("canvasListLgasdfasdfasdfg");
+			// 	return this.canvasList.length;
+			// }
 		},
 		methods:{
 			judgeItext:function(index){
@@ -94,7 +105,7 @@
 			addSVG:function(){
 				var group = [];
 				 let that = this;
-				 this.$http.get('../guangmu/photo/insertphoto.s',{_dataType:'json'}).then(response => {
+				 axios.get('http://123.207.169.138/guangmu/photo/insertphoto.s',{m_js:'json'}).then(response => {
         			if(response == 1)
         			{
         				console.log("success");
@@ -102,23 +113,6 @@
       			}, response => {
         			console.log("error");
       			});
-// fabric.loadSVGFromURL("static/accountCenter.svg",function(objects,options)
-// {
-//   var loadedObjects = new fabric.Group(group);
- 
-//   loadedObjects.set({
-//     left: 0,
-//     top: 0,
-//     width:100,
-//     height:100
-//   });
-//   canvas[that.isActive].add(loadedObjects);
-//   canvas[that.isActive].renderAll();
-// },
-// function(item, object) {
-//   object.set('id', item.getAttribute('id'));
-//   group.push(object);
-// });
 				fabric.loadSVGFromURL('static/accountCenter.svg', function(objects, options) {
   					var obj = fabric.util.groupSVGElements(objects, options);
   					canvas[that.isActive].add(obj).renderAll();
@@ -183,14 +177,29 @@
 				let index = canvas.length;
 				for(let i = 0; i<index; i++)
 				{
-					that.canvasJson.push(canvas[i].toJSON());
+					that.canvasJson.push(JSON.stringify(canvas[i].toJSON()));
 				}		
 				//console.log(this.canvasJson[0]);
 				// canvas[1].loadFromJSON(this.canvasJson[0]);
 				// canvas[1].renderAll();
 				this.preView=[];
 				this.setPreView();
-  				this.$http.post('../guangmu/photo/insertphoto.s',{_dataType:'json',m_js: that.canvasJson[0]},{'headers': {'Content-Type': 'Application/json'}}).then(response => {
+				var config = {
+  					method: 'post',
+  					url: 'http://123.207.169.138/guangmu/photo/insertphoto.s',
+  					data: {m_js:that.canvasJson[0]},
+  					transformRequest: [
+    					function(data) {
+      					let ret = ''
+      					for (let it in data) {
+        					ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) +'&'
+      					}
+      					return ret
+    					}
+  					]
+				};	
+				this.$http(config).then(response => {
+  				// this.$http.post('http://123.207.169.138/guangmu/photo/insertphoto.s',{m_js:'json'}).then(response => {
         				if(response == 1)
         				{
         					console.log("success");
@@ -511,50 +520,48 @@
 				// this.preView.push();
 			}
 		},
-		
-		},
-
-
-		beforeMount:function(){
-			
-		},
-
-		mounted: function(){
-			for(let i=0; i<this.canvasList.length; i++)
-			{
-				let that = this;
-				let tag = document.getElementById("a"+i);
-				canvas[i] = new fabric.Canvas(tag);
-				if(typeof(this.canvasList[i].rect)!="undefined"){
-					let rect = new fabric.Rect({
-						width: this.canvasList[i].rect.width,
-						height: this.canvasList[i].rect.height,
-						fill: this.canvasList[i].rect.fill,
-						left: this.canvasList[i].rect.left,
-						top: this.canvasList[i].rect.top
-					});
-					canvas[i].add(rect);
-				}
-				if(typeof(this.canvasList[i].circle)!="undefined"){
-					let circle = new fabric.Circle({
-						radius: this.canvasList[i].circle.radius,
-						fill: this.canvasList[i].circle.fill,
-						left: this.canvasList[i].circle.left,
-						top: this.canvasList[i].circle.top
-					});
-					canvas[i].add(circle);
-				}
-				this.canvasList[i].dataUrl=canvas[i].toDataURL();
-				canvas[i].on("object:modified",function(e){ 
-					let ev = e.target;
-					that.canvasList[i].dataUrl=canvas[i].toDataURL();
-				});
-				this.preView=[];
-				this.setPreView();
-				// this.setPreView();
+		watch:{
+			// start:function(val){
+			// 	console.log("created");
+			// 	let that = this;
 				
-				// this.preView[i]=canvas[i].getObjects()[0].toDataURL();
-		}
+			// }
+		},
+		updated: function(){
+			let that =this;
+			if(this.canvasList.length>0){
+				// console.log(that.canvasList);
+				// console.log(val);
+				for(let i=0; i<that.canvasList.length; i++)
+				{
+				// let that = this;
+					let tag = document.getElementById("a"+i);
+					// console.log("mou"+tag);
+					canvas[i] = new fabric.Canvas(tag);
+					canvas[i].loadFromJSON(that.canvasList[0]);
+					// console.log("ss");
+					canvas[i].renderAll();
+					that.canvasList[i].dataUrl = canvas[i].toDataURL();
+					that.setPreView();
+					
+				}
+			}
+			// console.log("created");
+			// let that = this;
+			// console.log(that.canvasList.length);
+			// for(let i=0; i<that.canvasList.length; i++)
+			// {
+			// 	// let that = this;
+			// 	let tag = document.getElementById("a"+i);
+			// 	console.log("mou"+tag);
+			// 	canvas[i] = new fabric.Canvas(tag);
+			// 	canvas[i].loadFromJSON(that.canvasList[0]);
+			// 	console.log("ss");
+			// 	canvas[i].renderAll();
+			// 	that.canvasList[i].dataUrl = canvas[i].toDataURL();
+			// 	that.setPreView();
+			// }
+			
 	},
 	components:{fileCom,itextBar}
 	}
