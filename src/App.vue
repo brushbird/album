@@ -10,23 +10,20 @@ export default {
   name: 'app',
   data(){
     return{
-      list:{
-        '/test': {href: '/test', des: "测试"},
-        '/itextbar': {href: '/itextbar', des:'文字工具'},
-        '/canvasmodule': {href: '/canvasmodule', des: "测试canvas"},
-      },
+      
       canvasList:[]
     }
   },
-  beforeCreate:function(){
+  beforeMount:function(){
       let that = this;
-      this.$http.get('http://123.207.169.138/guangmu/photo/selectphoto.s',{u_id:1}).then(response => {
+      this.$http.get('http://192.168.10.30:8080/guangmu/photo/selectphoto.s',{u_id:1}).then(response => {
                 if(response == 1)
                 {
                   console.log("success");
                   console.log(response);
                 }
                 that.canvasList.push(response.data);
+                 that.canvasList.push(response.data);
             }, response => {
               console.log(that.canvasJson[0]);
             });
