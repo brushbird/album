@@ -22,7 +22,9 @@
 		</div>
 	</div>
 	<div class="moduleContent" v-show="activeIndex==1">
-		
+		<div class="modules" @click="loadModules">
+			
+		</div>
 	</div>
 	<div class="itextContent" v-show="activeIndex==2">
 		<span @click='creatIText' class="addfont">点击创建默认文字</span>
@@ -91,6 +93,9 @@
             },
             creatIText:function(){
             	this.$emit("creatIText");
+            },
+            loadModules:function(){
+            	this.$emit("loadModules");
             }
 		},
 		mounted: function(){
