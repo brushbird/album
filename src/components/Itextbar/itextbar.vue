@@ -4,7 +4,8 @@
 		<div class="text_bar">
 		<!-- 更改文字样式 -->
 			<div class="text_bar_item">
-				<select @change="optionchange"  id="text_style">
+				<button id="text_style_show" @click="showStyle()">字体</button>
+				<select @change="optionchange"  id="text_style" size="4" v-show="style" >
 					<option v-for="option in options_style" :value="option.value">{{ option.text }}</option>
 				</select>
 			</div>
@@ -15,18 +16,18 @@
 
 <style type="text/css">
 
-	.text_bar_item{
-		display: inline-block;
+	#text_style{
+		width: 65px;
+		z-index: 999;
+		position: absolute;
 	}
 	
 	
 </style>
 
 <script>
-    let vueobject;
-    let colorTag;//颜色选择器
-    let chooseC;//判断是从哪个部分进行的事件响应；
-    let colorb = document.getElementById('color1');
+   
+   
 	export default{
 
 		data(){
@@ -34,6 +35,7 @@
 				strict:true,
 				see:false,
 				c:false,
+				style:false,
 				Tcolor:"",
 				options_style:[{
 						text:'黑体',
@@ -50,6 +52,42 @@
 					},{
 						text:'楷体',
 						value:'KaiTi'
+					},{
+						text:'幼圆',
+						value:'YouYuan'
+					},{
+						text:'华文细黑',
+						value:'STXihei'
+					},{
+						text:'华文楷体',
+						value:'STKaiti'
+					},{
+						text:'华文宋体',
+						value:'STSong'
+					},{
+						text:'华文仿宋',
+						value:'STFangsong'
+					},{
+						text:'方正舒体',
+						value:'FZShuTi'
+					},{
+						text:'方正姚体',
+						value:'FZYaoti'
+					},{
+						text:'华文彩云',
+						value:'STCaiyun'
+					},{
+						text:'华文琥珀',
+						value:'STHupo'
+					},{
+						text:'华文隶书',
+						value:'STLiti'
+					},{
+						text:'华文行楷',
+						value:'STXingkai'
+					},{
+						text:'华文新魏',
+						value:'STXinwei'
 					}],
 			}
 		},
@@ -67,6 +105,11 @@
 			optionchange:function(event){
 				this.$emit('optionchange',event);
 			},
+			showStyle:function(){ 
+				this.style = !this.style;
+				let text_style=document.getElementById('text_style');
+				
+			}
 
 		}
 

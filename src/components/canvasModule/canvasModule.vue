@@ -58,11 +58,11 @@
 		    		
 		    		 <em id="cur" style="left: 98px; top: 47px; "></em>  
 		    		<div class="color_panel">
-		    	 		<div id="color_show"></div>
-		    			<label>rgb
+		    	 		<span id="color_show"></span> 
+		    			
 		    			 <!-- 用vue绑定文字框颜色信息 -->
-		    			<input type="text" class="color_input" id="Tcolor" placeholder="0,0,0"> 
-		    			</label>
+		    			<input type="text" class="color_input" id="Tcolor" value="0,0,0"> 
+		    			
 		    		</div>
 	</div>
 			
@@ -429,8 +429,8 @@
 						    0: 'rgba(255,255,255,1)',						
 						    1: 'rgba('+poscolor+')',
 			  			}
-			  			});
-					 }
+			  		});
+					} 	
 					
 
 					 canColor.on("mouse:move",function(option){
@@ -441,7 +441,7 @@
 					 	if(pos.x>30 && pos.x<286 && pos.y>0 && pos.y<256)
 					 	{
 					 		
-							console.log(pos.x,pos.y);
+							
 							poscolor = that.movecolor(pos);
 							cur.style.left = pos.x+'px';
 						    cur.style.top  = pos.y + 'px';
@@ -455,6 +455,8 @@
 								let rgb = poscolor.slice(0,3).join();
 								show.style.backgroundColor = 'rgb('+rgb+')';
 								Tcolor.value = rgb;	
+								textevent.set({fill:  'rgb('+rgb+')'});
+								canvas[that.isActive].renderAll();
 						 	}
 							
 					});	
@@ -476,13 +478,12 @@
 						});
 				  
 					  let curposcolor = that.curcolorSet();
-					  console.log(curposcolor);
 					  
 					  let rgb = curposcolor.slice(0,3).join();
 					  show.style.backgroundColor = 'rgb('+rgb+')';
+					  
+
 					  Tcolor.value = rgb;
-					  textevent.set({fill:  'rgb('+rgb+')'});
-						
 					  canvas[that.isActive].renderAll();
 					  
 					}
