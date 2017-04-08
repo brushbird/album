@@ -4,8 +4,8 @@
   		<input type="text" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
   		<!-- <button @click="addJson">保存</button> -->
   		<div class="toolList">
-  			<div class="tool" @click="addJson">
-  			<!-- <div class="tool" @click="sendJson"> -->
+  			<!-- <div class="tool" @click="addJson"> -->
+  			<div class="tool" @click="sendJson">
   				<div class="tool-logo"></div>
   				<span>保存</span>
   			</div>
@@ -225,15 +225,18 @@
 			sendJson:function(){
 				let that = this;
 				let index = canvas.length;
+				var str="",listphote=[];
 				for(let i = 0; i<index; i++)
 				{
-					that.photoJson.push(canvas[i].toDataURL());
+					str += canvas[i].toDataURL()+"~";
 				}	
-				console.log(this.photoJson[0]);
+				// console.log(str);
+				listphote = str.split("$");
+				// console.log(listphote[0]+"啊加拉塞克噶山豆根卢卡斯领导关怀"+listphote[1])
 				var config = {
   					method: 'post',
   					url: 'http://192.168.10.30:8080/guangmu/photo/savephoto.s',
-  					data: {m_js:that.photoJson[0]},
+  					data: {m_js:str},
   					transformRequest: [
     					function(data) {
       					let ret = ''
@@ -251,7 +254,7 @@
         					console.log("success");
         					console.log(response);
         				}
-        				console.log(response);
+        				// console.log(response);
       			}, response => {
         			console.log(that.canvasJson[0]);
       			});	
@@ -259,19 +262,17 @@
 			addJson:function(){
 				let that = this;
 				let index = canvas.length;
+				let str="";
 				for(let i = 0; i<index; i++)
 				{
-					that.canvasJson.push(JSON.stringify(canvas[i].toJSON()));
+					str+=JSON.stringify(canvas[i].toJSON())+"$";
 				}		
-				//console.log(this.canvasJson[0]);
-				// canvas[1].loadFromJSON(this.canvasJson[0]);
-				// canvas[1].renderAll();
 				this.preView=[];
 				this.setPreView();
 				var config = {
   					method: 'post',
-  					url: 'http://192.168.10.30:8080/guangmu/photo/insertphoto.s',
-  					data: {m_js:that.canvasJson[0]},
+  					url: 'http://123.207.169.138/guangmu/photo/insertphoto.s',
+  					data: {m_js:str},
   					transformRequest: [
     					function(data) {
       					let ret = ''
@@ -283,13 +284,12 @@
   					]
 				};	
 				this.$http(config).then(response => {
-  				// this.$http.post('http://123.207.169.138/guangmu/photo/insertphoto.s',{m_js:'json'}).then(response => {
         				if(response == 1)
         				{
         					console.log("success");
         					console.log(response);
         				}
-        				console.log(response);
+        				// console.log(response);
       			}, response => {
         			console.log(that.canvasJson[0]);
       			});
@@ -618,7 +618,8 @@
 					let tag = document.getElementById("a"+i);
 					// console.log("mou"+tag);
 					canvas[i] = new fabric.Canvas(tag);
-					canvas[i].loadFromJSON(that.canvasList[0]);
+					console.log(that.canvasList[i]);
+					canvas[i].loadFromJSON(that.canvasList[i]);
 					// console.log("ss");
 					canvas[i].renderAll();
 					canvas[i].on("object:modified",function(){
@@ -627,7 +628,7 @@
 					that.activeView[i] = canvas[i].toDataURL();
 					
 					
-					console.log(that.activeView[i]+"  loadModules");
+					// console.log(that.activeView[i]+"  loadModules");
 				}
 				that.setPreView();
 			}
