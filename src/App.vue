@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <canvasmodule :canvasList="canvasList"></canvasmodule>
+    <canvasmodule></canvasmodule>
   </div>
 </template>
 
@@ -14,23 +14,6 @@ export default {
       canvasList:[]
     }
   },
-  beforeMount:function(){
-      let that = this;
-      this.$http.get('http://123.207.169.138/guangmu/photo/selectphoto.s',{u_id:1}).then(response => {
-                if(response == 1)
-                {
-                  console.log("success");
-                  console.log(response);
-                }
-                 var list =[];
-                 list = response.data.split("$");
-                 for(var i=0; i<list.length; i++){
-                    that.canvasList.push(list[i]);
-                 }
-            }, response => {
-              console.log(that.canvasJson[0]);
-            });
-    },
     components:{canvasmodule}
 }
 </script>
