@@ -2,7 +2,6 @@
   <div class="content">
   	<header>
   		<input type="text" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
-  		<!-- <button @click="addJson">保存</button> -->
   		<div class="toolList">
   			<!-- <div class="tool" @click="addJson"> -->
   			<div class="tool" @click="sendJson">
@@ -12,6 +11,14 @@
   			<div class="tool" @click="addJson">
   				<div class="tool-logo"></div>
   				<span>下载</span>
+  			</div>
+  			<div class="tool" @click="setPreView">
+  				<div class="tool-logo"></div>
+  				<span>预览</span>
+  			</div>
+  			<div class="tool" @click="addCanvas">
+  				<div class="tool-logo"></div>
+  				<span>新建</span>
   			</div>
   		</div>
   	</header>
@@ -23,51 +30,26 @@
 			</div>
 		</div>
 		<div class="left-list">
-			<ul v-if="activeView.length>0">
-				<li v-for="(item,index) in activeView" @click="setActive(index)" :class="{cur : isActive == index}"  @drop='dropBg($event,index)' @dragover='allowDrop($event)'>
-					<img :src="item">
+			<ul>
+				<li v-for="(item,index) in canvasList" @click="setActive(index)" :class="{cur : isActive == index}"  @drop='dropBg($event,index)' @dragover='allowDrop($event)'>
 				</li>
-				<li class="addCanvas" @click="addCanvas">添加</li>
 			</ul>
 		</div>
-		<canvas id="test" height="460px" width="820px"></canvas>
 	</div>
+	<objectTool 
+		:itextShow="itextShow"
+	 	:objectToolShow="objectToolShow" 
+	 	:objectIndex="objectIndex" 
+	 	:colorShow="colorShow"
+	 	@delObj="delObj" 
+	 	@optionchange="optionchange" 
+	 	@upCase="upCase" 
+	 	@downCase="downCase" 
+	 	@upToCase="upToCase" 
+	 	@downToCase="downToCase" 
+	 	@colorBar="colorBar"></objectTool>
 	
-	<div class="preView">
-		<div class="preView-title">
-			<h2>历史纪录</h2>
-		</div>
-		<ul>
-		<li class="view-list" v-for="(item,index) in preView">
-			<span class="del" @click="delObj(index)"></span>
-			<div class="operate">
-				<div class="text" v-if="judgeItext(index)">
-					<itextBar  @optionchange="optionchange"></itextBar>
-					<div class="text_bar_item"><button @click='colorBar'>颜色</button></div>
-				</div>
-			</div>
-			<div class="view">
-				<img :src="item">
-			</div>
-		</li>
-		</ul>
-
-	</div>
-	<div id="color1"  v-show="c">
-					<canvas id="color" width="286px" height="256px"></canvas>
-		    		
-		    		 <em id="cur" style="left: 98px; top: 47px; "></em>  
-		    		<div class="color_panel">
-		    	 		<span id="color_show"></span> 
-		    			
-		    			 <!-- 用vue绑定文字框颜色信息 -->
-		    			<input type="text" class="color_input" id="Tcolor" value="0,0,0"> 
-		    			
-		    		</div>
-	</div>
-			
-	
-	<!-- <button @click="addSVG">addSVG</button> -->
+	<preView :showPreview="showPreview" :preView="preView"></preView>
   </div>
 </template>
 
@@ -77,49 +59,39 @@
 
 <script>
 	import fileCom from "../fileModules/fileModules.vue";
-	import itextBar from "../itextbar/itextbar.vue";
+	import objectTool from "../objectTool/objectTool.vue";
+	import preView from "../preView/preView.vue";
 	let dom = null,canvas = [], textevent= null, colorTag,chooseC;
 	
 	export default{
 		data(){
 			return{
 				showTool:false,
-				c:false,
+				colorShow:false,
 				see: true,
 				isActive:0,
 				start: 0,
-				// canvasList:[],
-					// {index: 1, id: "a", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},circle:{radius: 20, fill: "blue", left: 50, top: 0},dataUrl:"",isShow:false
-					// },
-					// {index: 2, id: "b", rect:{width: 20, height: 20, fill: "red", left: 10, top: 10},dataUrl:"",isShow:false}
+				canvasList:[],
 				canvasJson:[],
 				preView:[],
-				activeView:[],
 				photoJson:[],
-			}
-		},
-		props: {
-			canvasList:{
-				required: true,
-				default: {}
+				objectToolShow:false,
+				objectIndex:0,
+				itextShow:false,
+				showPreview:false,
 			}
 		},
 		computed:{
-			// // canvasList:function(){
-			// // 	return this.canvasList;
-			// // }
-			// canvasListLg:function(){
-			// 	console.log("canvasListLgasdfasdfasdfg");
-			// 	return this.canvasList.length;
-			// }
+			
 		},
 		methods:{
-			judgeItext:function(index){
+			judgeItext:function(){
 				let that =this;
+				let index = this.objectIndex;
 				if(canvas[this.isActive].getObjects()[index].get('type')==='i-text'){
 				  let text = canvas[this.isActive].getObjects()[index];
 				  text.on("selected",function(){
-					textevent = this;
+					// textevent = this;
 					that.showTool= true;
 					this.setControlsVisibility({ 
 						mt: false, 
@@ -132,27 +104,10 @@
    					});
    					this.set('transparentCorners', false);
 				  });
-					return true;
+					that.itextShow=true;
+				}else{
+					that.itextShow=false;
 				}
-			},
-			setTextevent:function(index){
-				textevent = canvas[this.isActive].getObjects()[index];
-			},
-			addSVG:function(){
-				var group = [];
-				 let that = this;
-				 axios.get('http://123.207.169.138/guangmu/photo/insertphoto.s',{m_js:'json'}).then(response => {
-        			if(response == 1)
-        			{
-        				console.log("success");
-        			}
-      			}, response => {
-        			console.log("error");
-      			});
-				fabric.loadSVGFromURL('static/accountCenter.svg', function(objects, options) {
-  					var obj = fabric.util.groupSVGElements(objects, options);
-  					canvas[that.isActive].add(obj).renderAll();
-				})
 			},
 			creatIText:function(){
 				let index = this.isActive;
@@ -162,43 +117,12 @@
 					top:50,
 					fontFamily:'SimHei ',
 				});
-			
-
 				text.on("editing:entered",function(){
-					// let ev = e.target;
-					// console.log(this.isEditing);
 					this.hiddenTextarea.focus();
 					this.selectAll();
 				});
-				text.on("selected",function(){
-					//textevent = this;
-					that.showTool= true;
-					this.setControlsVisibility({ 
-						mt: false, 
-						mr: false,
-   						mb: false,
-   					    ml: false,
-   					    tl: false,
-   					    tr: false,
-   					    bl: false,
-   					});
-   					this.set('transparentCorners', false);
-				});
-				text.on("deselected",function(){
-					that.showTool= false;
-					console.log("out");
-				})
-
 				canvas[index].add(text);
 				canvas[index].setActiveObject(text);
-
-				
-				this.activeView[index]=canvas[index].toDataURL();
-				// this.preView.push(textevent.toDataURL());
-				// console.log(this.preView);
-				this.preView=[];
-				this.setPreView();
-				// console.log(this.preView);
 			},
 			setCid:function(index){
 					return "a"+index;
@@ -206,21 +130,27 @@
 			addCanvas:function(){
 				let that =this;
 				let length = this.canvasList.length;
-				let item = this.canvasList[0];
-				this.canvasList.push(item);
-				console.log(this.canvasList);
+				this.canvasList.push("");
 				this.isActive = length;
-				let tag = document.getElementById("a"+length);
-					// console.log("mou"+tag);
+				this.$nextTick(function(){
+					let tag = document.getElementById("a"+length);
 					canvas[length] = new fabric.Canvas(tag);
-					canvas[length].loadFromJSON(that.canvasList[length]);
-					// console.log("ss");
 					canvas[length].renderAll();
-					canvas[length].on("object:modified",function(){
-						that.activeView[i] = canvas[i].toDataURL();
-					})
-					that.activeView[length] = canvas[length].toDataURL();
-				// console.log(this.isActive);
+					canvas[length].on({
+    					'object:selected': function(e){
+							var index = canvas[length].getObjects().indexOf(e.target);
+							console.log("selected"+index);
+							that.objectIndex = index;
+							that.judgeItext();
+							that.objectToolShow = true;
+						}
+					});
+					canvas[length].on({
+    					'selection:cleared': function(){
+							that.objectToolShow = false;
+						}
+					});
+				})
 			},
 			sendJson:function(){
 				let that = this;
@@ -230,9 +160,7 @@
 				{
 					str += canvas[i].toDataURL()+"~";
 				}	
-				// console.log(str);
 				listphote = str.split("$");
-				// console.log(listphote[0]+"啊加拉塞克噶山豆根卢卡斯领导关怀"+listphote[1])
 				var config = {
   					method: 'post',
   					url: 'http://192.168.10.30:8080/guangmu/photo/savephoto.s',
@@ -248,13 +176,11 @@
   					]
 				};	
 				this.$http(config).then(response => {
-  				// this.$http.post('http://123.207.169.138/guangmu/photo/insertphoto.s',{m_js:'json'}).then(response => {
         				if(response == 1)
         				{
         					console.log("success");
         					console.log(response);
         				}
-        				// console.log(response);
       			}, response => {
         			console.log(that.canvasJson[0]);
       			});	
@@ -267,8 +193,6 @@
 				{
 					str+=JSON.stringify(canvas[i].toJSON())+"$";
 				}		
-				this.preView=[];
-				this.setPreView();
 				var config = {
   					method: 'post',
   					url: 'http://123.207.169.138/guangmu/photo/insertphoto.s',
@@ -289,15 +213,15 @@
         					console.log("success");
         					console.log(response);
         				}
-        				// console.log(response);
       			}, response => {
         			console.log(that.canvasJson[0]);
       			});
 			},
 			setActive:function(index){
+				canvas[this.isActive].deactivateAll();
+				canvas[this.isActive].renderAll();
+				this.objectToolShow=false;
 				this.isActive = index;
-				this.preView=[];
-				this.setPreView();
 			},
             drag:function(e){
             	dom = e.target;
@@ -317,9 +241,6 @@
        				top: e.offsetY,
    				});
    				canvas[index].add(newImage);
-				that.activeView[index]=canvas[index].toDataURL();
-				this.preView=[];
-				this.setPreView();
    				return false;
             },
             dropBg:function(e,index){
@@ -328,40 +249,48 @@
         			e.stopPropagation(); // stops the browser from redirecting.
     			}
    				canvas[index].setBackgroundImage(dom.src, canvas[index].renderAll.bind(canvas[index]));
-				that.activeView[index]=canvas[index].toDataURL();
 				this.isActive=index;
    				return false;
             },
             optionchange:function(event){
             	let that= this;
             	let ev  = event.target;
-				textevent.set({fontFamily : ev.value});
+            	let index = this.objectIndex;
+				canvas[this.isActive].getObjects()[index].set({fontFamily : ev.value});
 				canvas[that.isActive].renderAll();
-				this.preView=[];
-				this.setPreView();
             },
             delObj:function(index){
             	canvas[this.isActive].getObjects()[index].remove();
-            	this.activeView[this.isActive]=canvas[this.isActive].toDataURL();
-            	this.preView=[];
-            	this.setPreView();
-            	this.c = false;
             },
-            colorBar:function(e){
-            	let ev = e;
+            upToCase:function(index){
+            	let that = this;
+				canvas[this.isActive].bringForward(canvas[that.isActive].getObjects()[index]);
+            },
+            downToCase:function(index){
+            	let that = this;
+				canvas[this.isActive].sendBackwards(canvas[that.isActive].getObjects()[index]);
+            },
+            upCase:function(index){
+            	let that = this;
+				canvas[this.isActive].bringToFront(canvas[that.isActive].getObjects()[index]);
+            },
+            downCase:function(index){
+            	let that = this;
+				canvas[this.isActive].sendToBack(canvas[that.isActive].getObjects()[index]);
+            },
+            colorBar:function(){
             	let that=this;
             	let cur = document.getElementById('cur');
             	let Tcolor = document.getElementById('Tcolor');
 		   		let show = document.getElementById('color_show');//颜色演示
 		   		let poscolor;
-		   		that.c = !that.c;		   		
+		   		that.colorShow = !that.colorShow;		   		
 		    	let canColor;
 		    	if(canColor == null)
 		    	{
 					canColor = new fabric.Canvas('color');	
 					colorTag = canColor;
 		    	}
-			    		    	
 				let gradientBar = new fabric.Rect({
 					left:0,
 					top:0,
@@ -402,14 +331,12 @@
 				canColor.add(gradientBar,gradientBar1);
 				canColor.item(0).selectable = false;
 				canColor.item(1).selectable = false;
-
 				canColor.on('mouse:down',function(option){
 					 let o = option;	
-					
 					 poscolor=that.colorSet(o);
 					 if(o.e.offsetX>30 &&o.e.offsetX<286 && o.e.offsetY>0 &&o.e.offsetY<256)
 					 {
-					 	 cur.style.left = o.e.offsetX+'px';
+					 	cur.style.left = o.e.offsetX+'px';
 					 	cur.style.top  =  o.e.offsetY + 'px';
 					    if(poscolor[0]>256/2 || poscolor[1]>256/2 || poscolor[2]>256/2)
 						 {
@@ -431,17 +358,13 @@
 			  			}
 			  		});
 					} 	
-					
-
-					 canColor.on("mouse:move",function(option){
+					canColor.on("mouse:move",function(option){
 						let pos = {
 								x: option.e.offsetX,
 								y: option.e.offsetY,
 							};
 					 	if(pos.x>30 && pos.x<286 && pos.y>0 && pos.y<256)
 					 	{
-					 		
-							
 							poscolor = that.movecolor(pos);
 							cur.style.left = pos.x+'px';
 						    cur.style.top  = pos.y + 'px';
@@ -455,14 +378,13 @@
 								let rgb = poscolor.slice(0,3).join();
 								show.style.backgroundColor = 'rgb('+rgb+')';
 								Tcolor.value = rgb;	
-								textevent.set({fill:  'rgb('+rgb+')'});
+								canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});
 								canvas[that.isActive].renderAll();
 						 	}
 							
 					});	
 
 				});
-
 				canColor.on('mouse:up',function(){
 					canColor.off('mouse:move');
 					if(chooseC){
@@ -476,22 +398,16 @@
 						    1: 'rgba('+poscolor+')',
 			  			}
 						});
-				  
 					  let curposcolor = that.curcolorSet();
-					  
 					  let rgb = curposcolor.slice(0,3).join();
 					  show.style.backgroundColor = 'rgb('+rgb+')';
-					  
-
 					  Tcolor.value = rgb;
 					  canvas[that.isActive].renderAll();
-					  
 					}
 					else if(chooseC == 'no'){
-
 						show.style.backgroundColor = 'rgb(0,0,0)';
 						Tcolor.value = '0,0,0';
-						textevent.set({fill:  'rgb(0,0,0)'});
+						canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb(0,0,0)'});
 						canvas[that.isActive].renderAll();
 					}
 					else{
@@ -499,8 +415,7 @@
 						let rgb = poscolor.slice(0,3).join();
 						show.style.backgroundColor = 'rgb('+rgb+')';
 						Tcolor.value = rgb;
-						textevent.set({fill:  'rgb('+rgb+')'});
-						
+						canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});
 						canvas[that.isActive].renderAll();
 					}	
 
@@ -517,8 +432,6 @@
 				 	data[dataIndex+2],
 				 	(data[dataIndex+3] / 255).toFixed(2),
 				 ];
-
-
 			},
 			curcolorSet:function(){
 				 let ex;
@@ -538,7 +451,6 @@
 				 		  	break;
 				 	}  
 				 }
-
 				 if(cur.style.top != null)
 				 {
 				 	switch(cur.style.top.length)
@@ -553,9 +465,7 @@
 				 		  	ey = cur.style.top.substr(0,3);
 				 		  	break;
 				 	}  
-
 				 }
-
 				 let pos = {
 				 	x : ex,
 				 	y : ey,
@@ -571,9 +481,6 @@
 				 ];
 			},
 			colorSet:function(option){
-				
-				
-
 				 let pos = {
 				 	x : option.e.offsetX ,
 				 	y : option.e.offsetY ,
@@ -599,90 +506,55 @@
 				 ];
 			},
 			setPreView:function(){
-				let length = canvas[this.isActive].getObjects().length;
 				let that = this;
-				let list=[];
-				for(let j=0; j<length; j++)
-				{
-					list.push(canvas[that.isActive].getObjects()[j].toDataURL());
-					// console.log(canvas[that.isActive].getObjects()[j]);
+				let list = [];
+				for(var i=0; i<canvas.length; i++){
+					list.push(canvas[i].toDataURL());
 				}
 				this.preView = list;
-				// this.preView.push();
+				this.showPreview=true;
 			},
 			loadModules:function(){
 				let that = this;
-			  	for(let i=0; i<that.canvasList.length; i++)
+				this.$http.get('http://123.207.169.138/guangmu/photo/selectphoto.s',{u_id:1}).then(response => {
+                if(response == 1)
+                {
+                  console.log("success");
+                  console.log(response);
+                }
+                 var list =[];
+                 list = response.data.split("$");
+                 that.canvasList = list;
+                 this.$nextTick(function(){
+                 	for(let i=0; i<that.canvasList.length; i++)
 				{
-				// let that = this;
 					let tag = document.getElementById("a"+i);
-					// console.log("mou"+tag);
 					canvas[i] = new fabric.Canvas(tag);
-					console.log(that.canvasList[i]);
 					canvas[i].loadFromJSON(that.canvasList[i]);
-					// console.log("ss");
 					canvas[i].renderAll();
-					canvas[i].on("object:modified",function(){
-						that.activeView[i] = canvas[i].toDataURL();
-					})
-					that.activeView[i] = canvas[i].toDataURL();
-					
-					
-					// console.log(that.activeView[i]+"  loadModules");
+					canvas[i].on({
+    					'object:selected': function(e){
+							var index = canvas[i].getObjects().indexOf(e.target);
+							console.log("selected"+index);
+							that.objectIndex = index;
+							that.judgeItext();
+							that.objectToolShow = true;
+						}
+					});
+					canvas[i].on({
+    					'selection:cleared': function(){
+							that.objectToolShow = false;
+						}
+					});
 				}
-				that.setPreView();
-			}
+                 })
+                
+            }, response => {
+              console.log(that.canvasJson[0]);
+            });
+			},
 		},
-	 	// updated: function(){
-	 	// 	let that = this;
-			//   	for(let i=0; i<canvas.length; i++)
-			// 	{
-			// 		canvas[i].loadFromJSON(that.canvasList[0]);
-			// 		canvas[i].renderAll();
-			// 		canvas[i].on("object:modified",function(){
-			// 			that.activeView[i] = canvas[i].toDataURL();
-			// 		})
-			// 		that.activeView[i] = canvas[i].toDataURL();
-			// 		console.log(that.activeView[i]+"  loadModules");
-			// 	}
-	 	// },
-	// 		let that =this;
-	// 		console.log(this.isActive+"index");
-	// 		if(this.canvasList.length>0){
-	// 			// console.log(that.canvasList);
-	// 			// console.log(val);
-	// 			for(let i=0; i<that.canvasList.length; i++)
-	// 			{
-	// 			// let that = this;
-	// 				let tag = document.getElementById("a"+i);
-	// 				// console.log("mou"+tag);
-	// 				canvas[i] = new fabric.Canvas(tag);
-	// 				canvas[i].loadFromJSON(that.canvasList[0]);
-	// 				// console.log("ss");
-	// 				canvas[i].renderAll();
-	// 				that.activeView[i] = canvas[i].toDataURL();
-	// 				that.setPreView();
-	// 				console.log(that.activeView);
-	// 			}
-	// 		}
-	// 		// console.log("created");
-	// 		// let that = this;
-	// 		// console.log(that.canvasList.length);
-	// 		// for(let i=0; i<that.canvasList.length; i++)
-	// 		// {
-	// 		// 	// let that = this;
-	// 		// 	let tag = document.getElementById("a"+i);
-	// 		// 	console.log("mou"+tag);
-	// 		// 	canvas[i] = new fabric.Canvas(tag);
-	// 		// 	canvas[i].loadFromJSON(that.canvasList[0]);
-	// 		// 	console.log("ss");
-	// 		// 	canvas[i].renderAll();
-	// 		// 	that.canvasList[i].dataUrl = canvas[i].toDataURL();
-	// 		// 	that.setPreView();
-	// 		// }
-			
-	// },
-	components:{fileCom,itextBar}
+		components:{fileCom,objectTool,preView}
 	}
 
 </script>

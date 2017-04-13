@@ -2,115 +2,122 @@
     margin: 0;
     padding: 0;
 }
-  #color1{
-                    width: 286px;
-                    height: 300px;
-                    position: fixed;
-                    right: 0;
-                    margin: 0px auto;
-                    border: 1px solid white;
-                    -moz-border-radius:15px;
-                    -webkit-border-radius:15px;
-                    border-radius:15px;
-                    cursor: crosshair; 
-                    position: fixed;
-                    top: 12%;
-                    right: 220px;
-                    
-                    #color{
-                        border: 1px solid white;
-                       
-                    }
 
-                    .color_panel{
-                        width:180px;
-                        height:55px;
-                        margin: 0px auto;
-                        #color_show{
-                            margin-top: 5px;
-                            margin-right: 20px; 
-                            width: 30px;
-                            height: 30px;
-                            border: 1px solid black;
-                            -moz-border-radius:5px;
-                            -webkit-border-radius:5px;
-                            border-radius:5px;
-                            background-color:#000;
-                           float:left;
-                        } 
-                        #Tcolor{
-                            width:100px;
-                            height:30px;
-                            border: 1px solid black;
-                            -moz-border-radius:6px;
-                            -webkit-border-radius:6px;
-                            border-radius:6px;
-                            margin-top:5px;
-                            float:left;
-                            background-color:#F4F4F4;
-                            font-size:16px;
-                            text-align:center;
-                           
-                        }
-
-                    }  
-                   
-                    #cur{
-                        width: 3px;
-                        height: 3px;
-                        outline: 2px solid #535353;
-                        margin-left: -1px;
-                        margin-top: -1px;
-                        position: absolute;
-                    }
-
-                }
-// @mainColor: '#fff';
-.placeholder(@a){
-      &::-webkit-input-placeholder { /* WebKit browsers */
-            @a();
-      }
-      &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-            @a();
-      }
-      &::-moz-placeholder { /* Mozilla Firefox 19+ */
-            @a();
-      }
-      &:-ms-input-placeholder { /* Internet Explorer 10+ */
-            @a();
-      }
-};
-
-input{
-    .placeholder({
-          color:#fff;
-    })
+#color1 {
+    width: 286px;
+    height: 300px;
+    position: fixed;
+    right: 0;
+    margin: 0px auto;
+    border: 1px solid white;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    cursor: crosshair;
+    position: fixed;
+    top: 12%;
+    right: 220px;
+    #color {
+        border: 1px solid white;
+    }
+    .color_panel {
+        width: 180px;
+        height: 55px;
+        margin: 0px auto;
+        #color_show {
+            margin-top: 5px;
+            margin-right: 20px;
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            background-color: #000;
+            float: left;
+        }
+        #Tcolor {
+            width: 100px;
+            height: 30px;
+            border: 1px solid black;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            margin-top: 5px;
+            float: left;
+            background-color: #F4F4F4;
+            font-size: 16px;
+            text-align: center;
+        }
+    }
+    #cur {
+        width: 3px;
+        height: 3px;
+        outline: 2px solid #535353;
+        margin-left: -1px;
+        margin-top: -1px;
+        position: absolute;
+    }
 }
+
+// @mainColor: '#fff';
+.placeholder(@a) {
+    &::-webkit-input-placeholder {
+        /* WebKit browsers */
+        @a();
+    }
+    &:-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 */
+        @a();
+    }
+    &::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        @a();
+    }
+    &:-ms-input-placeholder {
+        /* Internet Explorer 10+ */
+        @a();
+    }
+}
+
+;
+input {
+    .placeholder( {
+        color: #fff;
+    }
+    )
+}
+
 ::-webkit-scrollbar {
-        width: 8px;
-    }
-    ::-webkit-scrollbar-button {
-        opacity: 0;
-        width: 5px;
-        height: 8px;
-    }
-    ::-webkit-scrollbar-track-piece {
-        display: none;
-    }
-    ::-webkit-scrollbar-thumb {
-        width: 8px;
-        border-radius: 10px;
-        background-color: #cdcdcd;
-    }
+    width: 8px;
+}
+
+::-webkit-scrollbar-button {
+    opacity: 0;
+    width: 5px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track-piece {
+    display: none;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 8px;
+    border-radius: 10px;
+    background-color: #cdcdcd;
+}
+
 .content {
     width: 100%;
     height: 100%;
-    header{
-    	width: 100%;
-    	height: 8%;
-    	background-color: #fd87c3;
+    header {
+        width: 100%;
+        height: 8%;
+        background-color: #fd87c3;
         color: #fff;
-        .mainName{
+        position: relative;
+        .mainName {
             height: 50%;
             width: 300px;
             text-align: center;
@@ -119,19 +126,20 @@ input{
             margin: 20px auto;
             font-size: 16px;
             color: #fff;
-            &:focus{
-                .placeholder({
-                    color:#fff;
+            &:focus {
+                .placeholder( {
+                    color: #fff;
                     opacity: 0.4;
-                })
+                }
+                )
             }
         }
-        .toolList{
+        .toolList {
             height: 100%;
             position: absolute;
             top: 0;
             right: 0;
-            .tool{
+            .tool {
                 width: 60px;
                 height: 100%;
                 float: right;
@@ -139,16 +147,14 @@ input{
                 text-align: center;
                 font-size: 12px;
                 margin: 0 5px;
-                .tool-logo{
+                .tool-logo {
                     width: 30px;
                     height: 30px;
                     border: 1px solid;
                     border-radius: 30px;
                     margin: 5px auto;
                 }
-                span{
-
-                }
+                span {}
             }
         }
     }
@@ -159,16 +165,18 @@ input{
         position: relative;
         .left-list {
             width: 100%;
-            height: 132px;
-            overflow: hidden;
-            overflow-x: scroll;
-            border: 1px solid rgba(0, 0, 0, 0.5);
-            background-color: #ffcc99;
+            //height: 132px;
+            //overflow: hidden;
+            //overflow-x: scroll;
+            //border: 1px solid rgba(0, 0, 0, 0.5);
+            //background-color: #ffcc99;
             position: absolute;
-			bottom: 0;
-			left: 2%;
+            bottom: 0;
+            left: 2%;
             li {
-                width: 164px;
+                width: 30px;
+                height: 30px;
+                border-radius: 30px;
                 margin: 10px;
                 box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.24);
                 list-style: none;
@@ -178,16 +186,16 @@ input{
                     width: 164px;
                 }
             }
-            .addCanvas{
-            	width: 50px;
-            	height: 50px;
-            	border-radius: 50px;
-            	display: block;
-            	border:1px solid rgba(0, 0, 0, 0.5);
-            	margin: 30px;
-            	float: left;
-            	line-height: 3;
-            	cursor: pointer;
+            .addCanvas {
+                width: 50px;
+                height: 50px;
+                border-radius: 50px;
+                display: block;
+                border: 1px solid rgba(0, 0, 0, 0.5);
+                margin: 30px;
+                float: left;
+                line-height: 3;
+                cursor: pointer;
             }
             .cur {
                 box-shadow: 0 0 8px 0 rgba(0, 174, 255, 1);
@@ -203,37 +211,36 @@ input{
             .canvas-container {
                 margin: auto;
                 line-height: 1.5;
-                border: 2px dashed; 
+                border: 2px dashed;
             }
         }
     }
-
-    .preView{
+    .preView {
         width: 20%;
         // float: right;
         position: fixed;
         top: 12%;
         right: 0;
-        .text_bar_item button{
-            width:40px;
-            display:inline-block;
-             -moz-border-radius:15px;
-             -webkit-border-radius:15px;
-            border-radius:15px;
-            background-color:#fff;
+        .text_bar_item button {
+            width: 40px;
+            display: inline-block;
+            -moz-border-radius: 15px;
+            -webkit-border-radius: 15px;
+            border-radius: 15px;
+            background-color: #fff;
         }
-        .preView-title{
+        .preView-title {
             float: right;
             width: 210px;
             padding: 10px 5px;
             background-color: #ffcc99;
             text-align: center;
-            h2{
+            h2 {
                 color: #fff;
             }
         }
         // position: relative; 
-        .view-list{
+        .view-list {
             list-style: none;
             display: block;
             float: right;
@@ -241,12 +248,12 @@ input{
             height: 50px;
             padding: 10px 5px;
             background-color: #ffcc99;
-            .view{
+            .view {
                 width: 50px;
                 height: 50px;
                 float: right;
                 position: relative;
-                img{
+                img {
                     width: 30px;
                     position: absolute;
                     left: 10px;
@@ -254,15 +261,14 @@ input{
                     // transform
                 }
             }
-            .operate{
+            .operate {
                 width: 100px;
                 height: 50px;
                 display: block;
                 float: right;
                 background-color: #fdebeb;
-              
             }
-            .del{
+            .del {
                 width: 40px;
                 height: 50px;
                 display: block;
@@ -273,5 +279,4 @@ input{
             }
         }
     }
-
 }
