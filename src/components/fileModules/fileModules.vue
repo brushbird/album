@@ -22,7 +22,7 @@
 		</div>
 	</div>
 	<div class="moduleContent" v-show="activeIndex==1">
-		<div class="modules" @click="loadModules">
+		<div class="modules" @click="loadModules(index)" v-for="(item,index) in moduleLists">
 			
 		</div>
 	</div>
@@ -46,8 +46,14 @@
 					{name: "图库"},
 					{name: "模板"},
 					{name: "字体"}
-				]
+				],
 				
+			}
+		},
+		props:{
+			moduleLists:{
+				require:true,
+				default:{}
 			}
 		},
 		computed:{
@@ -94,8 +100,8 @@
             creatIText:function(){
             	this.$emit("creatIText");
             },
-            loadModules:function(){
-            	this.$emit("loadModules");
+            loadModules:function(index){
+            	this.$emit("loadModules",index);
             }
 		},
 		mounted: function(){

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <canvasmodule></canvasmodule>
+    <canvasmodule :canvasWidth="canvasWidth" :colorCanvasWidth="colorCanvasWidth"></canvasmodule>
   </div>
 </template>
 
@@ -11,10 +11,17 @@ export default {
   data(){
     return{
       
-      canvasList:[]
+      canvasList:[],
+      canvasWidth:'',
+      colorCanvasWidth:''
     }
   },
-    components:{canvasmodule}
+  beforeMount(){
+    this.canvasWidth = document.body.clientWidth * 0.56;
+    this.colorCanvasWidth = document.body.clientWidth * 0.12;
+    console.log(this.canvasWidth);
+  },
+  components:{canvasmodule}
 }
 </script>
 
@@ -29,6 +36,6 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #fdebeb;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 </style>
