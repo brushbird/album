@@ -26,7 +26,7 @@
 	<div class="canvasContent" v-for="(item,index) in moduleLists">		
 		<div class="main-list" v-if="index == moduleIndex">
 			<div v-for="(option,cindex) in canvasList" v-show="isActive == cindex" @drop='drop($event,cindex)' @dragover='allowDrop($event)'>
-				<canvas :id="setCid(cindex)" :height="canvasWidth/4961*3508" :width="canvasWidth"></canvas>
+				<canvas :id="setCid(cindex)" height="3508" width="4961"></canvas>
 			</div>
 		</div>	
 		<div class="left-list" v-if="index == moduleIndex">
@@ -40,7 +40,7 @@
 	<div class="canvasContent" v-if="moduleIndex == -1">		
 		<div class="main-list">
 			<div v-for="(option,cindex) in canvasList" v-show="isActive == cindex" @drop='drop($event,cindex)' @dragover='allowDrop($event)'>
-				<canvas :id="setCid(cindex)" :height="canvasWidth/4961*3508" :width="canvasWidth"></canvas>
+				<canvas :id="setCid(cindex)" height="3508" width="4961"></canvas>
 			</div>
 		</div>	
 		<div class="left-list">
@@ -66,7 +66,7 @@
 	 	@downToCase="downToCase" 
 	 	@colorBar="colorBar"></objectTool>
 	
-	<preView :showPreview="showPreview" :preView="preView"></preView>
+	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose"></preView>
   </div>
 </template>
 
@@ -100,11 +100,10 @@
 				objectIndex:0,
 				itextShow:false,
 				showPreview:false,
-
 			}
 		},
 		props:{
-			canvasWidth:{
+			scalefont:{
 				require:true,
 				default:{}
 			},
@@ -130,8 +129,9 @@
    					    tl: false,
    					    tr: false,
    					    bl: false,
+   					    border:400,
    					});
-   					this.set('transparentCorners', false);
+   					
 				  });
 					that.itextShow=true;
 				}else{
@@ -141,9 +141,11 @@
 			creatIText:function(){
 				let index = this.isActive;
 				let that = this;
+				let scalefont = 4961/1366;
 				let text = new fabric.IText('点击更改文字',{
 					left:50,
 					top:50,
+					fontSize:(40*scalefont),
 					fontFamily:'SimHei ',
 				});
 				text.on("editing:entered",function(){
@@ -254,6 +256,7 @@
 			},
             drag:function(e){
             	dom = e.target;
+            	console.log(dom);
             },
             allowDrop:function(e){
             	event.preventDefault();
@@ -264,8 +267,8 @@
         			e.stopPropagation(); // stops the browser from redirecting.
     			}
    				let newImage = new fabric.Image(dom, {
-       				width: dom.width,
-       				height: dom.height,
+       				width: dom.width*that.scalefont,
+       				height: dom.height*that.scalefont,
        				left: e.offsetX,
        				top: e.offsetY,
    				});
@@ -306,6 +309,9 @@
             downCase:function(index){
             	let that = this;
 				canvas[this.isActive].sendToBack(canvas[that.isActive].getObjects()[index]);
+            },
+            preViewClose:function(){
+            	this.showPreview=false;
             },
             colorBar:function(){
             	let that=this;

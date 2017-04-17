@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <canvasmodule :canvasWidth="canvasWidth" :colorCanvasWidth="colorCanvasWidth"></canvasmodule>
+    <canvasmodule :scalefont="scalefont" :colorCanvasWidth="colorCanvasWidth"></canvasmodule>
   </div>
 </template>
 
@@ -12,12 +12,12 @@ export default {
     return{
       
       canvasList:[],
-      canvasWidth:'',
+      scalefont:'',
       colorCanvasWidth:''
     }
   },
   beforeMount(){
-    this.canvasWidth = document.body.clientWidth * 0.56;
+    this.scalefont = 4961/document.body.clientWidth;
     this.colorCanvasWidth = document.body.clientWidth * 0.12;
     console.log(this.canvasWidth);
   },

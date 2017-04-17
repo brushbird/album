@@ -16,7 +16,7 @@
 		</div>
 		<div id="images" class="images">
 		  <div class="imgContainer" v-for="(item,index) in imageList" @dragstart='drag($event)'>
-    		<img draggable="true" :src="item" width="100">
+    		<img draggable="true" :src="item" style="width:100px">
     		<span class="del" @click="delImg(index)">删除</span>
     	  </div>
 		</div>

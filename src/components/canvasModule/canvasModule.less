@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
 }
-
+@screenWidth:document.body.clientHeight;
 // @mainColor: '#fff';
 .placeholder(@a) {
     &::-webkit-input-placeholder {
@@ -105,7 +105,7 @@ input {
     }
     .canvasContent {
         width: 80%;
-        height: 87%;
+        height: 92%;
         float: left;
         position: fixed;
         left: 20%;
@@ -157,75 +157,14 @@ input {
             left: 10%;
             top: 4%;
             pointer-events: auto;
+            transform:scale((1366*0.56/4961));
+            transform-origin:left top;
+            // zoom:(1366*0.56/4961);
             // transform: translate(-30%, -20%);
             .canvas-container {
                 margin: auto;
                 line-height: 1.5;
                 border: 2px dashed;
-            }
-        }
-    }
-    .preView {
-        width: 20%;
-        // float: right;
-        position: fixed;
-        top: 12%;
-        right: 0;
-        .text_bar_item button {
-            width: 40px;
-            display: inline-block;
-            -moz-border-radius: 15px;
-            -webkit-border-radius: 15px;
-            border-radius: 15px;
-            background-color: #fff;
-        }
-        .preView-title {
-            float: right;
-            width: 210px;
-            padding: 10px 5px;
-            background-color: #ffcc99;
-            text-align: center;
-            h2 {
-                color: #fff;
-            }
-        }
-        // position: relative; 
-        .view-list {
-            list-style: none;
-            display: block;
-            float: right;
-            width: 210px;
-            height: 50px;
-            padding: 10px 5px;
-            background-color: #ffcc99;
-            .view {
-                width: 50px;
-                height: 50px;
-                float: right;
-                position: relative;
-                img {
-                    width: 30px;
-                    position: absolute;
-                    left: 10px;
-                    top: 10px;
-                    // transform
-                }
-            }
-            .operate {
-                width: 100px;
-                height: 50px;
-                display: block;
-                float: right;
-                background-color: #fdebeb;
-            }
-            .del {
-                width: 40px;
-                height: 50px;
-                display: block;
-                float: right;
-                background-color: #fd87c2;
-                cursor: pointer;
-                border-radius: 0px 10px 10px 0px;
             }
         }
     }
