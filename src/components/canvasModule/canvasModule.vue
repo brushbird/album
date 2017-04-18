@@ -6,12 +6,17 @@
   			<div class="tool" @click="addJson">
   			<!-- <div class="tool" @click="sendJson"> -->
   				<div class="tool-logo"></div>
-  				<span>保存</span>
+  				<span>生成模板</span>
   			</div>
-  			<div class="tool" @click="addJson">
+  			<!-- <div class="tool" @click="addJson"> -->
+  			<div class="tool" @click="sendJson">
+  				<div class="tool-logo"></div>
+  				<span>生成图片</span>
+  			</div>
+  			<!-- <div class="tool" @click="addJson">
   				<div class="tool-logo"></div>
   				<span>下载</span>
-  			</div>
+  			</div> -->
   			<div class="tool" @click="setPreView">
   				<div class="tool-logo"></div>
   				<span>预览</span>
@@ -50,6 +55,7 @@
 				</li>
 			</ul>
 		</div>	
+		<!-- <form action=""></form> -->
 	</div>
 	
 	<objectTool 
@@ -186,35 +192,51 @@
 			sendJson:function(){
 				let that = this;
 				let index = canvas.length;
-				var str="",listphote=[];
+				let str="",listphote=[];
+				let fd = new FormData();
+				fd.set('u_name', '王子腾');
+				fd.set('u_phone', '17862910192');
+				fd.set('u_adress', '山东济南');
 				for(let i = 0; i<index; i++)
 				{
-					str += canvas[i].toDataURL()+"~";
+					let blob = that.dataURItoBlob(canvas[i].toDataURL());
+					fd.append("file2", blob, "image.png");
 				}	
-				listphote = str.split("$");
-				var config = {
-  					method: 'post',
-  					url: 'http://192.168.10.30:8080/guangmu/photo/savephoto.s',
-  					data: {m_js:str},
-  					transformRequest: [
-    					function(data) {
-      					let ret = ''
-      					for (let it in data) {
-        					ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) +'&'
-      					}
-      					return ret
-    					}
-  					]
-				};	
-				this.$http(config).then(response => {
+				this.$http({
+                	url:"http://192.168.10.30:8080/guangmu/photo/savephoto.s",
+                	method:"post",
+                	data:fd,
+  					headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    enctype:'application/x-www-form-urlencoded',
+                	processData:false,
+                	contentType:false,
+				}).then(response => {
         				if(response == 1)
         				{
         					console.log("success");
         					console.log(response);
         				}
+        				console.log("success");
+        				console.log(response);
       			}, response => {
-        			console.log(that.canvasJson[0]);
-      			});	
+        			console.log("error");
+        			console.log(response);
+      			});;
+			},
+			dataURItoBlob:function(dataURI)
+			{
+    			var byteString = atob(dataURI.split(',')[1]);
+    			var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+    			var ab = new ArrayBuffer(byteString.length);
+    			var ia = new Uint8Array(ab);
+    			for (var i = 0; i < byteString.length; i++)
+    			{
+        			ia[i] = byteString.charCodeAt(i);
+    			}
+    			var bb = new Blob([ab], { "type": mimeString });
+    			return bb;
 			},
 			addJson:function(){
 				let that = this;
