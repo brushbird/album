@@ -55,6 +55,7 @@
 				</li>
 			</ul>
 		</div>	
+		<!-- <form action=""></form> -->
 	</div>
 	
 	<objectTool 
@@ -192,66 +193,37 @@
 				let that = this;
 				let index = canvas.length;
 				let str="",listphote=[];
-				// var dataurl = canvas[0].toDataURL();
-				// var blob = this.dataURItoBlob(dataurl);
-				//使用ajax发送
 				let fd = new FormData();
-				// fd.append("file2", blob, "image.png");
+				fd.set('u_name', '王子腾');
+				fd.set('u_phone', '17862910192');
+				fd.set('u_adress', '山东济南');
 				for(let i = 0; i<index; i++)
 				{
 					let blob = that.dataURItoBlob(canvas[i].toDataURL());
 					fd.append("file2", blob, "image.png");
 				}	
-				listphote = str.split("$");
-				
-				// var xhr = new XMLHttpRequest();
-				// xhr.open('POST', 'http://172.16.91.27:8080/zsxcy/photo/savephoto.s', true);
-				// xhr.send(fd);
 				this.$http({
-                	url:"http://172.16.91.27:8080/zsxcy/photo/savephoto.s",
+                	url:"http://192.168.10.30:8080/guangmu/photo/savephoto.s",
                 	method:"post",
                 	data:fd,
-       //          	transformRequest: [
-    			// 		function(data) {
-      	// 				let ret = ''
-      	// 				for (let it in data) {
-       //  					ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) +'&'
-      	// 				}
-      	// 				return ret
-    			// 		}
-  					// ],
   					headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                      },
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    enctype:'application/x-www-form-urlencoded',
                 	processData:false,
                 	contentType:false,
-                	success:function(data){
-                	    console.log("over..");
-                	}
-				});
-				// var config = {
-  		// 			method: 'post',
-  		// 			url: 'http://192.168.10.30:8080/guangmu/photo/savephoto.s',
-  		// 			data: {m_js:str},
-  		// 			transformRequest: [
-    // 					function(data) {
-    //   					let ret = ''
-    //   					for (let it in data) {
-    //     					ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) +'&'
-    //   					}
-    //   					return ret
-    // 					}
-  		// 			]
-				// };	
-				// this.$http(config).then(response => {
-    //     				if(response == 1)
-    //     				{
-    //     					console.log("success");
-    //     					console.log(response);
-    //     				}
-    //   			}, response => {
-    //     			console.log(that.canvasJson[0]);
-    //   			});	
+				}).then(response => {
+        				if(response == 1)
+        				{
+        					console.log("success");
+        					console.log(response);
+        				}
+        				console.log("success");
+        				console.log(response);
+      			}, response => {
+        			console.log("error");
+        			console.log(response);
+      			});;
 			},
 			dataURItoBlob:function(dataURI)
 			{
