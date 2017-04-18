@@ -6,8 +6,9 @@
 
 	width: 20%;
 	height: 87%;
-	position: relative;
-	float: left;
+	position: fixed;
+	left: 0;
+	top: 8%;
 	.navbar{
 		width: 16%;
 		height: 100%;
@@ -57,11 +58,14 @@
             float: left;
             vertical-align: top;
             .imgContainer {
-                width: 100px;
+            	width: 100px;
                 position: relative;
                 margin: 10px 5px;
                 float: left; 
                 box-shadow: 0 0px 2px 1px rgba(0, 0, 0, 0.24); 
+                img{
+                	// width: 100px;
+                }
                 .del {
                     position: absolute;
                     top: 5px;
@@ -105,9 +109,11 @@
 		}
 	}
 	.modules{
-		width: 200px;
-		height: 200px;
+		width: 80%;
+		height: 20%;
+		// height: 200px;
 		background-color: #07aefc;
 		cursor: pointer;
+		margin: 10px auto;
 	}
 }

@@ -1,39 +1,30 @@
 <template>
 	<div class="objectTool" v-if="objectToolShow">
-		<button @click="upToCase">上移一层</button>
-		<button @click="downToCase">下移一层</button>
-		<button @click="upCase">置于顶层</button>
-		<button @click="downCase">置于底层</button>
-		<div class="text_bar" v-if="itextShow">
-		<!-- 更改文字样式 -->
-			<div class="text_bar_item" >
-				<button id="text_style_show" @click="showStyle()">字体</button>
-				<select @change="optionchange"  id="text_style" size="4" v-show="style" >
-					<option v-for="option in options_style" :value="option.value">{{ option.text }}</option>
-				</select>
-			</div>
-			<button @click="colorBar">颜色</button>
-			<div id="color1"  v-show="colorShow">
-				<canvas id="color" width="286px" height="256px"></canvas>
-		    	<em id="cur" style="left: 98px; top: 47px; "></em>  
-		    	<div class="color_panel">
-		    		<span id="color_show"></span> 
-		    		<!-- 用vue绑定文字框颜色信息 -->
-		    		<input type="text" class="color_input" id="Tcolor" value="0,0,0"> 
-		    	</div>
-		    </div>
-		</div> 
-		<button @click="delObj">删除</button>
+		<button class="toolbtn" @click="delObj">删除</button>
+		<button class="toolbtn" @click="upToCase">上移一层</button>
+		<button class="toolbtn" @click="downToCase">下移一层</button>
+		<button class="toolbtn" @click="upCase">置于顶层</button>
+		<button class="toolbtn" @click="downCase">置于底层</button>
+		<button class="toolbtn" @click="showStyle" v-if="itextShow" :class="{active: style}">字体</button>
+		<div class="text_bar_item"  v-show="style" >
+			<select @change="optionchange" size="6">
+				<option v-for="option in options_style" :value="option.value">{{ option.text }}</option>
+			</select>
+		</div>
+		<button class="toolbtn" @click="colorBar" v-if="itextShow" :class="{active: colorShow}">颜色</button>		
+		<div id="color1"  v-show="colorShow">
+			<canvas id="color" :width="colorCanvasWidth" :height="colorCanvasWidth"></canvas>
+	    	<em id="cur" style="left: 98px; top: 47px; "></em>  
+	    	<div class="color_panel">
+	    		<span id="color_show"></span> 
+	    		<!-- 用vue绑定文字框颜色信息 -->
+	    		<input type="text" class="color_input" id="Tcolor" value="0,0,0"> 
+	    	</div>
+	    </div>
 	</div>
 </template>
-
-
-<style type="text/css">
-.objectTool{
-	position: fixed;
-	top: 50px;
-	right: 50px;
-}
+<style lang="less">
+  @import "objectTool.less";
 </style>
 
 <script>
@@ -116,6 +107,10 @@
 			colorShow:{
 				required:true,
 				default:{false}
+			},
+			colorCanvasWidth:{
+				require:true,
+				default:{}
 			}
 		},
 		mounted:function(){
@@ -153,7 +148,6 @@
 			},
 			showStyle:function(){ 
 				this.style = !this.style;
-				let text_style=document.getElementById('text_style');
 			},
 			colorBar:function(){
 				this.$emit('colorBar');

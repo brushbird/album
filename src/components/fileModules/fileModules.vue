@@ -16,13 +16,13 @@
 		</div>
 		<div id="images" class="images">
 		  <div class="imgContainer" v-for="(item,index) in imageList" @dragstart='drag($event)'>
-    		<img draggable="true" :src="item" width="100">
+    		<img draggable="true" :src="item" style="width:100px">
     		<span class="del" @click="delImg(index)">删除</span>
     	  </div>
 		</div>
 	</div>
 	<div class="moduleContent" v-show="activeIndex==1">
-		<div class="modules" @click="loadModules">
+		<div class="modules" @click="loadModules(index)" v-for="(item,index) in moduleLists">
 			
 		</div>
 	</div>
@@ -46,8 +46,14 @@
 					{name: "图库"},
 					{name: "模板"},
 					{name: "字体"}
-				]
+				],
 				
+			}
+		},
+		props:{
+			moduleLists:{
+				require:true,
+				default:{}
 			}
 		},
 		computed:{
@@ -94,8 +100,8 @@
             creatIText:function(){
             	this.$emit("creatIText");
             },
-            loadModules:function(){
-            	this.$emit("loadModules");
+            loadModules:function(index){
+            	this.$emit("loadModules",index);
             }
 		},
 		mounted: function(){

@@ -2,64 +2,7 @@
     margin: 0;
     padding: 0;
 }
-
-#color1 {
-    width: 286px;
-    height: 300px;
-    position: fixed;
-    right: 0;
-    margin: 0px auto;
-    border: 1px solid white;
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
-    border-radius: 15px;
-    cursor: crosshair;
-    position: fixed;
-    top: 12%;
-    right: 220px;
-    #color {
-        border: 1px solid white;
-    }
-    .color_panel {
-        width: 180px;
-        height: 55px;
-        margin: 0px auto;
-        #color_show {
-            margin-top: 5px;
-            margin-right: 20px;
-            width: 30px;
-            height: 30px;
-            border: 1px solid black;
-            -moz-border-radius: 5px;
-            -webkit-border-radius: 5px;
-            border-radius: 5px;
-            background-color: #000;
-            float: left;
-        }
-        #Tcolor {
-            width: 100px;
-            height: 30px;
-            border: 1px solid black;
-            -moz-border-radius: 6px;
-            -webkit-border-radius: 6px;
-            border-radius: 6px;
-            margin-top: 5px;
-            float: left;
-            background-color: #F4F4F4;
-            font-size: 16px;
-            text-align: center;
-        }
-    }
-    #cur {
-        width: 3px;
-        height: 3px;
-        outline: 2px solid #535353;
-        margin-left: -1px;
-        margin-top: -1px;
-        position: absolute;
-    }
-}
-
+@screenWidth:document.body.clientHeight;
 // @mainColor: '#fff';
 .placeholder(@a) {
     &::-webkit-input-placeholder {
@@ -116,7 +59,9 @@ input {
         height: 8%;
         background-color: #fd87c3;
         color: #fff;
-        position: relative;
+        position: fixed;
+        left: 0;
+        top: 0;
         .mainName {
             height: 50%;
             width: 300px;
@@ -159,29 +104,33 @@ input {
         }
     }
     .canvasContent {
-        width: 60%;
-        height: 87%;
+        width: 80%;
+        height: 92%;
         float: left;
-        position: relative;
+        position: fixed;
+        left: 20%;
+        top: 8%;
+        pointer-events: none;
+        overflow: scroll;
         .left-list {
-            width: 100%;
             //height: 132px;
             //overflow: hidden;
             //overflow-x: scroll;
             //border: 1px solid rgba(0, 0, 0, 0.5);
             //background-color: #ffcc99;
             position: absolute;
-            bottom: 0;
             left: 2%;
+            top: 4%;
+            pointer-events: auto;
             li {
-                width: 30px;
+                width: 40px;
                 height: 30px;
                 border-radius: 30px;
-                margin: 10px;
+                margin: 20px 5px;
                 box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.24);
                 list-style: none;
-                float: left;
                 background-color: #fff;
+                line-height: 2;
                 img {
                     width: 164px;
                 }
@@ -205,77 +154,17 @@ input {
             padding: 10px;
             background-color: #fafafa;
             position: absolute;
-            left: 2%;
+            left: 10%;
             top: 4%;
+            pointer-events: auto;
+            transform:scale((1366*0.56/4961));
+            transform-origin:left top;
+            // zoom:(1366*0.56/4961);
             // transform: translate(-30%, -20%);
             .canvas-container {
                 margin: auto;
                 line-height: 1.5;
                 border: 2px dashed;
-            }
-        }
-    }
-    .preView {
-        width: 20%;
-        // float: right;
-        position: fixed;
-        top: 12%;
-        right: 0;
-        .text_bar_item button {
-            width: 40px;
-            display: inline-block;
-            -moz-border-radius: 15px;
-            -webkit-border-radius: 15px;
-            border-radius: 15px;
-            background-color: #fff;
-        }
-        .preView-title {
-            float: right;
-            width: 210px;
-            padding: 10px 5px;
-            background-color: #ffcc99;
-            text-align: center;
-            h2 {
-                color: #fff;
-            }
-        }
-        // position: relative; 
-        .view-list {
-            list-style: none;
-            display: block;
-            float: right;
-            width: 210px;
-            height: 50px;
-            padding: 10px 5px;
-            background-color: #ffcc99;
-            .view {
-                width: 50px;
-                height: 50px;
-                float: right;
-                position: relative;
-                img {
-                    width: 30px;
-                    position: absolute;
-                    left: 10px;
-                    top: 10px;
-                    // transform
-                }
-            }
-            .operate {
-                width: 100px;
-                height: 50px;
-                display: block;
-                float: right;
-                background-color: #fdebeb;
-            }
-            .del {
-                width: 40px;
-                height: 50px;
-                display: block;
-                float: right;
-                background-color: #fd87c2;
-                cursor: pointer;
-                border-radius: 0px 10px 10px 0px;
             }
         }
     }
