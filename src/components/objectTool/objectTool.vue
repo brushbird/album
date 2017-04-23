@@ -5,13 +5,13 @@
 		<button class="toolbtn" @click="downToCase">下移一层</button>
 		<button class="toolbtn" @click="upCase">置于顶层</button>
 		<button class="toolbtn" @click="downCase">置于底层</button>
-		<button class="toolbtn" @click="showStyle" v-if="itextShow" :class="{active: style}">字体</button>
-		<div class="text_bar_item"  v-show="style" >
+		<button class="toolbtn" @click="showItextStyle" v-if="itextShow" :class="{active: itextStyle}">字体</button>
+		<div class="text_bar_item"  v-show="itextStyle" >
 			<select @change="optionchange" size="6">
 				<option v-for="option in options_style" :value="option.value">{{ option.text }}</option>
 			</select>
 		</div>
-		<button class="toolbtn" @click="colorBar" v-if="itextShow" :class="{active: colorShow}">颜色</button>		
+		<button class="toolbtn" @click="colorBar" :class="{active: colorShow}">颜色</button>		
 		<div id="color1"  v-show="colorShow">
 			<canvas id="color" :width="colorCanvasWidth" :height="colorCanvasWidth"></canvas>
 	    	<em id="cur" style="left: 98px; top: 47px; "></em>  
@@ -20,6 +20,11 @@
 	    		<!-- 用vue绑定文字框颜色信息 -->
 	    		<input type="text" class="color_input" id="Tcolor" value="0,0,0"> 
 	    	</div>
+	    </div>
+	    <div class="btnGroup"  v-if="imageShow">
+	    	<button class="imageBtn" @click="lowSize">-</button>
+	    	<span class="imageCom">图片边框大小</span>
+	    	<button class="imageBtn" @click="upSize">+</button>
 	    </div>
 	</div>
 </template>
@@ -34,7 +39,6 @@
 
 		data(){
 			return{
-				style:false,
 				Tcolor:"",
 				options_style:[{
 						text:'黑体',
@@ -111,6 +115,14 @@
 			colorCanvasWidth:{
 				require:true,
 				default:{}
+			},
+			itextStyle:{
+				require:true,
+				default:{}
+			},
+			imageShow:{
+				require:true,
+				default:{}
 			}
 		},
 		mounted:function(){
@@ -146,11 +158,17 @@
 			optionchange:function(event){
 				this.$emit('optionchange',event);
 			},
-			showStyle:function(){ 
-				this.style = !this.style;
+			showItextStyle:function(){ 
+				this.$emit('showItextStyle');
 			},
 			colorBar:function(){
 				this.$emit('colorBar');
+			},
+			lowSize:function(){
+				this.$emit("lowSize");
+			},
+			upSize:function(){
+				this.$emit("upSize");
 			}
 			
 		}
