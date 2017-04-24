@@ -1,5 +1,6 @@
 <template>
-	<div class="preView" v-if="showPreview">
+  <div v-if="showPreview">
+	<div class="preView">
 		<div class="covery"></div>
 		<transition-group name='fade' tag="ul" class="imgs-wrapper" mode="out-in">		
 			<li v-for="(item,index) in preView" class="common" v-show="index == preViewShowIndex" :key='item' :style="move">
@@ -10,6 +11,22 @@
 		<button class="backbtn btn" @click="backClick">下一页</button>
 		<div class="closeBtn" @click="preViewClose">关闭</div>
 	</div>
+	<div class="payAlbum">
+		<div class="item">
+			<label for="uName">姓名：</label>
+			<input type="text" name="uName" id="uName" placeholder="请输入收货人姓名">
+		</div>
+		<div class="item">
+			<label for="uPhone">联系方式：</label>
+			<input type="text" name="uPhone" id="uPhone" placeholder="请输入收货人手机号">
+		</div>
+		<div class="item">
+			<label for="uAdress">收货地址：</label>
+			<input type="text" name="uAdress" id="uAdress" placeholder="请输入收货地址">
+		</div>
+		<button @click="sendJson">一键打印</button>
+	</div>
+  </div>
 </template>
 <style lang="less">
 .preView{
@@ -19,7 +36,19 @@
 	width:70%;
 	z-index:100;
 }
-
+.payAlbum{
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 30%;
+	z-index: 100;
+	background-color: #fff;
+	height: 100%;
+	.item{
+		width: 70%;
+		height: 100px;
+	}
+}
 .covery{
 	position: fixed;
 	width: 100%;
@@ -125,6 +154,12 @@
 			},
 			preViewClose:function(){
 				this.$emit("preViewClose");
+			},
+			sendJson:function(){
+				let u_name = document.getElementById("uName").value;
+				let u_phone = document.getElementById("uPhone").value;
+				let u_adress = document.getElementById("uAdress").value;
+				this.$emit("sendJson",{uName:u_name,uPhone:u_phone,uAdress:u_adress});
 			}
 		}
 

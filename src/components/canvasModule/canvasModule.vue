@@ -9,9 +9,9 @@
   				<span>生成模板</span>
   			</div>
   			<!-- <div class="tool" @click="addJson"> -->
-  			<div class="tool" @click="sendJson">
+  			<div class="tool" @click="setPreView">
   				<div class="tool-logo"></div>
-  				<span>生成图片</span>
+  				<span>一键打印</span>
   			</div>
   			<!-- <div class="tool" @click="addJson">
   				<div class="tool-logo"></div>
@@ -78,7 +78,14 @@
 	 	@lowSize="lowSize"
 	 	@upSize="upSize"></objectTool>
 	
-	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose"></preView>
+	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose" @sendJson="sendJson"></preView>
+	<mood :showMood="showMood"></mood>
+	<modal
+      :modalShow="modalShow"
+      @modalClose="modalClose"
+      :placeHolder="promptText"
+      :promptKind="promptKind"
+    ></modal>
   </div>
 </template>
 
@@ -90,6 +97,8 @@
 	import fileCom from "../fileModules/fileModules.vue";
 	import objectTool from "../objectTool/objectTool.vue";
 	import preView from "../preView/preView.vue";
+	import mood from "../mood/mood.vue";
+	import modal from "../modal/modal.vue";
 	let dom = null,canvas = [], mIndex=0, colorTag,chooseC;
 	
 	export default{
@@ -114,6 +123,10 @@
 				itextShow:false,
 				imageShow:false,
 				showPreview:false,
+				showMood:false,
+				modalShow:false,
+				promptText: '操作成功',
+        		promptKind: 'success',
 			}
 		},
 		props:{
@@ -127,6 +140,14 @@
 			}
 		},
 		methods:{
+			modalClose:function(){
+				this.modalShow = false;
+			},
+			promptShow(options) {
+        		this.modalShow = true;
+        		this.promptText = options.promptText && options.promptText;
+        		this.promptKind = options.promptKind && options.promptKind;
+      		},
 			judgeItext:function(){
 				let that =this;
 				let index = this.objectIndex;
@@ -240,14 +261,16 @@
 							});
 				})
 			},
-			sendJson:function(){
+			sendJson:function(options){
 				let that = this;
 				let index = canvas.length;
 				let str="",listphote=[];
 				let fd = new FormData();
-				fd.set('u_name', '王子腾');
-				fd.set('u_phone', '17862910192');
-				fd.set('u_adress', '山东济南');
+				fd.set('u_name', options.uName);
+				fd.set('u_phone', options.uPhone);
+				fd.set('u_adress', options.uAdress);
+				this.showPreview=false;
+				this.showMood=true;
 				for(let i = 0; i<index; i++)
 				{
 					let blob = that.dataURItoBlob(canvas[i].toDataURL());
@@ -271,10 +294,18 @@
         				}
         				console.log("success");
         				console.log(response);
+        				that.showMood=false;
+        				this.modalShow = true;
+        				this.promptText = "成功";
+        				this.promptKind = "success";
       			}, response => {
         			console.log("error");
         			console.log(response);
-      			});;
+        			that.showMood=false;
+        			this.modalShow = true;
+        			this.promptText = "失败";
+        			this.promptKind = "success";
+      			});
 			},
 			dataURItoBlob:function(dataURI)
 			{
@@ -782,7 +813,7 @@
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
                  	})
 		},
-		components:{fileCom,objectTool,preView}
+		components:{fileCom,objectTool,preView,mood,modal}
 	}
 
 </script>
