@@ -17,7 +17,7 @@ export default {
     }
   },
   beforeMount(){
-    this.scalefont = 4961/document.body.clientWidth;
+    this.scalefont = 4961/document.body.clientWidth*5;
     this.colorCanvasWidth = document.body.clientWidth * 0.12;
     console.log(this.canvasWidth);
   },
@@ -26,6 +26,9 @@ export default {
 </script>
 
 <style>
+body{
+  overflow: hidden;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -36,6 +39,6 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #fdebeb;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 </style>
