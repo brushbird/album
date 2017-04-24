@@ -9,9 +9,9 @@
   				<span>生成模板</span>
   			</div>
   			<!-- <div class="tool" @click="addJson"> -->
-  			<div class="tool" @click="sendJson">
+  			<div class="tool" @click="setPreView">
   				<div class="tool-logo"></div>
-  				<span>生成图片</span>
+  				<span>一键打印</span>
   			</div>
   			<!-- <div class="tool" @click="addJson">
   				<div class="tool-logo"></div>
@@ -33,6 +33,7 @@
 			<div v-for="(option,cindex) in canvasList" v-show="isActive == cindex" @drop='drop($event,cindex)' @dragover='allowDrop($event)'>
 				<canvas :id="setCid(cindex)" height="3508" width="4961"></canvas>
 			</div>
+			<div class="splitDot"></div>
 		</div>	
 		<div class="left-list" v-if="index == moduleIndex">
 			<ul>
@@ -47,6 +48,7 @@
 			<div v-for="(option,cindex) in canvasList" v-show="isActive == cindex" @drop='drop($event,cindex)' @dragover='allowDrop($event)'>
 				<canvas :id="setCid(cindex)" height="3508" width="4961"></canvas>
 			</div>
+			<div class="splitDot"></div>
 		</div>	
 		<div class="left-list">
 			<ul>
@@ -55,14 +57,15 @@
 				</li>
 			</ul>
 		</div>	
-		<!-- <form action=""></form> -->
 	</div>
 	
 	<objectTool 
 		:itextShow="itextShow"
+		:imageShow="imageShow"
 	 	:objectToolShow="objectToolShow" 
 	 	:objectIndex="objectIndex" 
 	 	:colorShow="colorShow"
+	 	:itextStyle="itextStyle"
 	 	:colorCanvasWidth="colorCanvasWidth"
 	 	@delObj="delObj" 
 	 	@optionchange="optionchange" 
@@ -70,9 +73,19 @@
 	 	@downCase="downCase" 
 	 	@upToCase="upToCase" 
 	 	@downToCase="downToCase" 
-	 	@colorBar="colorBar"></objectTool>
+	 	@colorBar="colorBar"
+	 	@showItextStyle="showItextStyle"
+	 	@lowSize="lowSize"
+	 	@upSize="upSize"></objectTool>
 	
-	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose"></preView>
+	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose" @sendJson="sendJson"></preView>
+	<mood :showMood="showMood"></mood>
+	<modal
+      :modalShow="modalShow"
+      @modalClose="modalClose"
+      :placeHolder="promptText"
+      :promptKind="promptKind"
+    ></modal>
   </div>
 </template>
 
@@ -84,7 +97,9 @@
 	import fileCom from "../fileModules/fileModules.vue";
 	import objectTool from "../objectTool/objectTool.vue";
 	import preView from "../preView/preView.vue";
-	let dom = null,canvas = [], textevent= null, colorTag,chooseC;
+	import mood from "../mood/mood.vue";
+	import modal from "../modal/modal.vue";
+	let dom = null,canvas = [], mIndex=0, colorTag,chooseC;
 	
 	export default{
 		data(){
@@ -95,6 +110,7 @@
 				moduleIndex:-1,			
 				showTool:false,
 				colorShow:false,
+				itextStyle:false,
 				see: true,
 				isActive:0,
 				start: 0,
@@ -105,7 +121,12 @@
 				objectToolShow:false,
 				objectIndex:0,
 				itextShow:false,
+				imageShow:false,
 				showPreview:false,
+				showMood:false,
+				modalShow:false,
+				promptText: '操作成功',
+        		promptKind: 'success',
 			}
 		},
 		props:{
@@ -119,6 +140,14 @@
 			}
 		},
 		methods:{
+			modalClose:function(){
+				this.modalShow = false;
+			},
+			promptShow(options) {
+        		this.modalShow = true;
+        		this.promptText = options.promptText && options.promptText;
+        		this.promptKind = options.promptKind && options.promptKind;
+      		},
 			judgeItext:function(){
 				let that =this;
 				let index = this.objectIndex;
@@ -144,16 +173,39 @@
 					that.itextShow=false;
 				}
 			},
+			judgeImage:function(){
+				let that =this;
+				let index = this.objectIndex;
+				if(canvas[this.isActive].getObjects()[index].get('type')==='image'){
+					return true
+				}else{
+					return false
+				}
+			},
 			creatIText:function(){
 				let index = this.isActive;
 				let that = this;
-				let scalefont = 4961/1366;
+				// let scalefont = 4961/1366;
 				let text = new fabric.IText('点击更改文字',{
-					left:50,
-					top:50,
-					fontSize:(40*scalefont),
+					left:50*that.scalefont,
+					top:50*that.scalefont,
+					fontSize:(40*that.scalefont),
 					fontFamily:'SimHei ',
+					rotatingPointOffset : 200,
+       				borderScaleFactor : 10,
+       				cornerSize : 50,
+       				padding : 50,
 				});
+				text.setControlsVisibility({ 
+						mt: false, 
+						mr: false,
+   						mb: false,
+   					    ml: false,
+   					    tl: false,
+   					    tr: false,
+   					    bl: false,
+   					    border:400,
+   					});
 				text.on("editing:entered",function(){
 					this.hiddenTextarea.focus();
 					this.selectAll();
@@ -174,29 +226,51 @@
 					canvas[length] = new fabric.Canvas(tag);
 					canvas[length].renderAll();
 					canvas[length].on({
-    					'object:selected': function(e){
-							var index = canvas[length].getObjects().indexOf(e.target);
-							console.log("selected"+index);
-							that.objectIndex = index;
-							that.judgeItext();
-							that.objectToolShow = true;
-						}
-					});
-					canvas[length].on({
-    					'selection:cleared': function(){
-							that.objectToolShow = false;
-						}
-					});
+    							'object:selected': function(e){
+									var index = canvas[length].getObjects().indexOf(e.target);
+									that.objectIndex = index;
+									that.judgeItext();
+									if(that.judgeImage()){
+										that.imageShow=true;
+									}else{
+										that.imageShow=false;
+									}
+									that.objectToolShow = true;
+									e.target.rotatingPointOffset=200;
+       								e.target.borderScaleFactor=10;
+       								e.target.cornerSize=50;
+       								e.target.padding=50;
+								}
+							});
+							canvas[length].on({
+    							'selection:cleared': function(){
+									that.objectToolShow = false;
+									that.colorShow = false;
+									that.itextStyle = false;
+									that.imageShow=false;
+								}
+							});
+							canvas[length].on('object:scaling', (e) => {
+								let o = e.target;
+								if (!o.strokeWidthUnscaled && o.strokeWidth) {
+  									o.strokeWidthUnscaled = o.strokeWidth;
+  								}
+								if (o.strokeWidthUnscaled) {
+  									o.strokeWidth = o.strokeWidthUnscaled / o.scaleX;
+  								}
+							});
 				})
 			},
-			sendJson:function(){
+			sendJson:function(options){
 				let that = this;
 				let index = canvas.length;
 				let str="",listphote=[];
 				let fd = new FormData();
-				fd.set('u_name', '王子腾');
-				fd.set('u_phone', '17862910192');
-				fd.set('u_adress', '山东济南');
+				fd.set('u_name', options.uName);
+				fd.set('u_phone', options.uPhone);
+				fd.set('u_adress', options.uAdress);
+				this.showPreview=false;
+				this.showMood=true;
 				for(let i = 0; i<index; i++)
 				{
 					let blob = that.dataURItoBlob(canvas[i].toDataURL());
@@ -220,10 +294,18 @@
         				}
         				console.log("success");
         				console.log(response);
+        				that.showMood=false;
+        				this.modalShow = true;
+        				this.promptText = "成功";
+        				this.promptKind = "success";
       			}, response => {
         			console.log("error");
         			console.log(response);
-      			});;
+        			that.showMood=false;
+        			this.modalShow = true;
+        			this.promptText = "失败";
+        			this.promptKind = "success";
+      			});
 			},
 			dataURItoBlob:function(dataURI)
 			{
@@ -244,12 +326,15 @@
 				let str="";
 				for(let i = 0; i<index; i++)
 				{
-					str+=JSON.stringify(canvas[i].toJSON())+"$";
+					str+=JSON.stringify(canvas[i].toJSON())+"~";
 				}		
 				var config = {
   					method: 'post',
-  					url: 'http://123.207.169.138/guangmu/photo/insertphoto.s',
-  					data: {m_js:str},
+  					url: 'http://192.168.10.30:8080/guangmu/photo/insertphoto.s',
+  					data: {
+  						m_js:str,
+  						m_index:mIndex,
+  					},
   					transformRequest: [
     					function(data) {
       					let ret = ''
@@ -266,6 +351,8 @@
         					console.log("success");
         					console.log(response);
         				}
+        				mIndex++;
+        				console.log(mIndex);
       			}, response => {
         			console.log(that.canvasJson[0]);
       			});
@@ -278,7 +365,6 @@
 			},
             drag:function(e){
             	dom = e.target;
-            	console.log(dom);
             },
             allowDrop:function(e){
             	event.preventDefault();
@@ -293,7 +379,16 @@
        				height: dom.height*that.scalefont,
        				left: e.offsetX,
        				top: e.offsetY,
+       				strokeWidth:5,
+       				stroke:"#07aefc",
+       				rotatingPointOffset : 200,
+       				borderScaleFactor : 10,
+       				cornerSize : 50,
+       				padding : 50,
+
    				});
+   				// newImage.borderScaleFactor = 30;
+   				// newImage.cornerSize = 30;
    				canvas[index].add(newImage);
    				return false;
             },
@@ -334,6 +429,9 @@
             },
             preViewClose:function(){
             	this.showPreview=false;
+            },
+            showItextStyle:function(){
+            	this.itextStyle=!this.itextStyle;
             },
             colorBar:function(){
             	let that=this;
@@ -435,7 +533,11 @@
 								let rgb = poscolor.slice(0,3).join();
 								show.style.backgroundColor = 'rgb('+rgb+')';
 								Tcolor.value = rgb;	
-								canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});
+								if(that.judgeImage()){
+									canvas[that.isActive].getObjects()[that.objectIndex].set({stroke:  'rgb('+rgb+')'});
+								}else{
+									canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
+								}
 								canvas[that.isActive].renderAll();
 						 	}
 							
@@ -464,7 +566,11 @@
 					else if(chooseC == 'no'){
 						show.style.backgroundColor = 'rgb(0,0,0)';
 						Tcolor.value = '0,0,0';
-						canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb(0,0,0)'});
+						if(that.judgeImage()){
+							canvas[that.isActive].getObjects()[that.objectIndex].set({stroke:  'rgb('+rgb+')'});
+						}else{
+							canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
+						}
 						canvas[that.isActive].renderAll();
 					}
 					else{
@@ -472,7 +578,11 @@
 						let rgb = poscolor.slice(0,3).join();
 						show.style.backgroundColor = 'rgb('+rgb+')';
 						Tcolor.value = rgb;
-						canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});
+						if(that.judgeImage()){
+							canvas[that.isActive].getObjects()[that.objectIndex].set({stroke:  'rgb('+rgb+')'});
+						}else{
+							canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
+						}
 						canvas[that.isActive].renderAll();
 					}	
 
@@ -565,6 +675,28 @@
 				 	(data[dataIndex+3] / 255).toFixed(2),
 				 ];
 			},
+			lowSize:function(){
+				let that = this;
+				let swidth = canvas[that.isActive].getObjects()[that.objectIndex].strokeWidth;
+				if(this.judgeImage()){
+					if(swidth>0){
+						swidth--;
+						canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  swidth});
+					}else if(swidth == 0){
+						canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  0});
+					}
+				}
+				canvas[that.isActive].renderAll();
+			},
+			upSize:function(){
+				let that = this;
+				let swidth = canvas[that.isActive].getObjects()[that.objectIndex].strokeWidth;
+				if(this.judgeImage()){
+					swidth++;
+					canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  swidth});
+				}
+				canvas[that.isActive].renderAll();
+			},
 			setPreView:function(){
 				let that = this;
 				let list = [];
@@ -579,13 +711,13 @@
 				this.moduleIndex = mindex;
 				let idnum = mindex+1;
 				let that = this;
-				this.$http.get('http://192.168.10.30:8080/guangmu/photo/selectphoto.s?m_id='+idnum).then(response => {
+				this.$http.get('http://192.168.10.30:8080/guangmu/photo/selectphoto.s?m_index='+idnum).then(response => {
                 	if(response == 1)
                 	{
                   		console.log("success");
                   		console.log(response);
                 	}
-                	var list =[];
+                	var list = [];
                  	list = response.data.split("~");
                  	that.canvasList = list;
                  	this.$nextTick(function(){
@@ -598,23 +730,37 @@
 							canvas[i].on({
     							'object:selected': function(e){
 									var index = canvas[i].getObjects().indexOf(e.target);
-									console.log("selected"+index);
 									that.objectIndex = index;
 									that.judgeItext();
+									if(that.judgeImage()){
+										that.imageShow=true;
+									}else{
+										that.imageShow=false;
+									}
 									that.objectToolShow = true;
+									e.target.rotatingPointOffset=200;
+       								e.target.borderScaleFactor=10;
+       								e.target.cornerSize=50;
+       								e.target.padding=50;
 								}
 							});
 							canvas[i].on({
     							'selection:cleared': function(){
 									that.objectToolShow = false;
+									that.colorShow = false;
+									that.itextStyle = false;
+									that.imageShow=false;
 								}
 							});
 						}
+						let transformScale = document.body.clientWidth*0.56/4961;
+						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
                  	})
                 
             		}, response => {
               			console.log(that.canvasJson[0]);
             		});
+				
 			}
 		  },
 		},
@@ -633,18 +779,41 @@
 									console.log("selected"+index);
 									that.objectIndex = index;
 									that.judgeItext();
+									if(that.judgeImage()){
+										that.imageShow=true;
+									}else{
+										that.imageShow=false;
+									}
 									that.objectToolShow = true;
+									e.target.rotatingPointOffset=200;
+       								e.target.borderScaleFactor=10;
+       								e.target.cornerSize=50;
+       								e.target.padding=50;
 								}
 							});
 							canvas[i].on({
     							'selection:cleared': function(){
 									that.objectToolShow = false;
+									that.colorShow = false;
+									that.itextStyle = false;
+									that.imageShow=false;
 								}
 							});
+							canvas[i].on('object:scaling', (e) => {
+								let o = e.target;
+								if (!o.strokeWidthUnscaled && o.strokeWidth) {
+  									o.strokeWidthUnscaled = o.strokeWidth;
+  								}
+								if (o.strokeWidthUnscaled) {
+  									o.strokeWidth = o.strokeWidthUnscaled / o.scaleX;
+  								}
+							});
 						}
+						let transformScale = document.body.clientWidth*0.56/4961;
+						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
                  	})
 		},
-		components:{fileCom,objectTool,preView}
+		components:{fileCom,objectTool,preView,mood,modal}
 	}
 
 </script>
