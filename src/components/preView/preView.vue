@@ -22,9 +22,9 @@
 		</div>
 		<div class="item">
 			<label for="uAdress">收货地址：</label>
-			<input type="text" name="uAdress" id="uAdress" placeholder="请输入收货地址">
+			<textarea id="uAdress" placeholder="请输入收货地址" rows="4" cols="22"></textarea>
 		</div>
-		<button @click="sendJson">一键打印</button>
+		<button @click="sendJson" class="printBtn">一键打印</button>
 	</div>
   </div>
 </template>
@@ -32,11 +32,7 @@
 .preView{
 	position:fixed;
 	top: 20%;
-<<<<<<< HEAD
 	left:5.5%;
-=======
-	left:0%;
->>>>>>> 864c52ad507faa7dcfc345c150a3b87465f0cad7
 	width:70%;
 	z-index:100;
 
@@ -49,9 +45,20 @@
 	z-index: 100;
 	background-color: #fff;
 	height: 100%;
+	padding-top: 8%;
+	text-align: center;
 	.item{
-		width: 70%;
+		width: 80%;
 		height: 100px;
+		text-align: right;
+		display: block;
+		vertical-align: top;
+		label{
+			display: inline-block;
+		}
+		input,textarea{
+			display: inline;
+		}
 	}
 }
 .covery{
@@ -99,13 +106,15 @@
 	border-radius: 30px;
 	z-index: 100;
 	top: 20%;
-	left: 55%;
+	left: 60%;
 	font-size: 12px;
 	background-color: #ccc;
 	line-height: 30px;
 }
 .closeBtn:hover{
 	cursor:pointer; 
+	background-color: red;
+	color: #fff;
 	-webkit-box-shadow:0 0 10px rgba(0, 204, 204, .5);  
   	-moz-box-shadow:0 0 10px rgba(0, 204, 204, .5);  
   	box-shadow:0 0 10px rgba(0, 204, 204, .5);  
@@ -114,18 +123,41 @@
 	width:138px;
 	height:36px;
 	
-	left: 5%;
+	left: 11.5%;
 	top: 10%;
 }
 .backbtn{
-<<<<<<< HEAD
 	width:138px;
 	height:36px;
-	left: 58%;
-=======
-	left: 52%;
->>>>>>> 864c52ad507faa7dcfc345c150a3b87465f0cad7
+	left: 49.5%;
 	top: 10%;
+}
+.printBtn{
+	width:138px;
+	height:36px;
+	font-size: 1.2em;
+	line-height: 1;
+	color: #888;
+	text-shadow: 0 1px 0 rgba(255,255,255, 0.8);
+	text-decoration: none;
+	text-align: center;
+	padding: 8px 12px;
+	font-weight: 700;
+	font-family: helvetica, arial, sans-serif;
+	border-radius: 4px;
+	border: 1px solid #bcbcbc;
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+	background-image: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+	background-image: -moz-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+	background-image: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+	background-image: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+	background-image: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+	&:hover{
+		background-color: #07aefc;
+		color: #fff;
+		cursor: pointer;
+	}
 }
 .common{
 	position: fixed;
@@ -136,32 +168,13 @@
 		width: 80%;
 		background-color: #fff;
 	}
-	// &.fade-enter-active{
-		
-	// 	transition: all 1s ease;
-<<<<<<< HEAD
-	// 	transform: translateX(200%);
-=======
-	// 	transform: translateX(-200%);
->>>>>>> 864c52ad507faa7dcfc345c150a3b87465f0cad7
+	// &.fade-enter{
+ //  	   opacity:0;
+ //  	   transform: translateX(0);
 	// }
-	// &.fade-leave-active{
-		
-	// 	transition: all 1s ease;
-<<<<<<< HEAD
-	// 	transform: translateX(-200%);
-	// }
-	&.fade-enter{
-  	   opacity:0;
-  	   transform: translateX(0);
-	}
-	&.fade-leave-to{
-		opacity:0;
-		transform: translateX(0);
-	}
-	
-=======
-	// 	transform: translateX(200%);
+	// &.fade-leave-to{
+	// 	opacity:0;
+	// 	transform: translateX(0);
 	// }
 	&.fade-enter{
   	   opacity:0;
@@ -170,10 +183,6 @@
 	&.fade-leave-to{
 		opacity:0;
 	}
-	// &.fade-leave{
-	// 	transform: translateX(0);
-	// }
->>>>>>> 864c52ad507faa7dcfc345c150a3b87465f0cad7
 }
 </style>
 <script>
@@ -199,34 +208,18 @@
 		},
 		methods:{
 			preClick:function(){
-<<<<<<< HEAD
 				let that = this;
-				
-				 that.move = "{transition: all 1s ease;transform: translateX(-200%);}";
-			   
-=======
-				this.move="{transition: all 1s ease,transform: translateX(200%)}";
->>>>>>> 864c52ad507faa7dcfc345c150a3b87465f0cad7
+				this.move="{transition: all 1s ease,transform: translateX(-200%)}";
 				if(this.preViewShowIndex>0){
 					this.preViewShowIndex--;
 				}
-			
-				
 			},
 			backClick:function(){
-<<<<<<< HEAD
 				let that = this;
-			    that.move = "{transition: all 1s ease;transform: translateX(200%);}";
-			   
-=======
-				this.move="{transition: all 1s ease,transform: translateX(-200%)}";
->>>>>>> 864c52ad507faa7dcfc345c150a3b87465f0cad7
+				this.move="{transition: all 1s ease,transform: translateX(200%)}";
 				if(this.preViewShowIndex<this.preView.length-1){
 					this.preViewShowIndex++;
 				}
-				
-				
-				
 			},
 			preViewClose:function(){
 				this.move=null;

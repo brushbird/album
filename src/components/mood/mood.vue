@@ -3,7 +3,7 @@
 	<div class="mood-contain">
 		<div class="imgContainer">
 		</div>
-		<span>正在生成相册，请不要关闭界面~~~</span>
+		<span>{{moodText}}</span>
 	</div>
   </div>
 </template>
@@ -23,12 +23,17 @@
       		-ms-transform: translate(-50%,-50%);  
           	transform: translate(-50%,-50%);
 			.imgContainer{
-				width: 150px;
-				height: 150px;
-				border-radius: 150px;
+				width: 60px;
+				height: 60px;
+				border-radius: 60px;
 				background: url("../../assets/images/mood.gif") no-repeat;
-				background-position: -120px -80px;
+				background-position: -170px -120px;
     			margin: auto;
+    			box-shadow: 0px 0px 10px 15px rgba(255,255,255,0.5);
+			}
+			span{
+				display: block;
+				margin-top: 20px;
 			}
 		}
 	}
@@ -45,9 +50,13 @@
 				required: true,
 				default: {}
 			},
+			moodText:{
+				required: true,
+				default: {}
+			},
 		},
 		mounted:function(){
-
+			
 		},
 		methods:{
 			

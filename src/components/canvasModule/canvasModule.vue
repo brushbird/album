@@ -79,7 +79,7 @@
 	 	@upSize="upSize"></objectTool>
 	
 	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose" @sendJson="sendJson"></preView>
-	<mood :showMood="showMood"></mood>
+	<mood :showMood="showMood" :moodText="moodText"></mood>
 	<modal
       :modalShow="modalShow"
       @modalClose="modalClose"
@@ -127,6 +127,7 @@
 				modalShow:false,
 				promptText: '操作成功',
         		promptKind: 'success',
+        		moodText:''
 			}
 		},
 		props:{
@@ -152,25 +153,9 @@
 				let that =this;
 				let index = this.objectIndex;
 				if(canvas[this.isActive].getObjects()[index].get('type')==='i-text'){
-				  let text = canvas[this.isActive].getObjects()[index];
-				  text.on("selected",function(){
-					// textevent = this;
-					that.showTool= true;
-					this.setControlsVisibility({ 
-						mt: false, 
-						mr: false,
-   						mb: false,
-   					    ml: false,
-   					    tl: false,
-   					    tr: false,
-   					    bl: false,
-   					    border:400,
-   					});
-   					
-				  });
-					that.itextShow=true;
+				  	return true;
 				}else{
-					that.itextShow=false;
+					return false;
 				}
 			},
 			judgeImage:function(){
@@ -189,7 +174,7 @@
 				let text = new fabric.IText('点击更改文字',{
 					left:50*that.scalefont,
 					top:50*that.scalefont,
-					fontSize:(40*that.scalefont),
+					fontSize:(40*that.scalefont/2),
 					fontFamily:'SimHei ',
 					rotatingPointOffset : 200,
        				borderScaleFactor : 10,
@@ -227,13 +212,21 @@
 					canvas[length].renderAll();
 					canvas[length].on({
     							'object:selected': function(e){
+    								that.colorShow=false;
 									var index = canvas[length].getObjects().indexOf(e.target);
 									that.objectIndex = index;
-									that.judgeItext();
+									if(that.judgeItext()){
+				  						that.itextShow=true;
+										that.colorShow=false;
+									}else{
+										that.itextShow=false;
+									}
 									if(that.judgeImage()){
 										that.imageShow=true;
+										that.colorShow=false;
 									}else{
 										that.imageShow=false;
+										that.colorShow=false;
 									}
 									that.objectToolShow = true;
 									e.target.rotatingPointOffset=200;
@@ -271,6 +264,7 @@
 				fd.set('u_adress', options.uAdress);
 				this.showPreview=false;
 				this.showMood=true;
+				this.moodText="正在生成相册，请稍后~~";
 				for(let i = 0; i<index; i++)
 				{
 					let blob = that.dataURItoBlob(canvas[i].toDataURL());
@@ -295,6 +289,7 @@
         				console.log("success");
         				console.log(response);
         				that.showMood=false;
+        				that.moodText="";
         				this.modalShow = true;
         				this.promptText = "成功";
         				this.promptKind = "success";
@@ -327,7 +322,9 @@
 				for(let i = 0; i<index; i++)
 				{
 					str+=JSON.stringify(canvas[i].toJSON())+"~";
-				}		
+				}	
+				this.showMood=true;
+				this.moodText="正在生成模板，请稍后~~";	
 				var config = {
   					method: 'post',
   					url: 'http://192.168.10.30:8080/guangmu/photo/insertphoto.s',
@@ -353,6 +350,11 @@
         				}
         				mIndex++;
         				console.log(mIndex);
+        				that.showMood=false;
+        				that.moodText="";
+        				this.modalShow = true;
+        				this.promptText = "成功";
+        				this.promptKind = "success";
       			}, response => {
         			console.log(that.canvasJson[0]);
       			});
@@ -379,7 +381,7 @@
        				height: dom.height*that.scalefont,
        				left: e.offsetX,
        				top: e.offsetY,
-       				strokeWidth:5,
+       				strokeWidth:10,
        				stroke:"#07aefc",
        				rotatingPointOffset : 200,
        				borderScaleFactor : 10,
@@ -680,9 +682,9 @@
 				let swidth = canvas[that.isActive].getObjects()[that.objectIndex].strokeWidth;
 				if(this.judgeImage()){
 					if(swidth>0){
-						swidth--;
+						swidth-=3;
 						canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  swidth});
-					}else if(swidth == 0){
+					}else if(swidth <= 0){
 						canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  0});
 					}
 				}
@@ -692,21 +694,29 @@
 				let that = this;
 				let swidth = canvas[that.isActive].getObjects()[that.objectIndex].strokeWidth;
 				if(this.judgeImage()){
-					swidth++;
+					swidth+=3;
 					canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  swidth});
 				}
 				canvas[that.isActive].renderAll();
 			},
 			setPreView:function(){
+				this.showMood = true;
 				let that = this;
-				let list = [];
-				for(var i=0; i<canvas.length; i++){
-					list.push(canvas[i].toDataURL());
-				}
-				this.preView = list;
-				this.showPreview=true;
+				console.log(this.showMood);
+				this.$nextTick(function(){
+					let list = [];
+					for(var i=0; i<canvas.length; i++){
+						list.push(canvas[i].toDataURL());
+					}
+					that.preView = list;
+					that.showPreview=true;
+				})
+				this.showMood = false;
+				console.log(this.showMood);
 			},
 			loadModules:function(mindex){
+				this.showMood=true;
+				this.moodText="正在加载模板，请稍后~~";
 			  if(this.moduleIndex != mindex){
 				this.moduleIndex = mindex;
 				let idnum = mindex+1;
@@ -729,9 +739,15 @@
 							canvas[i].renderAll();
 							canvas[i].on({
     							'object:selected': function(e){
+    								that.colorShow=false;
 									var index = canvas[i].getObjects().indexOf(e.target);
 									that.objectIndex = index;
-									that.judgeItext();
+									if(that.judgeItext()){
+				  						that.itextShow=true;
+										that.colorShow=false;
+									}else{
+										that.itextShow=false;
+									}
 									if(that.judgeImage()){
 										that.imageShow=true;
 									}else{
@@ -755,10 +771,19 @@
 						}
 						let transformScale = document.body.clientWidth*0.56/4961;
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
+						that.showMood=false;
+						that.moodText="";
+        				this.modalShow = true;
+        				this.promptText = "成功";
+        				this.promptKind = "success";
                  	})
                 
             		}, response => {
               			console.log(that.canvasJson[0]);
+              			that.showMood=false;
+        				this.modalShow = true;
+        				this.promptText = "失败";
+        				this.promptKind = "error";
             		});
 				
 			}
@@ -775,10 +800,16 @@
 							canvas[i].renderAll();
 							canvas[i].on({
     							'object:selected': function(e){
+    								that.colorShow=false;
 									var index = canvas[i].getObjects().indexOf(e.target);
 									console.log("selected"+index);
 									that.objectIndex = index;
-									that.judgeItext();
+									if(that.judgeItext()){
+				  						that.itextShow=true;
+										that.colorShow=false;
+									}else{
+										that.itextShow=false;
+									}
 									if(that.judgeImage()){
 										that.imageShow=true;
 									}else{

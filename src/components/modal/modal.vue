@@ -49,10 +49,15 @@ export default {
     },
   },
   watch: {
-    modalShow: function(val){
-      if(val) {
+    modalShow: function(){
+      if(this.promptKind == 'error') {
         setTimeout(() => {
-          // this.modalClose();
+          this.modalClose();
+          window.location.reload();
+        }, this.hideTime);
+      }else{
+        setTimeout(() => {
+          this.modalClose();
         }, this.hideTime);
       }
     },
