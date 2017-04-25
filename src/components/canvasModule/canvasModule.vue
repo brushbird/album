@@ -271,7 +271,7 @@
 					fd.append("file2", blob, "image.png");
 				}	
 				this.$http({
-                	url:"http://192.168.10.30:8080/guangmu/photo/savephoto.s",
+                	url:"http://123.207.169.138/guangmu/photo/savephoto.s",
                 	method:"post",
                 	data:fd,
   					headers: {
@@ -327,10 +327,11 @@
 				this.moodText="正在生成模板，请稍后~~";	
 				var config = {
   					method: 'post',
-  					url: 'http://192.168.10.30:8080/guangmu/photo/insertphoto.s',
+  					url: 'http://123.207.169.138/guangmu/photo/insertphoto.s',
   					data: {
   						m_js:str,
-  						m_index:mIndex,
+  						m_name:'jinan',
+  						m_num: 1,
   					},
   					transformRequest: [
     					function(data) {
@@ -721,30 +722,19 @@
 			loadModules:function(mindex){
 				this.showMood=true;
 				this.moodText="正在加载模板，请稍后~~";
-			  if(this.moduleIndex != mindex){
-				this.moduleIndex = mindex;
 				let idnum = mindex+1;
 				let that = this;
-				this.$http.get('http://192.168.10.30:8080/guangmu/photo/selectphoto.s?m_index='+idnum).then(response => {
-                	if(response == 1)
-                	{
-                  		console.log("success");
-                  		console.log(response);
-                	}
-                	var list = [];
-                 	list = response.data.split("~");
-                 	that.canvasList = list;
+				this.$http.get('http://123.207.169.138/guangmu/photo/selectphoto.s?m_index='+idnum+'&m_name='+'jinan'+'&m_num='+1).then(response => {
+                 	that.$set(that.canvasList,that.isActive,JSON.stringify(response.data));
                  	this.$nextTick(function(){
-                 		for(let i=0; i<that.canvasList.length; i++)
-						{
-							let tag = document.getElementById("a"+i);
-							canvas[i] = new fabric.Canvas(tag);
-							canvas[i].loadFromJSON(that.canvasList[i]);
-							canvas[i].renderAll();
-							canvas[i].on({
+							// let tag = document.getElementById("a"+that.isActive);
+							// canvas[that.isActive] = new fabric.Canvas(tag);
+							canvas[that.isActive].loadFromJSON(that.canvasList[that.isActive]);
+							canvas[that.isActive].renderAll();
+							canvas[that.isActive].on({
     							'object:selected': function(e){
     								that.colorShow=false;
-									var index = canvas[i].getObjects().indexOf(e.target);
+									var index = canvas[that.isActive].getObjects().indexOf(e.target);
 									that.objectIndex = index;
 									if(that.judgeItext()){
 				  						that.itextShow=true;
@@ -764,7 +754,7 @@
        								e.target.padding=50;
 								}
 							});
-							canvas[i].on({
+							canvas[that.isActive].on({
     							'selection:cleared': function(){
 									that.objectToolShow = false;
 									that.colorShow = false;
@@ -772,7 +762,6 @@
 									that.imageShow=false;
 								}
 							});
-						}
 						let transformScale = document.body.clientWidth*0.56/4961;
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
 						that.showMood=false;
@@ -789,8 +778,6 @@
         				this.promptText = "失败";
         				this.promptKind = "error";
             		});
-				
-			}
 		  },
 		},
 		mounted(){
