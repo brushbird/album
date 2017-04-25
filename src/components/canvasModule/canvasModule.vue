@@ -299,7 +299,7 @@
         			that.showMood=false;
         			this.modalShow = true;
         			this.promptText = "失败";
-        			this.promptKind = "success";
+        			this.promptKind = "notsuccess";
       			});
 			},
 			dataURItoBlob:function(dataURI)
@@ -356,7 +356,11 @@
         				this.promptText = "成功";
         				this.promptKind = "success";
       			}, response => {
-        			console.log(that.canvasJson[0]);
+        			// console.log(that.canvasJson[0]);
+        			that.showMood=false;
+        			this.modalShow = true;
+        			this.promptText = "失败";
+        			this.promptKind = "notsuccess";
       			});
 			},
 			setActive:function(index){
