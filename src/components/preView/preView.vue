@@ -12,7 +12,18 @@
 		<div class="closeBtn" @click="preViewClose">X</div>
 	</div>
 	<div class="payAlbum">
-		<div class="item">
+		<div class="albumList">
+			<div v-for="(item,index) in albumList" @click="setActiveList(index,item.price)" class="listContain">
+				<img class="listStyle" :class="{aciveList : index==aciveListIndex}" :src="item.url">
+				<span>{{item.name}}</span>
+			</div>
+		</div>
+		<div class="albumInputList">
+			<albumInput @inputResult="confirmInputState(arguments,'usr')"  placeholder="请输入收货人姓名" name="usr"></albumInput>
+			<albumInput @inputResult="confirmInputState(arguments,'tel')"  placeholder="请输入收货人手机号" name="tel"></albumInput>
+			<albumInput type="textarea" @inputResult="confirmInputState(arguments,'address')"  placeholder="请输入收货地址" name="area"></albumInput>
+		</div>
+		<!-- <div class="item">
 			<label for="uName">姓名：</label>
 			<input type="text" name="uName" id="uName" placeholder="请输入收货人姓名">
 		</div>
@@ -23,174 +34,35 @@
 		<div class="item">
 			<label for="uAdress">收货地址：</label>
 			<textarea id="uAdress" placeholder="请输入收货地址" rows="4" cols="22"></textarea>
-		</div>
-		<button @click="sendJson" class="printBtn">一键打印</button>
+		</div> -->
+		<button @click="sendJson" :class="btnClass">一键打印</button>
 	</div>
   </div>
 </template>
 <style lang="less">
-.preView{
-	position:fixed;
-	top: 20%;
-	left:5.5%;
-	width:70%;
-	z-index:100;
-
-}
-.payAlbum{
-	position: fixed;
-	top: 0;
-	right: 0;
-	width: 30%;
-	z-index: 100;
-	background-color: #fff;
-	height: 100%;
-	padding-top: 8%;
-	text-align: center;
-	.item{
-		width: 80%;
-		height: 100px;
-		text-align: right;
-		display: block;
-		vertical-align: top;
-		label{
-			display: inline-block;
-		}
-		input,textarea{
-			display: inline;
-		}
-	}
-}
-.covery{
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	z-index: 99;
-	background-color: rgba(0,0,0,0.5);
-	left: 0;
-	top: 0;
-}
-.btn{
-	position: fixed;
-	width: 50px;
-	z-index: 100;
-	color: #888;
-	text-shadow: 0 1px 0 rgba(255,255,255, 0.8);
-	text-decoration: none;
-	text-align: center;
-	padding: 8px 12px;
-	font-size: 12px;
-	font-weight: 700;
-	font-family: helvetica, arial, sans-serif;
-	border-radius: 4px;
-	border: 1px solid #bcbcbc;
-	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-	box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-	background-image: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	background-image: -moz-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	background-image: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	background-image: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	background-image: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	
-}
-.btn:hover{
-	cursor:pointer; 
-	-webkit-box-shadow:0 0 10px rgba(0, 204, 204, .5);  
-  	-moz-box-shadow:0 0 10px rgba(0, 204, 204, .5);  
- 	 box-shadow:0 0 10px rgba(0, 204, 204, .5);  
-}
-.closeBtn{
-	position: fixed;
-	width: 30px;
-	height: 30px;
-	border-radius: 30px;
-	z-index: 100;
-	top: 20%;
-	left: 60%;
-	font-size: 12px;
-	background-color: #ccc;
-	line-height: 30px;
-}
-.closeBtn:hover{
-	cursor:pointer; 
-	background-color: red;
-	color: #fff;
-	-webkit-box-shadow:0 0 10px rgba(0, 204, 204, .5);  
-  	-moz-box-shadow:0 0 10px rgba(0, 204, 204, .5);  
-  	box-shadow:0 0 10px rgba(0, 204, 204, .5);  
-}
-.prebtn{
-	width:138px;
-	height:36px;
-	
-	left: 11.5%;
-	top: 10%;
-}
-.backbtn{
-	width:138px;
-	height:36px;
-	left: 49.5%;
-	top: 10%;
-}
-.printBtn{
-	width:138px;
-	height:36px;
-	font-size: 1.2em;
-	line-height: 1;
-	color: #888;
-	text-shadow: 0 1px 0 rgba(255,255,255, 0.8);
-	text-decoration: none;
-	text-align: center;
-	padding: 8px 12px;
-	font-weight: 700;
-	font-family: helvetica, arial, sans-serif;
-	border-radius: 4px;
-	border: 1px solid #bcbcbc;
-	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-	box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-	background-image: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	background-image: -moz-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	background-image: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	background-image: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	background-image: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-	&:hover{
-		background-color: #07aefc;
-		color: #fff;
-		cursor: pointer;
-	}
-}
-.common{
-	position: fixed;
-	width: 60%;
-	z-index: 100;	
-	transition:all .4s;
-	img{
-		width: 80%;
-		background-color: #fff;
-	}
-	// &.fade-enter{
- //  	   opacity:0;
- //  	   transform: translateX(0);
-	// }
-	// &.fade-leave-to{
-	// 	opacity:0;
-	// 	transform: translateX(0);
-	// }
-	&.fade-enter{
-  	   opacity:0;
-  	   // transform: translateX(100%);
-	}
-	&.fade-leave-to{
-		opacity:0;
-	}
-}
+	@import "preView.less";
 </style>
 <script>
+	import albumInput from '../input/input.vue'
+
 	export default{
 		data(){
 			return{
 				preViewShowIndex:0,
 				move:null,
+				albumList:[
+					{name:"类型1",url:'',price:40},
+					{name:"类型2",url:'',price:50},
+					{name:"类型3",url:'',price:60},
+				],
+				aciveListIndex:0,
+				priceAll:0,
+				ifUsrInput:false,
+				ifTelInput:false,
+				btnClass:{
+        			printBtn: true,
+        			printBtned: false
+      			},
 			}
 		},
 		props:{
@@ -207,6 +79,25 @@
 
 		},
 		methods:{
+			confirmInputState: function(result, val) {
+      			var state = result[0];
+				switch(val) {
+        			case 'usr' : this.ifUsrInput = state == 'success' ? true : false;
+          				break;
+        			case 'tel' : this.ifTelInput = state == 'success' ? true : false;
+          				break;
+      			}
+      			this.inputResultTotal();
+    		},
+    		inputResultTotal:function(){
+      			if(this.ifUsrInput && this.ifTelInput) {
+        			this.btnClass.printBtned = true;
+      			}
+    		},
+			setActiveList:function(index,value){
+				this.aciveListIndex = index;
+				this.priceAll = value;
+			},
 			preClick:function(){
 				let that = this;
 				this.move="{transition: all 1s ease,transform: translateX(-200%)}";
@@ -226,12 +117,16 @@
 				this.$emit("preViewClose");
 			},
 			sendJson:function(){
-				let u_name = document.getElementById("uName").value;
-				let u_phone = document.getElementById("uPhone").value;
-				let u_adress = document.getElementById("uAdress").value;
-				this.$emit("sendJson",{uName:u_name,uPhone:u_phone,uAdress:u_adress});
+				if(this.btnClass.printBtned == true){
+					let u_name = document.getElementById("uName").value;
+					let u_phone = document.getElementById("uPhone").value;
+					let u_adress = document.getElementById("uAdress").value;
+					this.$emit("sendJson",{uName:u_name,uPhone:u_phone,uAdress:u_adress});
+				}
 			}
-		}
+		},
+		components:{albumInput}
+
 
 	}
 </script>

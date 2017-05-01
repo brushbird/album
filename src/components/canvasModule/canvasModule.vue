@@ -116,7 +116,7 @@
 				start: 0,
 				canvasList:[{}],
 				canvasJson:[],
-				preView:[],
+				preView:[{}],
 				photoJson:[],
 				objectToolShow:false,
 				objectIndex:0,
@@ -195,8 +195,15 @@
 					this.hiddenTextarea.focus();
 					this.selectAll();
 				});
+				text.on("deselected",function(){
+					that.colorShow=false;
+					that.itextShow=false;
+					that.itextStyle=false;
+				});
 				canvas[index].add(text);
+
 				canvas[index].setActiveObject(text);
+				that.$set(that.preView,index,canvas[index].toDataURL());
 			},
 			setCid:function(index){
 					return "a"+index;
@@ -205,11 +212,13 @@
 				let that =this;
 				let length = this.canvasList.length;
 				this.canvasList.push("");
+				this.preView.push("");
 				this.isActive = length;
 				this.$nextTick(function(){
 					let tag = document.getElementById("a"+length);
 					canvas[length] = new fabric.Canvas(tag);
 					canvas[length].renderAll();
+					that.$set(that.preView,length,canvas[length].toDataURL());
 					canvas[length].on({
     							'object:selected': function(e){
     								that.colorShow=false;
@@ -367,6 +376,7 @@
 			setActive:function(index){
 				canvas[this.isActive].deactivateAll();
 				canvas[this.isActive].renderAll();
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 				this.objectToolShow=false;
 				this.isActive = index;
 			},
@@ -397,6 +407,8 @@
    				// newImage.borderScaleFactor = 30;
    				// newImage.cornerSize = 30;
    				canvas[index].add(newImage);
+				canvas[index].setActiveObject(newImage);
+				that.$set(that.preView,index,canvas[index].toDataURL());
    				return false;
             },
             dropBg:function(e,index){
@@ -406,6 +418,7 @@
     			}
    				canvas[index].setBackgroundImage(dom.src, canvas[index].renderAll.bind(canvas[index]));
 				this.isActive=index;
+				that.$set(that.preView,index,canvas[index].toDataURL());
    				return false;
             },
             optionchange:function(event){
@@ -414,25 +427,31 @@
             	let index = this.objectIndex;
 				canvas[this.isActive].getObjects()[index].set({fontFamily : ev.value});
 				canvas[that.isActive].renderAll();
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             delObj:function(index){
             	canvas[this.isActive].getObjects()[index].remove();
+            	that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             upToCase:function(index){
             	let that = this;
 				canvas[this.isActive].bringForward(canvas[that.isActive].getObjects()[index]);
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             downToCase:function(index){
             	let that = this;
 				canvas[this.isActive].sendBackwards(canvas[that.isActive].getObjects()[index]);
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             upCase:function(index){
             	let that = this;
 				canvas[this.isActive].bringToFront(canvas[that.isActive].getObjects()[index]);
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             downCase:function(index){
             	let that = this;
 				canvas[this.isActive].sendToBack(canvas[that.isActive].getObjects()[index]);
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             preViewClose:function(){
             	this.showPreview=false;
@@ -546,6 +565,7 @@
 									canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 								}
 								canvas[that.isActive].renderAll();
+								that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 						 	}
 							
 					});	
@@ -569,6 +589,7 @@
 					  show.style.backgroundColor = 'rgb('+rgb+')';
 					  Tcolor.value = rgb;
 					  canvas[that.isActive].renderAll();
+					  that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}
 					else if(chooseC == 'no'){
 						show.style.backgroundColor = 'rgb(0,0,0)';
@@ -579,6 +600,7 @@
 							canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 						}
 						canvas[that.isActive].renderAll();
+						that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}
 					else{
 					   	
@@ -591,6 +613,7 @@
 							canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 						}
 						canvas[that.isActive].renderAll();
+						that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}	
 
 				});
@@ -694,6 +717,7 @@
 					}
 				}
 				canvas[that.isActive].renderAll();
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 			},
 			upSize:function(){
 				let that = this;
@@ -703,28 +727,20 @@
 					canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  swidth});
 				}
 				canvas[that.isActive].renderAll();
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 			},
 			setPreView:function(){
-				this.showMood = true;
 				let that = this;
-				console.log(this.showMood);
-				this.$nextTick(function(){
-					let list = [];
-					for(var i=0; i<canvas.length; i++){
-						list.push(canvas[i].toDataURL());
-					}
-					that.preView = list;
-					that.showPreview=true;
-				})
-				this.showMood = false;
-				console.log(this.showMood);
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				that.showPreview=true;
 			},
-			loadModules:function(mindex){
+			loadModules:function(options){
 				this.showMood=true;
 				this.moodText="正在加载模板，请稍后~~";
-				let idnum = mindex+1;
+				let idnum = options.m_index+1;
+				let m_name = options.m_name;
 				let that = this;
-				this.$http.get('http://123.207.169.138/guangmu/photo/selectphoto.s?m_index='+idnum+'&m_name='+'jinan'+'&m_num='+1).then(response => {
+				this.$http.get('http://123.207.169.138/guangmu/photo/selectphoto.s?m_index='+idnum+'&m_name='+m_name+'&m_num='+1).then(response => {
                  	that.$set(that.canvasList,that.isActive,JSON.stringify(response.data));
                  	this.$nextTick(function(){
 							// let tag = document.getElementById("a"+that.isActive);
@@ -741,11 +757,14 @@
 										that.colorShow=false;
 									}else{
 										that.itextShow=false;
+										that.colorShow=false;
 									}
 									if(that.judgeImage()){
 										that.imageShow=true;
+										that.colorShow=false;
 									}else{
 										that.imageShow=false;
+										that.colorShow=false;
 									}
 									that.objectToolShow = true;
 									e.target.rotatingPointOffset=200;
@@ -756,12 +775,14 @@
 							});
 							canvas[that.isActive].on({
     							'selection:cleared': function(){
+    								that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 									that.objectToolShow = false;
 									that.colorShow = false;
 									that.itextStyle = false;
 									that.imageShow=false;
 								}
 							});
+						that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 						let transformScale = document.body.clientWidth*0.56/4961;
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
 						that.showMood=false;
@@ -789,22 +810,29 @@
 							canvas[i] = new fabric.Canvas(tag);
 							canvas[i].loadFromJSON(that.canvasList[i]);
 							canvas[i].renderAll();
+							that.$set(that.preView,i,canvas[i].toDataURL());
 							canvas[i].on({
     							'object:selected': function(e){
-    								that.colorShow=false;
+    								that.objectToolShow = false;
+									that.colorShow = false;
+									that.itextStyle = false;
+									that.imageShow=false;
 									var index = canvas[i].getObjects().indexOf(e.target);
 									console.log("selected"+index);
 									that.objectIndex = index;
 									if(that.judgeItext()){
 				  						that.itextShow=true;
-										that.colorShow=false;
+										// that.colorShow=false;
 									}else{
 										that.itextShow=false;
+										// that.colorShow=false;
 									}
 									if(that.judgeImage()){
 										that.imageShow=true;
+										// that.colorShow=false;
 									}else{
 										that.imageShow=false;
+										// that.colorShow=false;
 									}
 									that.objectToolShow = true;
 									e.target.rotatingPointOffset=200;
@@ -819,9 +847,11 @@
 									that.colorShow = false;
 									that.itextStyle = false;
 									that.imageShow=false;
+									that.$set(that.preView,i,canvas[i].toDataURL());
 								}
 							});
 							canvas[i].on('object:scaling', (e) => {
+								that.$set(that.preView,i,canvas[i].toDataURL());
 								let o = e.target;
 								if (!o.strokeWidthUnscaled && o.strokeWidth) {
   									o.strokeWidthUnscaled = o.strokeWidth;
@@ -830,6 +860,7 @@
   									o.strokeWidth = o.strokeWidthUnscaled / o.scaleX;
   								}
 							});
+							
 						}
 						let transformScale = document.body.clientWidth*0.56/4961;
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";

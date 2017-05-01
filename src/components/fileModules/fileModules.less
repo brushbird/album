@@ -108,12 +108,64 @@
 			border: 2px dashed;
 		}
 	}
-	.modules{
-		width: 80%;
-		height: 20%;
-		// height: 200px;
-		background-color: #07aefc;
-		cursor: pointer;
-		margin: 10px auto;
+	.moduleContent{
+		.moudulesHead{
+			position: relative;
+			float: left;
+			left: 0;
+			top: 0;
+			width: 100%;
+			span{
+				width: 50%;
+				float: left;
+				line-height: 2;
+				cursor: pointer;
+				background-color: #7e7e7e;
+			}
+			.isModule{
+				background-color: #07aefc;
+			}
+		}
+		.moudulesMain{
+			float: left;
+			margin-top: 5px;
+			width: 100%;
+			height: 90%;
+			.moudulesMain-left-head{
+				width: 80%;
+				margin:5px auto; 
+				.modulesBtn{
+					font-size: 0.8em;
+					padding: 2px;
+					border-radius: 5px;
+					background-color: #fafafa;
+					cursor: pointer;
+					margin:2px;
+					display: inline-block;
+					&:hover{
+						background-color: #07aefc;
+					}
+				}
+				.moduleActive{
+					background-color: #07aefc;
+					color: #fff;
+				}
+			}
+			.moudulesMain-left-main{
+				width: 100%;
+				height: 90%;
+				float: left;
+				overflow: scroll;
+				.mouduleImages{
+					width: 80%;
+					margin:5px auto;
+					border:1px solid;
+					cursor: pointer;
+					img{
+						width: 100%;
+					}
+				}
+			}
+		}
 	}
 }

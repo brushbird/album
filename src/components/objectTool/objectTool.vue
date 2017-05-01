@@ -6,7 +6,7 @@
 		<button class="toolbtn" @click="upCase">置于顶层</button>
 		<button class="toolbtn" @click="downCase">置于底层</button>
 		<button class="toolbtn" @click="showItextStyle" v-if="itextShow" :class="{active: itextStyle}">字体</button>
-		<div class="text_bar_item"  v-show="itextStyle" >
+		<div class="text_bar_item"  v-show="itextShow && itextStyle" >
 			<select @change="optionchange" size="6">
 				<option v-for="option in options_style" :value="option.value">{{ option.text }}</option>
 			</select>

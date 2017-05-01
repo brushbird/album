@@ -22,7 +22,24 @@
 		</div>
 	</div>
 	<div class="moduleContent" v-show="activeIndex==1">
-		<div class="modules" @click="loadModules(index)" v-for="(item,index) in moduleLists">
+		<!-- <div class="modules" @click="loadModules(index)" v-for="(item,index) in moduleLists">
+			
+		</div> -->
+		<div class="moudulesHead">
+			<span @click="showMoudules(0)" :class="{isModule : showMoudulesIndex}">模板</span>
+			<span @click="showMoudules(1)" :class="{isModule : !showMoudulesIndex}">热门</span>
+		</div>
+		<div class="moudulesMain" v-show="showMoudulesIndex">
+			<div class="moudulesMain-left-head">
+				<span class="modulesBtn" v-for="(item,index) in modulesList" :class="{moduleActive: index==moduleActiveIndex}" @click="setModuleActive(index,item.title)">{{item.name}}</span>
+			</div>
+			<div class="moudulesMain-left-main">
+				<div class="mouduleImages" v-show="proptText=='jinan'" v-for="(item,index) in normalList" @click="loadModules(index)">
+					<img :src="item.url">
+				</div>
+			</div>
+		</div>
+		<div class="moudulesMain" v-show="!showMoudulesIndex">
 			
 		</div>
 	</div>
@@ -41,13 +58,35 @@
 		data(){
 			return{
 				activeIndex:0,
+				moduleActiveIndex:0,
+				proptText:'',
+				showMoudulesIndex:true,
 				imageList:[],
+				modulesList:[
+					{name: "通用",title:"tongyong"},
+					{name: "济南大学",title:"jinan"},
+					// {name: "二次元"},
+					// {name: "水墨"},
+					// {name: "古典"},
+					// {name: "炫彩"}
+				],
 				mainList:[
 					{name: "图库"},
-					{name: "模板"},
-					{name: "字体"}
+					{name: "素材"},
+					{name: "文字"}
 				],
-				
+				normalList:[
+					{url:"./static/photoList/JNUniversity/p1.png"},
+					{url:"./static/photoList/JNUniversity/p2.png"},
+					{url:"./static/photoList/JNUniversity/p3.png"},
+					{url:"./static/photoList/JNUniversity/p4.png"},
+					{url:"./static/photoList/JNUniversity/p5.png"},
+					{url:"./static/photoList/JNUniversity/p6.png"},
+					{url:"./static/photoList/JNUniversity/p7.png"},
+					{url:"./static/photoList/JNUniversity/p8.png"},
+					{url:"./static/photoList/JNUniversity/p9.png"},
+					{url:"./static/photoList/JNUniversity/p10.png"},
+				]
 			}
 		},
 		props:{
@@ -66,6 +105,10 @@
 		methods:{
 			setActive:function(index){
 				this.activeIndex=index;
+			},
+			setModuleActive:function(index,value){
+				this.moduleActiveIndex = index;
+				this.proptText=value;
 			},
 			drag:function(e){
             	this.$emit('drag',e);
@@ -101,7 +144,12 @@
             	this.$emit("creatIText");
             },
             loadModules:function(index){
-            	this.$emit("loadModules",index);
+            	let mName=this.proptText;
+            	let mIndex = index;
+            	this.$emit("loadModules",{m_name:mName,m_index:mIndex});
+            },
+            showMoudules:function(val){
+            	this.showMoudulesIndex = val == 0 ? true : false;
             }
 		},
 		mounted: function(){

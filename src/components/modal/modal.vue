@@ -50,7 +50,7 @@ export default {
   },
   watch: {
     modalShow: function(){
-      if(this.promptKind == 'error') {
+      if(this.promptKind == 'uerror') {
         setTimeout(() => {
           this.modalClose();
           window.location.reload();
