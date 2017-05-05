@@ -4,19 +4,13 @@
   		<input type="text" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
   		<div class="toolList">
   			<div class="tool" @click="addJson">
-  			<!-- <div class="tool" @click="sendJson"> -->
   				<div class="tool-logo"></div>
   				<span>生成模板</span>
   			</div>
-  			<!-- <div class="tool" @click="addJson"> -->
   			<div class="tool" @click="setPreView">
   				<div class="tool-logo"></div>
   				<span>一键打印</span>
   			</div>
-  			<!-- <div class="tool" @click="addJson">
-  				<div class="tool-logo"></div>
-  				<span>下载</span>
-  			</div> -->
   			<div class="tool" @click="setPreView">
   				<div class="tool-logo"></div>
   				<span>预览</span>
@@ -58,7 +52,6 @@
 			</ul>
 		</div>	
 	</div>
-	
 	<objectTool 
 		:itextShow="itextShow"
 		:imageShow="imageShow"
@@ -77,7 +70,6 @@
 	 	@showItextStyle="showItextStyle"
 	 	@lowSize="lowSize"
 	 	@upSize="upSize"></objectTool>
-	
 	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose" @sendJson="sendJson"></preView>
 	<mood :showMood="showMood" :moodText="moodText"></mood>
 	<modal
@@ -170,7 +162,6 @@
 			creatIText:function(){
 				let index = this.isActive;
 				let that = this;
-				// let scalefont = 4961/1366;
 				let text = new fabric.IText('点击更改文字',{
 					left:50*that.scalefont,
 					top:50*that.scalefont,
@@ -203,7 +194,7 @@
 				canvas[index].add(text);
 
 				canvas[index].setActiveObject(text);
-				that.$set(that.preView,index,canvas[index].toDataURL());
+				// that.$set(that.preView,index,canvas[index].toDataURL());
 			},
 			setCid:function(index){
 					return "a"+index;
@@ -218,7 +209,7 @@
 					let tag = document.getElementById("a"+length);
 					canvas[length] = new fabric.Canvas(tag);
 					canvas[length].renderAll();
-					that.$set(that.preView,length,canvas[length].toDataURL());
+					// that.$set(that.preView,length,canvas[length].toDataURL());
 					canvas[length].on({
     							'object:selected': function(e){
     								that.colorShow=false;
@@ -280,7 +271,7 @@
 					fd.append("file2", blob, "image.png");
 				}	
 				this.$http({
-                	url:"http://123.207.169.138/guangmu/photo/savephoto.s",
+                	url:"http://211.159.165.171/guangmu/photo/savephoto.s",
                 	method:"post",
                 	data:fd,
   					headers: {
@@ -311,6 +302,29 @@
         			this.promptKind = "notsuccess";
       			});
 			},
+			bcPay:function(){
+				 BC.err = function(data) {
+            		//注册错误信息接受
+            		alert(data["ERROR"]);
+        		}
+        		/**
+        			* 需要支付时调用BC.click接口传入参数
+        			*/
+        		BC.click({
+            		"title":"DIY相册", //商品名
+            		"amount":"6000",  //总价（分）
+           			"out_trade_no":"qwertyuiop", //自定义订单号
+            		"sign":"<%=sign%>", //商品信息hash值，含义和生成方式见下文
+            		"return_url" : "http://payservice.beecloud.cn/spay/result.php", //支付成功后跳转的商户页面,可选，默认为http://payservice.beecloud.cn/spay/result.php
+            		// "optional" : <%=optional%>//可选，自定义webhook的optional回调参数
+        		});
+        		/**
+       				 * click调用错误返回：默认行为console.log(err)
+        		*/
+        		BC.err = function(err) {
+            		//err 为object, 例 ｛”ERROR“ : "xxxx"｝;
+        		}
+			},
 			dataURItoBlob:function(dataURI)
 			{
     			var byteString = atob(dataURI.split(',')[1]);
@@ -336,7 +350,7 @@
 				this.moodText="正在生成模板，请稍后~~";	
 				var config = {
   					method: 'post',
-  					url: 'http://123.207.169.138/guangmu/photo/insertphoto.s',
+  					url: 'http://211.159.165.171/guangmu/photo/insertphoto.s',
   					data: {
   						m_js:str,
   						m_name:'jinan',
@@ -366,7 +380,6 @@
         				this.promptText = "成功";
         				this.promptKind = "success";
       			}, response => {
-        			// console.log(that.canvasJson[0]);
         			that.showMood=false;
         			this.modalShow = true;
         			this.promptText = "失败";
@@ -374,9 +387,10 @@
       			});
 			},
 			setActive:function(index){
+				let that = this;
 				canvas[this.isActive].deactivateAll();
 				canvas[this.isActive].renderAll();
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// this.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 				this.objectToolShow=false;
 				this.isActive = index;
 			},
@@ -404,11 +418,9 @@
        				padding : 50,
 
    				});
-   				// newImage.borderScaleFactor = 30;
-   				// newImage.cornerSize = 30;
    				canvas[index].add(newImage);
 				canvas[index].setActiveObject(newImage);
-				that.$set(that.preView,index,canvas[index].toDataURL());
+				// that.$set(that.preView,index,canvas[index].toDataURL());
    				return false;
             },
             dropBg:function(e,index){
@@ -418,7 +430,7 @@
     			}
    				canvas[index].setBackgroundImage(dom.src, canvas[index].renderAll.bind(canvas[index]));
 				this.isActive=index;
-				that.$set(that.preView,index,canvas[index].toDataURL());
+				// that.$set(that.preView,index,canvas[index].toDataURL());
    				return false;
             },
             optionchange:function(event){
@@ -427,31 +439,32 @@
             	let index = this.objectIndex;
 				canvas[this.isActive].getObjects()[index].set({fontFamily : ev.value});
 				canvas[that.isActive].renderAll();
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             delObj:function(index){
+            	let that=this;
             	canvas[this.isActive].getObjects()[index].remove();
-            	that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+            	// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             upToCase:function(index){
             	let that = this;
 				canvas[this.isActive].bringForward(canvas[that.isActive].getObjects()[index]);
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             downToCase:function(index){
             	let that = this;
 				canvas[this.isActive].sendBackwards(canvas[that.isActive].getObjects()[index]);
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             upCase:function(index){
             	let that = this;
 				canvas[this.isActive].bringToFront(canvas[that.isActive].getObjects()[index]);
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             downCase:function(index){
             	let that = this;
 				canvas[this.isActive].sendToBack(canvas[that.isActive].getObjects()[index]);
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             preViewClose:function(){
             	this.showPreview=false;
@@ -565,7 +578,7 @@
 									canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 								}
 								canvas[that.isActive].renderAll();
-								that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+								// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 						 	}
 							
 					});	
@@ -589,7 +602,7 @@
 					  show.style.backgroundColor = 'rgb('+rgb+')';
 					  Tcolor.value = rgb;
 					  canvas[that.isActive].renderAll();
-					  that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+					  // that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}
 					else if(chooseC == 'no'){
 						show.style.backgroundColor = 'rgb(0,0,0)';
@@ -600,7 +613,7 @@
 							canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 						}
 						canvas[that.isActive].renderAll();
-						that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+						// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}
 					else{
 					   	
@@ -613,7 +626,7 @@
 							canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 						}
 						canvas[that.isActive].renderAll();
-						that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+						// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}	
 
 				});
@@ -717,7 +730,7 @@
 					}
 				}
 				canvas[that.isActive].renderAll();
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 			},
 			upSize:function(){
 				let that = this;
@@ -727,11 +740,11 @@
 					canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  swidth});
 				}
 				canvas[that.isActive].renderAll();
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 			},
 			setPreView:function(){
 				let that = this;
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 				that.showPreview=true;
 			},
 			loadModules:function(options){
@@ -740,11 +753,9 @@
 				let idnum = options.m_index+1;
 				let m_name = options.m_name;
 				let that = this;
-				this.$http.get('http://123.207.169.138/guangmu/photo/selectphoto.s?m_index='+idnum+'&m_name='+m_name+'&m_num='+1).then(response => {
+				this.$http.get('http://211.159.165.171/guangmu/photo/selectphoto.s?m_index='+idnum+'&m_name='+m_name+'&m_num='+1).then(response => {
                  	that.$set(that.canvasList,that.isActive,JSON.stringify(response.data));
                  	this.$nextTick(function(){
-							// let tag = document.getElementById("a"+that.isActive);
-							// canvas[that.isActive] = new fabric.Canvas(tag);
 							canvas[that.isActive].loadFromJSON(that.canvasList[that.isActive]);
 							canvas[that.isActive].renderAll();
 							canvas[that.isActive].on({
@@ -775,14 +786,14 @@
 							});
 							canvas[that.isActive].on({
     							'selection:cleared': function(){
-    								that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+    								// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 									that.objectToolShow = false;
 									that.colorShow = false;
 									that.itextStyle = false;
 									that.imageShow=false;
 								}
 							});
-						that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+						// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 						let transformScale = document.body.clientWidth*0.56/4961;
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
 						that.showMood=false;
@@ -810,29 +821,20 @@
 							canvas[i] = new fabric.Canvas(tag);
 							canvas[i].loadFromJSON(that.canvasList[i]);
 							canvas[i].renderAll();
-							that.$set(that.preView,i,canvas[i].toDataURL());
+							// that.$set(that.preView,i,canvas[i].toDataURL());
 							canvas[i].on({
     							'object:selected': function(e){
-    								that.objectToolShow = false;
-									that.colorShow = false;
-									that.itextStyle = false;
-									that.imageShow=false;
 									var index = canvas[i].getObjects().indexOf(e.target);
-									console.log("selected"+index);
 									that.objectIndex = index;
+									that.colorShow = false;
+									that.itextShow=false;
+									that.itextStyle = false;
 									if(that.judgeItext()){
+										that.colorShow=false;
 				  						that.itextShow=true;
-										// that.colorShow=false;
-									}else{
-										that.itextShow=false;
-										// that.colorShow=false;
-									}
-									if(that.judgeImage()){
+									}else if(that.judgeImage()){
+										that.colorShow=false;
 										that.imageShow=true;
-										// that.colorShow=false;
-									}else{
-										that.imageShow=false;
-										// that.colorShow=false;
 									}
 									that.objectToolShow = true;
 									e.target.rotatingPointOffset=200;
@@ -847,7 +849,7 @@
 									that.colorShow = false;
 									that.itextStyle = false;
 									that.imageShow=false;
-									that.$set(that.preView,i,canvas[i].toDataURL());
+									// that.$set(that.preView,i,canvas[i].toDataURL());
 								}
 							});
 							canvas[i].on('object:scaling', (e) => {

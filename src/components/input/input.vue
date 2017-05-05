@@ -7,12 +7,21 @@
   >
     <slot></slot>
     <input
+      v-if="type!='textarea'"
       :type="type"
+      :placeholder="placeholder"
+      :style="inputWidth"
+      :id="inputId"
+      @blur="checkTest"
+      @focus="isFocus=true"
+    />
+    <textarea
+      v-if="type == 'textarea'"
       :placeholder="placeholder"
       :style="inputWidth"
       @blur="checkTest"
       @focus="isFocus=true"
-    />
+      rows="3"></textarea>
     <br>
     <span class="warning">{{ msg }}</span>
   </div>
@@ -39,6 +48,10 @@
           return oneOf(value, ['text', 'textarea', 'password']);
         },
         default: 'text'
+      },
+      inputId:{
+        type: String,
+        default: ''
       },
       placeholder: {
         type: String,
@@ -83,6 +96,8 @@
           case 'yzm': result=checkYzm(this, event);
             break;
           case 'tel': result=checkTel(this, event);
+            break;
+          case 'area': result=checkAdress(this,event);
             break;
         }
         this.$emit('inputResult', result);
@@ -154,11 +169,21 @@
       _this.msg = "请输入用户名！";
       _this.isError = true;
     } else{
+      _this.msg = "";
       return "success";
     }
     return "error";
   }
-
+  function checkAdress(_this,e){
+    if (!e.target.value) {
+      _this.msg = "请输入收货地址！";
+      _this.isError = true;
+    } else{
+      _this.msg = "";
+      return "success";
+    }
+    return "error";
+  }
   function checkYzm(_this, e) {
     let reg = /[a-zA-Z0-9]{4}/; // 4位数字或字母
     if (!e.target.value) {
