@@ -19,6 +19,7 @@
       v-if="type == 'textarea'"
       :placeholder="placeholder"
       :style="inputWidth"
+      :id="inputId"
       @blur="checkTest"
       @focus="isFocus=true"
       rows="3"></textarea>
@@ -100,7 +101,8 @@
           case 'area': result=checkAdress(this,event);
             break;
         }
-        this.$emit('inputResult', result);
+        let inputValue = document.getElementById(this.inputId).value;
+        this.$emit('inputResult', {inputResult:result,value:inputValue});
         this.isFocus=false;
       }
     }

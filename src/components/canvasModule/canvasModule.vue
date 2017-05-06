@@ -25,14 +25,16 @@
 	<div class="canvasContent" v-for="(item,index) in moduleLists">		
 		<div class="main-list" v-if="index == moduleIndex">
 			<div v-for="(option,cindex) in canvasList" v-show="isActive == cindex" @drop='drop($event,cindex)' @dragover='allowDrop($event)'>
-				<canvas :id="setCid(cindex)" height="3508" width="4961"></canvas>
+				<canvas :id="setCid(cindex)" v-if="cindex==0" height="3508" width="2479"></canvas>
+				<canvas :id="setCid(cindex)" v-if="cindex!=0" height="3508" width="4961"></canvas>
 			</div>
 			<div class="splitDot"></div>
 		</div>	
 		<div class="left-list" v-if="index == moduleIndex">
 			<ul>
 				<li v-for="(options,mindex) in canvasList" @click="setActive(mindex)" :class="{cur : isActive == mindex}"  @drop='dropBg($event,mindex)' @dragover='allowDrop($event)'>
-				{{mindex+1}}
+				<span v-if="mIndex==0">封面</span>
+				<span v-if="mIndex!=0">第<b>{{mindex}}</b>张</span>
 				</li>
 			</ul>
 		</div>	
@@ -40,14 +42,17 @@
 	<div class="canvasContent" v-if="moduleIndex == -1">		
 		<div class="main-list">
 			<div v-for="(option,cindex) in canvasList" v-show="isActive == cindex" @drop='drop($event,cindex)' @dragover='allowDrop($event)'>
-				<canvas :id="setCid(cindex)" height="3508" width="4961"></canvas>
+				<canvas :id="setCid(cindex)" v-if="cindex==0" height="3508" width="2479"></canvas>
+				<canvas :id="setCid(cindex)" v-if="cindex!=0" height="3508" width="4961"></canvas>
+				<div v-if="cindex!=0" class="splitDot"></div>
 			</div>
-			<div class="splitDot"></div>
+			<!-- <div class="splitDot"></div> -->
 		</div>	
 		<div class="left-list">
 			<ul>
 				<li v-for="(options,mindex) in canvasList" @click="setActive(mindex)" :class="{cur : isActive == mindex}"  @drop='dropBg($event,mindex)' @dragover='allowDrop($event)'>
-				{{mindex+1}}
+				<span v-if="mindex==0">封面</span>
+				<span v-if="mindex!=0">{{mindex}}</span>
 				</li>
 			</ul>
 		</div>	
@@ -106,7 +111,7 @@
 				see: true,
 				isActive:0,
 				start: 0,
-				canvasList:[{}],
+				canvasList:[{},{}],
 				canvasJson:[],
 				preView:[{}],
 				photoJson:[],
@@ -202,63 +207,72 @@
 			addCanvas:function(){
 				let that =this;
 				let length = this.canvasList.length;
-				this.canvasList.push("");
-				this.preView.push("");
-				this.isActive = length;
-				this.$nextTick(function(){
-					let tag = document.getElementById("a"+length);
-					canvas[length] = new fabric.Canvas(tag);
-					canvas[length].renderAll();
-					// that.$set(that.preView,length,canvas[length].toDataURL());
-					canvas[length].on({
-    							'object:selected': function(e){
-    								that.colorShow=false;
-									var index = canvas[length].getObjects().indexOf(e.target);
-									that.objectIndex = index;
-									if(that.judgeItext()){
-				  						that.itextShow=true;
-										that.colorShow=false;
-									}else{
-										that.itextShow=false;
+				if(length<11){
+					that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+					that.canvasList.push("");
+					that.preView.push("");
+					that.isActive = length;
+					that.$nextTick(function(){
+						let tag = document.getElementById("a"+length);
+						canvas[length] = new fabric.Canvas(tag);
+						canvas[length].renderAll();
+						// that.$set(that.preView,length,canvas[length].toDataURL());
+						canvas[length].on({
+    								'object:selected': function(e){
+    									that.colorShow=false;
+										var index = canvas[length].getObjects().indexOf(e.target);
+										that.objectIndex = index;
+										if(that.judgeItext()){
+					  						that.itextShow=true;
+											that.colorShow=false;
+										}else{
+											that.itextShow=false;
+										}
+										if(that.judgeImage()){
+											that.imageShow=true;
+											that.colorShow=false;
+										}else{
+											that.imageShow=false;
+											that.colorShow=false;
+										}
+										that.objectToolShow = true;
+										e.target.rotatingPointOffset=200;
+       									e.target.borderScaleFactor=10;
+       									e.target.cornerSize=50;
+       									e.target.padding=50;
 									}
-									if(that.judgeImage()){
-										that.imageShow=true;
-										that.colorShow=false;
-									}else{
+								});
+								canvas[length].on({
+    								'selection:cleared': function(){
+										that.objectToolShow = false;
+										that.colorShow = false;
+										that.itextStyle = false;
 										that.imageShow=false;
-										that.colorShow=false;
 									}
-									that.objectToolShow = true;
-									e.target.rotatingPointOffset=200;
-       								e.target.borderScaleFactor=10;
-       								e.target.cornerSize=50;
-       								e.target.padding=50;
-								}
-							});
-							canvas[length].on({
-    							'selection:cleared': function(){
-									that.objectToolShow = false;
-									that.colorShow = false;
-									that.itextStyle = false;
-									that.imageShow=false;
-								}
-							});
-							canvas[length].on('object:scaling', (e) => {
-								let o = e.target;
-								if (!o.strokeWidthUnscaled && o.strokeWidth) {
-  									o.strokeWidthUnscaled = o.strokeWidth;
-  								}
-								if (o.strokeWidthUnscaled) {
-  									o.strokeWidth = o.strokeWidthUnscaled / o.scaleX;
-  								}
-							});
-				})
+								});
+								canvas[length].on('object:scaling', (e) => {
+									let o = e.target;
+									if (!o.strokeWidthUnscaled && o.strokeWidth) {
+  										o.strokeWidthUnscaled = o.strokeWidth;
+  									}
+									if (o.strokeWidthUnscaled) {
+  										o.strokeWidth = o.strokeWidthUnscaled / o.scaleX;
+  									}
+								});
+					})
+			  	}else{
+			  		this.modalShow = true;
+        			this.promptText = "最多可以添加11张";
+        			this.promptKind = "notsuccess";
+			  	}
 			},
 			sendJson:function(options){
 				let that = this;
+				// this.bcPay;
 				let index = canvas.length;
 				let str="",listphote=[];
 				let fd = new FormData();
+				console.log(options);
 				fd.set('u_name', options.uName);
 				fd.set('u_phone', options.uPhone);
 				fd.set('u_adress', options.uAdress);
@@ -390,7 +404,7 @@
 				let that = this;
 				canvas[this.isActive].deactivateAll();
 				canvas[this.isActive].renderAll();
-				// this.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				this.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 				this.objectToolShow=false;
 				this.isActive = index;
 			},
@@ -744,7 +758,7 @@
 			},
 			setPreView:function(){
 				let that = this;
-				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 				that.showPreview=true;
 			},
 			loadModules:function(options){

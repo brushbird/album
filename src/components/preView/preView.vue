@@ -24,7 +24,7 @@
 		<div class="albumInputList">
 			<albumInput inputId="uName" @inputResult="confirmInputState(arguments,'usr')"  placeholder="请输入收货人姓名" name="usr" width="300"></albumInput>
 			<albumInput inputId="uPhone" @inputResult="confirmInputState(arguments,'tel')"  placeholder="请输入收货人手机号" name="tel" width="300"></albumInput>
-			<albumInput inputId="uAdress" type="textarea" @inputResult="confirmInputState(arguments,'address')"  placeholder="请输入收货地址" name="area" width="300"></albumInput>
+			<albumInput inputId="uAdress" type="textarea" @inputResult="confirmInputState(arguments,'address')" placeholder="请输入收货地址" name="area" width="300"></albumInput>
 		</div>
 		
 		<div class="payList">
@@ -47,10 +47,9 @@
 				preViewShowIndex:0,
 				move:null,
 				albumList:[
-					{name:"类型1",url:'',price:40},
-					{name:"类型2",url:'',price:50},
-					{name:"类型3",url:'',price:60},
-					{name:"类型4",url:'',price:70},
+					{name:"类型1",url:'',price:48},
+					{name:"类型2",url:'',price:58},
+					{name:"类型3",url:'',price:68},
 				],
 				aciveListIndex:0,
 				priceAll:40,
@@ -61,6 +60,9 @@
         			printBtn: true,
         			printBtned: false
       			},
+      			u_name:"",
+      			u_phone:'',
+      			u_adress:''
 			}
 		},
 		props:{
@@ -77,16 +79,18 @@
 
 		},
 		methods:{
-			confirmInputState: function(result, val) {
-      			var state = result[0];
+			confirmInputState: function(option, val) {
+				let that = this;
+      			var state = option[0].inputResult;
 				switch(val) {
-        			case 'usr' : this.ifUsrInput = state == 'success' ? true : false;
+        			case 'usr' : {that.ifUsrInput = state == 'success' ? true : false;that.u_name = option[0].value};
           				break;
-        			case 'tel' : this.ifTelInput = state == 'success' ? true : false;
+        			case 'tel' : {that.ifTelInput = state == 'success' ? true : false;that.u_phone = option[0].value};
           				break;
-          			case 'address' : this.ifAdsInput = state == 'success' ? true : false;
+          			case 'address' : {that.ifAdsInput = state == 'success' ? true : false;that.u_adress = option[0].value};
           				break;
       			}
+      			// console.log(option[0]);
       			this.inputResultTotal();
     		},
     		inputResultTotal:function(){
@@ -102,14 +106,14 @@
 				let that = this;
 				this.move="{transition: all 1s ease,transform: translateX(-200%)}";
 				if(this.preViewShowIndex>0){
-					this.preViewShowIndex--;
+					that.preViewShowIndex--;
 				}
 			},
 			backClick:function(){
 				let that = this;
 				this.move="{transition: all 1s ease,transform: translateX(200%)}";
 				if(this.preViewShowIndex<this.preView.length-1){
-					this.preViewShowIndex++;
+					that.preViewShowIndex++;
 				}
 			},
 			preViewClose:function(){
@@ -118,13 +122,10 @@
 				this.$emit("preViewClose");
 			},
 			sendJson:function(){
+				let that = this;
 				if(this.btnClass.printBtned == true){
-					// let u_name = document.getElementById("uName").value;
-					// let u_phone = document.getElementById("uPhone").value;
-					// let u_adress = document.getElementById("uAdress").value;
-					// console.log(u_name+u_phone+u_adress);
-					this.$emit("sendJson");
-					// ,{uName:u_name,uPhone:u_phone,uAdress:u_adress}
+					that.$emit("sendJson",{uName:that.u_name,uPhone:that.u_phone,uAdress:that.u_adress});
+					that.btnClass.printBtned = false;
 				}
 			}
 		},
