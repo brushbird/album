@@ -1,6 +1,11 @@
 <template>
   <div class="content">
   	<header>
+  		<div class="testlogin" v-if="!islogin">
+  			<input type="text" name="uid" placeholder="userid" id="uid">
+  			<input type="text" name="upass" placeholder="password" id="upass">
+  			<button @click="checklogin">登陆</button>
+  		</div>
   		<input type="text" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
   		<div class="toolList">
   			<div class="tool" @click="addJson">
@@ -124,7 +129,8 @@
 				modalShow:false,
 				promptText: '操作成功',
         		promptKind: 'success',
-        		moodText:''
+        		moodText:'',
+        		islogin:false,
 			}
 		},
 		props:{
@@ -138,6 +144,53 @@
 			}
 		},
 		methods:{
+			checklogin:function(){
+				let uid = document.getElementById("uid").value;
+				let upass = document.getElementById("upass").value;
+				let that = this;
+				console.log(uid+upass);
+				this.$http({
+                	url:"http://192.168.10.30:8080/guangmu/photologin/yanzheng.s",
+                	method:"post",
+                	data:{
+                		u_phone:uid,
+                		u_password: upass
+                	},
+  					transformRequest: [
+    					function(data) {
+      					let ret = ''
+      					for (let it in data) {
+        					ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) +'&'
+      					}
+      					return ret
+    					}
+  					]
+				}).then(response => {
+        				if(response.data == 1)
+        				{
+        					console.log("success");
+						// console.log(uid+upass);
+        				console.log(response);
+        				that.islogin=true;
+        				this.modalShow = true;
+        				this.promptText = "登陆成功";
+        				this.promptKind = "success";
+        				}else{
+        					console.log("error");
+        			console.log(response);
+        			this.modalShow = true;
+        			this.promptText = "登陆失败";
+        			this.promptKind = "notsuccess";
+        				}
+        				
+      			}, response => {
+        			console.log("error");
+        			console.log(response);
+        			this.modalShow = true;
+        			this.promptText = "登陆失败";
+        			this.promptKind = "notsuccess";
+      			});
+			},
 			modalClose:function(){
 				this.modalShow = false;
 			},
@@ -268,53 +321,53 @@
 			},
 			sendJson:function(options){
 				let that = this;
-				this.bcPay();
-				// let index = canvas.length;
-				// let str="",listphote=[];
-				// let fd = new FormData();
-				// console.log(options);
+				// this.bcPay();
+				let index = canvas.length;
+				let str="",listphote=[];
+				let fd = new FormData();
+				console.log(options);
 				// fd.set('u_name', options.uName);
 				// fd.set('u_phone', options.uPhone);
 				// fd.set('u_adress', options.uAdress);
-				// this.showPreview=false;
-				// this.showMood=true;
-				// this.moodText="正在生成相册，请稍后~~";
-				// for(let i = 0; i<index; i++)
-				// {
-				// 	let blob = that.dataURItoBlob(canvas[i].toDataURL());
-				// 	fd.append("file2", blob, "image.png");
-				// }	
-				// this.$http({
-    //             	url:"http://211.159.165.171/guangmu/photo/savephoto.s",
-    //             	method:"post",
-    //             	data:fd,
-  		// 			headers: {
-    //                     'Content-Type': 'application/x-www-form-urlencoded'
-    //                 },
-    //                 enctype:'application/x-www-form-urlencoded',
-    //             	processData:false,
-    //             	contentType:false,
-				// }).then(response => {
-    //     				if(response == 1)
-    //     				{
-    //     					console.log("success");
-    //     					console.log(response);
-    //     				}
-    //     				console.log("success");
-    //     				console.log(response);
-    //     				that.showMood=false;
-    //     				that.moodText="";
-    //     				this.modalShow = true;
-    //     				this.promptText = "成功";
-    //     				this.promptKind = "success";
-    //   			}, response => {
-    //     			console.log("error");
-    //     			console.log(response);
-    //     			that.showMood=false;
-    //     			this.modalShow = true;
-    //     			this.promptText = "失败";
-    //     			this.promptKind = "notsuccess";
-    //   			});
+				this.showPreview=false;
+				this.showMood=true;
+				this.moodText="正在生成相册，请稍后~~";
+				for(let i = 0; i<index; i++)
+				{
+					let blob = that.dataURItoBlob(canvas[i].toDataURL());
+					fd.append("file2", blob, "image.png");
+				}	
+				this.$http({
+                	url:"http://192.168.10.30:8080/guangmu/photo/savephoto.s",
+                	method:"post",
+                	data:fd,
+  					headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    enctype:'application/x-www-form-urlencoded',
+                	processData:false,
+                	contentType:false,
+				}).then(response => {
+        				if(response == 1)
+        				{
+        					console.log("success");
+        					console.log(response);
+        				}
+        				console.log("success");
+        				console.log(response);
+        				that.showMood=false;
+        				that.moodText="";
+        				this.modalShow = true;
+        				this.promptText = "成功";
+        				this.promptKind = "success";
+      			}, response => {
+        			console.log("error");
+        			console.log(response);
+        			that.showMood=false;
+        			this.modalShow = true;
+        			this.promptText = "失败";
+        			this.promptKind = "notsuccess";
+      			});
 			},
 			bcPay:function(){
 				 BC.err = function(data) {
@@ -375,7 +428,7 @@
 				this.moodText="正在生成模板，请稍后~~";	
 				var config = {
   					method: 'post',
-  					url: 'http://211.159.165.171/guangmu/photo/insertphoto.s',
+  					url: 'http://192.168.10.30:8080/guangmu/photo/insertphoto.s',
   					data: {
   						m_js:str,
   						m_name:'jinan',
