@@ -268,53 +268,53 @@
 			},
 			sendJson:function(options){
 				let that = this;
-				// this.bcPay;
-				let index = canvas.length;
-				let str="",listphote=[];
-				let fd = new FormData();
-				console.log(options);
-				fd.set('u_name', options.uName);
-				fd.set('u_phone', options.uPhone);
-				fd.set('u_adress', options.uAdress);
-				this.showPreview=false;
-				this.showMood=true;
-				this.moodText="正在生成相册，请稍后~~";
-				for(let i = 0; i<index; i++)
-				{
-					let blob = that.dataURItoBlob(canvas[i].toDataURL());
-					fd.append("file2", blob, "image.png");
-				}	
-				this.$http({
-                	url:"http://211.159.165.171/guangmu/photo/savephoto.s",
-                	method:"post",
-                	data:fd,
-  					headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    enctype:'application/x-www-form-urlencoded',
-                	processData:false,
-                	contentType:false,
-				}).then(response => {
-        				if(response == 1)
-        				{
-        					console.log("success");
-        					console.log(response);
-        				}
-        				console.log("success");
-        				console.log(response);
-        				that.showMood=false;
-        				that.moodText="";
-        				this.modalShow = true;
-        				this.promptText = "成功";
-        				this.promptKind = "success";
-      			}, response => {
-        			console.log("error");
-        			console.log(response);
-        			that.showMood=false;
-        			this.modalShow = true;
-        			this.promptText = "失败";
-        			this.promptKind = "notsuccess";
-      			});
+				this.bcPay();
+				// let index = canvas.length;
+				// let str="",listphote=[];
+				// let fd = new FormData();
+				// console.log(options);
+				// fd.set('u_name', options.uName);
+				// fd.set('u_phone', options.uPhone);
+				// fd.set('u_adress', options.uAdress);
+				// this.showPreview=false;
+				// this.showMood=true;
+				// this.moodText="正在生成相册，请稍后~~";
+				// for(let i = 0; i<index; i++)
+				// {
+				// 	let blob = that.dataURItoBlob(canvas[i].toDataURL());
+				// 	fd.append("file2", blob, "image.png");
+				// }	
+				// this.$http({
+    //             	url:"http://211.159.165.171/guangmu/photo/savephoto.s",
+    //             	method:"post",
+    //             	data:fd,
+  		// 			headers: {
+    //                     'Content-Type': 'application/x-www-form-urlencoded'
+    //                 },
+    //                 enctype:'application/x-www-form-urlencoded',
+    //             	processData:false,
+    //             	contentType:false,
+				// }).then(response => {
+    //     				if(response == 1)
+    //     				{
+    //     					console.log("success");
+    //     					console.log(response);
+    //     				}
+    //     				console.log("success");
+    //     				console.log(response);
+    //     				that.showMood=false;
+    //     				that.moodText="";
+    //     				this.modalShow = true;
+    //     				this.promptText = "成功";
+    //     				this.promptKind = "success";
+    //   			}, response => {
+    //     			console.log("error");
+    //     			console.log(response);
+    //     			that.showMood=false;
+    //     			this.modalShow = true;
+    //     			this.promptText = "失败";
+    //     			this.promptKind = "notsuccess";
+    //   			});
 			},
 			bcPay:function(){
 				 BC.err = function(data) {
@@ -324,11 +324,22 @@
         		/**
         			* 需要支付时调用BC.click接口传入参数
         			*/
+        		let app_id = "e95a9ff5-5f11-4d66-9b4b-ba66adf0bbd3";
+        		let app_secret = "d21b49a7-902c-453d-b0f2-63fce1db4fd0";
+        		let title = "testPay";
+        		let amount = "1"; //单位分
+        		let out_trade_no = "test1";
+        		//2.根据订单参数生成 订单签名 sign
+        		let sign = hex_md5(app_id + title + amount + out_trade_no + app_secret);
+        		console.log(sign);
+        		// let optional = "{\"msg\":\"addtion msg\"}";
         		BC.click({
-            		"title":"DIY相册", //商品名
-            		"amount":"6000",  //总价（分）
-           			"out_trade_no":"qwertyuiop", //自定义订单号
-            		"sign":"<%=sign%>", //商品信息hash值，含义和生成方式见下文
+            		"title":title, //商品名
+            		"amount":amount,  //总价（分）
+           			"out_trade_no":out_trade_no, //自定义订单号
+            		"sign":sign, //商品信息hash值，含义和生成方式见下文
+            		"debug":true,
+            		"instant_channel":"ali",
             		"return_url" : "http://payservice.beecloud.cn/spay/result.php", //支付成功后跳转的商户页面,可选，默认为http://payservice.beecloud.cn/spay/result.php
             		// "optional" : <%=optional%>//可选，自定义webhook的optional回调参数
         		});
