@@ -56,42 +56,25 @@ input {
     overflow: hidden;
     header {
         width: 100%;
-        height: 8%;
+        height: 6%;
         background-color: #fd87c3;
         color: #fff;
         position: fixed;
         left: 0;
         top: 0;
-        .mainName {
-            height: 50%;
-            width: 300px;
-            text-align: center;
-            border: 0;
-            background-color: #fd87c3;
-            margin: 20px auto;
-            font-size: 16px;
-            color: #fff;
-            &:focus {
-                .placeholder( {
-                    color: #fff;
-                    opacity: 0.4;
-                }
-                )
-            }
-        }
         .toolList {
             height: 100%;
             position: absolute;
             top: 0;
             right: 0;
             .tool {
-                width: 60px;
                 height: 100%;
-                float: right;
+                float: left;
                 cursor: pointer;
                 text-align: center;
-                font-size: 12px;
-                margin: 0 5px;
+                font-size: 15px;
+                margin: 0 10px 0 0;
+                line-height: 2.5;
                 &:hover{
                     color: #07aefc;
                 }
@@ -105,16 +88,125 @@ input {
                 span {}
             }
         }
+        .mainName {
+            height: 50%;
+            width: 300px;
+            text-align: center;
+            border: 0;
+            background-color: #fd87c3;
+            margin: 10px auto;
+            font-size: 17px;
+            color: #fff;
+            &:focus {
+                .placeholder( {
+                    color: #fff;
+                    opacity: 0.4;
+                }
+                )
+            }
+        }
+        .logOrreg{
+            height: 100%;
+            line-height: 2.5;
+            margin: 0 auto;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+
+            span{
+                color: #07aefc;
+                // font-weight: bold;
+                cursor: pointer;
+            }
+        }
+        
+    }
+    .logMood{
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            left: 0;
+            top: 0;
+            z-index: 99;
+        }
+    .logFrame{
+        width: 500px;
+        position: absolute;
+        left: 50%;
+        top: 30%;
+        background: #fff;
+        box-shadow: 0 0 1px 1 rgba(255, 255, 255, 0.5);
+        transform: translate(-50%, -50%);
+        z-index: 101;
+        padding: 20px;
+        border-radius: 20px;
+        .logFrameHead{
+            width: 100%;
+            height: 50px;
+            display: block;
+            float: left;
+            .logcontain{
+                width: 50%;
+                height: 100%;
+                display: inline-block;
+                float: left;
+                span{
+                    margin: auto;
+                    font-size: 25px;
+                    line-height: 2;
+                    cursor: pointer;
+                    color: rgba(0,0,0,0.4);
+                }
+                .logregActive{
+                    color: #000;
+                    font-weight: bold;
+                }
+            }
+        }
+        .logFrameMain{
+            display: block;
+            float: left;
+            width: 100%;
+            margin-top: 20px;
+            .btn{
+                width:138px;
+                height:36px;
+                font-size: 1.2em;
+                line-height: 1;
+                color: #888;
+                text-shadow: 0 1px 0 rgba(255,255,255, 0.8);
+                text-decoration: none;
+                text-align: center;
+                padding: 8px 12px;
+                font-weight: 700;
+                font-family: helvetica, arial, sans-serif;
+                border-radius: 4px;
+                border: 1px solid #bcbcbc;
+                -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+                background-image: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+                background-image: -moz-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+                background-image: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+                background-image: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+                background-image: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+            }
+            .logBtned,.regBtned{
+                background-color: #07aefc;
+                color: #fff;
+                cursor: pointer;
+            }
+        }
     }
     .canvasContent {
         width: 80%;
-        height: 92%;
+        height: 94%;
         float: left;
         position: fixed;
         left: 20%;
-        top: 8%;
+        top: 6%;
         pointer-events: none;
         overflow: hidden;
+        
         .left-list {
             //height: 132px;
             //overflow: hidden;

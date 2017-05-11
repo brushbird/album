@@ -1,0 +1,316 @@
+// @import "../../base/base.less";
+
+.sign-up-first,
+.tel-sign-up-page,
+.sign-up-success,
+.wechat-sign-up-page,
+.agreement-page {
+  width: 550px;
+  height: 540px;
+  background-color: white;
+  margin: 0 auto;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12);
+  padding-top: 46px;
+}
+
+.sign-up {
+  display: none;
+  a:hover {
+    cursor: pointer;
+  }
+}
+
+.zcIsActive,
+.signUpSucPageIsDisplay {
+  display: block;
+}
+
+.sprite {
+  display: inline-block;
+  background: url("./sprite.svg");
+}
+
+.tab {
+  margin-bottom: 73px;
+  font-size: 24px;
+  color: #cdcdcd;
+  text-align: center;
+
+  div {
+    display: inline-block;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  div:nth-child(1) {
+    margin-right: 48px;
+  }
+}
+
+.input {
+  margin-left: 98px;
+  .input-inner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 40px;
+    .img {
+      float: left;
+      width: 100px;
+      height: 40px;
+      overflow: hidden;
+
+      &:hover {
+        cursor: pointer;
+      }
+      img {
+        width: 100px;
+        height: 40px;
+        border: none;
+      }
+    }
+    .get-vcode {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 150px;
+      height: 40px;
+      text-align: center;
+      background-color: #F3F3F3;
+      span {
+        font-size: 14px;
+        line-height: 40px;
+        color: @complementaryColorI;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.next-step-button {
+  button {
+    width: 350px;
+    height: 32px;
+    font-size: 14px;
+    color: #cdcdcd;
+    background-color: #f3f3f3;
+    border: 1px solid #e8e8e8;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.next-step-button {
+  margin: 8px 0 16px 100px;
+}
+
+.signUpNextBtnActived, .nextBtnActived {
+  button {
+    width: 350px;
+    height: 32px;
+    font-size: 14px;
+    color: #FFFFFF;
+    background-color: #07AEFC;
+    border: none;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.fast-signup-text {
+  font-size: 14px;
+  margin: 48px auto 0;
+  color: #626262;
+  width: 112px;
+}
+
+.fast-signup-icon {
+  margin: 24px 0 0 201px;
+  span {
+    margin-right: 40px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .weibo {
+    width: 24px;
+    height: 24px;
+    background-position: -35px -77px;
+  }
+
+  .wechat {
+    width: 24px;
+    height: 24px;
+    background-position: -10px -77px;
+  }
+
+  .qq {
+    width: 24px;
+    height: 24px;
+    background-position: -60px -77px;
+  }
+}
+
+.remark {
+  font-size: 12px;
+  color: #626262;
+  margin-left: 100px;
+
+  a {
+    text-decoration: none;
+    color: #07aefc;
+  }
+}
+
+.zcTxtIsActive {
+  color: #626262;
+}
+
+.wechat-sign-up-page {
+  .header {
+    color: #626262;
+    font-size: 24px;
+    width: 144px;
+    margin: 0 227px 68px;
+  }
+  .qrcode {
+    margin: 0 210px 52px;
+  }
+  .txt1 {
+    width: 154px;
+    font-size: 14px;
+    color: #626262;
+    margin: 0 220px 9px;
+  }
+  .txt2 {
+    width: 144px;
+    font-size: 12px;
+    color: #626262;
+    margin: 0 228px 144px;
+    a {
+      color: #07AEFC;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.sign-up-success {
+  .success-img {
+    width: 104px;
+    height: 104px;
+    background-position: -13px -114px;
+    margin: 60px 235px 32px;
+  }
+  .txt {
+    color: #626262;
+    font-size: 14px;
+    width: 56px;
+    margin: 0 255px 32px;
+  }
+  text-align: center;
+  .to-sign-in-button {
+    button {
+      width: 200px;
+      height: 32px;
+      position: relative;
+      left: 8px;
+      font-size: 14px;
+      color: #FFFFFF;
+      background-color: #07AEFC;
+      border: none;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.agreement-page {
+  .header {
+    width: 216px;
+    height: 24px;
+    font-size: 24px;
+    color: #626262;
+    margin: -20px auto 16px;
+  }
+
+  .agreement-contents {
+    padding: 16px 23px 12px 24px;
+    width: 454px;
+    height: 364px;
+    background-color: #F8F8F8;
+    margin: 0 auto;
+    overflow: scroll;
+    line-height: 25px;
+    font-size: 14px;
+    color: #626262;
+  }
+
+  .agree-button {
+    margin: 16px 100px 32px;
+    button {
+      width: 350px;
+      height: 32px;
+      color: #FFFFFF;
+      font-size: 14px;
+      background-color: #07AEFC;
+      border: none;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.go-back {
+  font-size: 14px;
+  color: #BFBFBF;
+  margin: -14px 484px 22px 16px;
+
+  &:hover {
+    cursor: pointer;
+  }
+  span:nth-child(2) {
+    position: relative;
+    top: -3px;
+  }
+  .go-back-icon {
+    width: 16px;
+    height: 16px;
+    background-position: -10px -10px;
+    margin-right: 4px;
+  }
+}
+
+#sign-up-page {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  .sign-up-page {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  footer {
+    position: absolute;
+    bottom: 15px;
+    font-size: 12px;
+    color: @complementaryColorI;
+    text-align: center;
+    width: 100%;
+  }
+}

@@ -1,57 +1,54 @@
 <template>
   <div class="content">
   	<header>
-  		<div class="testlogin" v-if="!islogin">
-  			<input type="text" name="uid" placeholder="userid" id="uid">
-  			<input type="text" name="upass" placeholder="password" id="upass">
-  			<button @click="checklogin">登陆</button>
+  		<input type="text" v-if="islogin" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
+  		<div class="logOrreg" v-if="!islogin">
+  			注册登录后才可以进行新建、预览、保存或生成相册等更多功能&nbsp;&nbsp;<span @click="showLogReg(0)">登录</span>&nbsp;/&nbsp;<span @click="showLogReg(1)">注册</span>
   		</div>
-  		<input type="text" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
-  		<div class="toolList">
+  		<div class="toolList" v-if="islogin">
   			<div class="tool" @click="addJson">
-  				<div class="tool-logo"></div>
-  				<span>生成模板</span>
-  			</div>
-  			<div class="tool" @click="setPreView">
-  				<div class="tool-logo"></div>
-  				<span>一键打印</span>
-  			</div>
-  			<div class="tool" @click="setPreView">
-  				<div class="tool-logo"></div>
-  				<span>预览</span>
+  				<span>保存</span>
   			</div>
   			<div class="tool" @click="addCanvas">
-  				<div class="tool-logo"></div>
   				<span>新建</span>
   			</div>
-  		</div>
+  			<div class="tool" @click="setPreView">
+  				<span>预览</span>
+  			</div>
+  			<div class="tool" @click="setPreView">
+  				<span>一键打印</span>
+  			</div>
+  		</div>	
+  		
   	</header>
+  	<div class="logMood" v-if="showLogin"></div>
+	<div class="logFrame" v-if="showLogin">
+  		<div class="logFrameHead">
+  			<div class="logcontain">
+  				<span @click="showLogReg(0)" :class="{logregActive: isLog}">登录</span>
+  			</div>
+  			<div class="logcontain">
+  				<span @click="showLogReg(1)" :class="{logregActive: !isLog}">注册</span>
+  			</div>
+  		</div>
+  		<div class="logFrameMain" v-if="isLog">
+  			<albumInput inputId="uPhone" @inputResult="confirmInputState(arguments,'ltel')"  placeholder="请输入手机号" name="tel" width="400"></albumInput>
+  			<albumInput type="password" inputId="lpassword" @inputResult="confirmInputState(arguments,'lpassword')"  placeholder="请输入密码" name="pw" width="400"></albumInput>
+  			<button @click="checklogin" :class="logbtnClass">开启设计</button>
+  		</div>
+  		<div class="logFrameMain" v-if="!isLog">
+  				zhuce
+  		</div>
+  	</div>
 	<fileCom :moduleLists="moduleLists" @creatIText="creatIText" @loadModules="loadModules" @drag="drag" @allowDrop="allowDrop"></fileCom>
-	<div class="canvasContent" v-for="(item,index) in moduleLists">		
-		<div class="main-list" v-if="index == moduleIndex">
-			<div v-for="(option,cindex) in canvasList" v-show="isActive == cindex" @drop='drop($event,cindex)' @dragover='allowDrop($event)'>
-				<canvas :id="setCid(cindex)" v-if="cindex==0" height="3508" width="2479"></canvas>
-				<canvas :id="setCid(cindex)" v-if="cindex!=0" height="3508" width="4961"></canvas>
-			</div>
-			<div class="splitDot"></div>
-		</div>	
-		<div class="left-list" v-if="index == moduleIndex">
-			<ul>
-				<li v-for="(options,mindex) in canvasList" @click="setActive(mindex)" :class="{cur : isActive == mindex}"  @drop='dropBg($event,mindex)' @dragover='allowDrop($event)'>
-				<span v-if="mIndex==0">封面</span>
-				<span v-if="mIndex!=0">第<b>{{mindex}}</b>张</span>
-				</li>
-			</ul>
-		</div>	
-	</div>
-	<div class="canvasContent" v-if="moduleIndex == -1">		
+	<div class="canvasContent">	
+		
 		<div class="main-list">
 			<div v-for="(option,cindex) in canvasList" v-show="isActive == cindex" @drop='drop($event,cindex)' @dragover='allowDrop($event)'>
 				<canvas :id="setCid(cindex)" v-if="cindex==0" height="3508" width="2479"></canvas>
 				<canvas :id="setCid(cindex)" v-if="cindex!=0" height="3508" width="4961"></canvas>
 				<div v-if="cindex!=0" class="splitDot"></div>
 			</div>
-			<!-- <div class="splitDot"></div> -->
 		</div>	
 		<div class="left-list">
 			<ul>
@@ -80,6 +77,7 @@
 	 	@showItextStyle="showItextStyle"
 	 	@lowSize="lowSize"
 	 	@upSize="upSize"></objectTool>
+	 	
 	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose" @sendJson="sendJson"></preView>
 	<mood :showMood="showMood" :moodText="moodText"></mood>
 	<modal
@@ -100,7 +98,8 @@
 	import objectTool from "../objectTool/objectTool.vue";
 	import preView from "../preView/preView.vue";
 	import mood from "../mood/mood.vue";
-	import modal from "../modal/modal.vue";
+	import modal from "../modal/modal.vue";	
+	import albumInput from '../input/input.vue';
 	let dom = null,canvas = [], mIndex=0, colorTag,chooseC;
 	
 	export default{
@@ -109,7 +108,6 @@
 				moduleLists:[
 					{},{},{},{}
 				],	
-				moduleIndex:-1,			
 				showTool:false,
 				colorShow:false,
 				itextStyle:false,
@@ -131,6 +129,31 @@
         		promptKind: 'success',
         		moodText:'',
         		islogin:false,
+        		showLogin:false,
+        		isLog:true,
+        		logbtnClass:{
+        			btn:true,
+        			logBtned:false
+        		},
+        		regbtnClass:{
+        			btn:true,
+        			regBtned:false
+        		},
+        		loginMessage:{
+        			l_phone:'',
+        			l_password:'',
+        		},
+        		registerMessage:{
+        			r_name:'',
+        			r_phone:'',
+        			r_password:'',
+        			r_repassword:'',
+        			r_check:''
+        		},
+        		checkState:{
+        			iflTelInput:false,
+        			iflPassInput:false,
+        		}
 			}
 		},
 		props:{
@@ -144,12 +167,40 @@
 			}
 		},
 		methods:{
+			confirmInputState: function(option, val) {
+				let that = this;
+      			var state = option[0].inputResult;
+				switch(val) {
+        			case 'usr' : {that.ifUsrInput = state == 'success' ? true : false;that.u_name = option[0].value};
+          				break;
+        			case 'ltel' : {that.checkState.iflTelInput = state == 'success' ? true : false;that.loginMessage.l_phone = option[0].value};
+          				break;
+          			case 'lpassword' : {that.checkState.iflPassInput = state == 'success' ? true : false;that.loginMessage.l_password = option[0].value};
+          				break;
+      			}
+      			// console.log(option[0]);
+      			this.inputResultTotal();
+    		},
+    		inputResultTotal:function(){
+      			if(this.checkState.iflTelInput && this.checkState.iflPassInput) {
+        			this.logbtnClass.logBtned = true;
+      			}
+    		},
+			showLogReg:function(val){
+				this.showLogin=true;
+				if(val == 0){
+					this.isLog=true;
+				}else if(val == 1){
+					this.isLog = false;
+				}
+			},
 			checklogin:function(){
 				let uid = document.getElementById("uid").value;
 				let upass = document.getElementById("upass").value;
 				let that = this;
 				console.log(uid+upass);
-				this.$http({
+				if(this.logbtnClass.logBtned){
+				  this.$http({
                 	url:"http://192.168.10.30:8080/guangmu/photologin/yanzheng.s",
                 	method:"post",
                 	data:{
@@ -165,7 +216,7 @@
       					return ret
     					}
   					]
-				}).then(response => {
+				  }).then(response => {
         				if(response.data == 1)
         				{
         					console.log("success");
@@ -190,6 +241,8 @@
         			this.promptText = "登陆失败";
         			this.promptKind = "notsuccess";
       			});
+			}
+				
 			},
 			modalClose:function(){
 				this.modalShow = false;
@@ -946,7 +999,7 @@
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
                  	})
 		},
-		components:{fileCom,objectTool,preView,mood,modal}
+		components:{fileCom,objectTool,preView,mood,modal,albumInput}
 	}
 
 </script>

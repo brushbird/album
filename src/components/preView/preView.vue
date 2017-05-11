@@ -21,21 +21,21 @@
 			</div>
 		</div>
 		<label>收货人信息：</label>
-		<div class="albumInputList">
+		<!-- <div class="albumInputList">
 			<albumInput inputId="uName" @inputResult="confirmInputState(arguments,'usr')"  placeholder="请输入收货人姓名" name="usr" width="300"></albumInput>
 			<albumInput inputId="uPhone" @inputResult="confirmInputState(arguments,'tel')"  placeholder="请输入收货人手机号" name="tel" width="300"></albumInput>
 			<albumInput inputId="uAdress" type="textarea" @inputResult="confirmInputState(arguments,'address')" placeholder="请输入收货地址" name="area" width="300"></albumInput>
 		</div>
-		
+		 -->
 		<div class="payList">
 			<span class="mark">共计：</span>
 			<span class="markPrice">￥{{priceAll}}</span>
 		</div>
-		<button @click="sendJson" :class="btnClass">一键打印</button>
+		<!-- <button @click="sendJson" :class="btnClass">一键打印</button> -->
 	</div>
   </div>
 </template>
-<style lang="less">
+<style lang="less" scoped>
 	@import "preView.less";
 </style>
 <script>
@@ -60,9 +60,9 @@
         			printBtn: true,
         			printBtned: false
       			},
-      			u_name:"",
-      			u_phone:'',
-      			u_adress:''
+      			// u_name:"",
+      			// u_phone:'',
+      			// u_adress:''
 			}
 		},
 		props:{
@@ -79,25 +79,25 @@
 
 		},
 		methods:{
-			confirmInputState: function(option, val) {
-				let that = this;
-      			var state = option[0].inputResult;
-				switch(val) {
-        			case 'usr' : {that.ifUsrInput = state == 'success' ? true : false;that.u_name = option[0].value};
-          				break;
-        			case 'tel' : {that.ifTelInput = state == 'success' ? true : false;that.u_phone = option[0].value};
-          				break;
-          			case 'address' : {that.ifAdsInput = state == 'success' ? true : false;that.u_adress = option[0].value};
-          				break;
-      			}
-      			// console.log(option[0]);
-      			this.inputResultTotal();
-    		},
-    		inputResultTotal:function(){
-      			if(this.ifUsrInput && this.ifTelInput && this.ifAdsInput) {
-        			this.btnClass.printBtned = true;
-      			}
-    		},
+			// confirmInputState: function(option, val) {
+			// 	let that = this;
+   //    			var state = option[0].inputResult;
+			// 	switch(val) {
+   //      			case 'usr' : {that.ifUsrInput = state == 'success' ? true : false;that.u_name = option[0].value};
+   //        				break;
+   //      			case 'tel' : {that.ifTelInput = state == 'success' ? true : false;that.u_phone = option[0].value};
+   //        				break;
+   //        			case 'address' : {that.ifAdsInput = state == 'success' ? true : false;that.u_adress = option[0].value};
+   //        				break;
+   //    			}
+   //    			// console.log(option[0]);
+   //    			this.inputResultTotal();
+   //  		},
+   //  		inputResultTotal:function(){
+   //    			if(this.ifUsrInput && this.ifTelInput && this.ifAdsInput) {
+   //      			this.btnClass.printBtned = true;
+   //    			}
+   //  		},
 			setActiveList:function(index,value){
 				this.aciveListIndex = index;
 				this.priceAll = value;
@@ -121,13 +121,13 @@
 				this.preViewShowIndex=0;
 				this.$emit("preViewClose");
 			},
-			sendJson:function(){
-				let that = this;
-				if(this.btnClass.printBtned == true){
-					that.$emit("sendJson",{uName:that.u_name,uPhone:that.u_phone,uAdress:that.u_adress});
-					that.btnClass.printBtned = false;
-				}
-			}
+			// sendJson:function(){
+			// 	let that = this;
+			// 	if(this.btnClass.printBtned == true){
+			// 		that.$emit("sendJson",{uName:that.u_name,uPhone:that.u_phone,uAdress:that.u_adress});
+			// 		that.btnClass.printBtned = false;
+			// 	}
+			// }
 		},
 		components:{albumInput}
 
