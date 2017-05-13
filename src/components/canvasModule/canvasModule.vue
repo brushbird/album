@@ -1,6 +1,7 @@
 <template>
   <div class="content">
   	<header>
+      <div class="userCenter"></div>
   		<input type="text" v-if="islogin" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
   		<div class="logOrreg" v-if="!islogin">
   			注册登录后才可以进行新建、预览、保存或生成相册等更多功能&nbsp;&nbsp;<span @click="showLogReg(0)">登录</span>&nbsp;/&nbsp;<span @click="showLogReg(1)">注册</span>
@@ -23,6 +24,7 @@
   	</header>
   	<div class="logMood" v-if="showLogin"></div>
 	<div class="logFrame" v-if="showLogin">
+      <div class="logregCloseBtn" @click="logFrameClose">X</div>
   		<div class="logFrameHead">
   			<div class="logcontain">
   				<span @click="showLogReg(0)" :class="{logregActive: isLog}">登录</span>
@@ -37,7 +39,12 @@
   			<button @click="checklogin" :class="logbtnClass">开启设计</button>
   		</div>
   		<div class="logFrameMain" v-if="!isLog">
-  				zhuce
+        <albumInput inputId="rusr" @inputResult="confirmInputState(arguments,'rname')"  placeholder="请输入用户名" name="usr" width="400"></albumInput>
+        <albumInput type="password" inputId="rpassword" @inputResult="confirmInputState(arguments,'rpassword')"  placeholder="请输入密码" name="pw" width="400"></albumInput>
+        <albumInput type="password" inputId="repassword" @inputResult="confirmInputState(arguments,'repassword')"  placeholder="请确认密码" name="pw" width="400"></albumInput>
+        <albumInput inputId="rphone" @inputResult="confirmInputState(arguments,'rtel')"  placeholder="请输入手机号" name="tel" width="400"></albumInput>
+        <albumInput inputId="rcheck" @inputResult="confirmInputState(arguments,'rcheck')"  placeholder="请输入验证码" name="yzm" width="400"></albumInput>
+        <button @click="checkregister" :class="regbtnClass">注册</button>
   		</div>
   	</div>
 	<fileCom :moduleLists="moduleLists" @creatIText="creatIText" @loadModules="loadModules" @drag="drag" @allowDrop="allowDrop"></fileCom>
@@ -128,7 +135,7 @@
 				promptText: '操作成功',
         		promptKind: 'success',
         		moodText:'',
-        		islogin:false,
+        		islogin:true,
         		showLogin:false,
         		isLog:true,
         		logbtnClass:{
@@ -153,6 +160,11 @@
         		checkState:{
         			iflTelInput:false,
         			iflPassInput:false,
+              ifrUser:false,
+              ifrPassword:false,
+              ifrePassword:false,
+              ifrTelInput:false,
+              ifrCheck:false,
         		}
 			}
 		},
@@ -167,16 +179,29 @@
 			}
 		},
 		methods:{
+      logFrameClose:function(){
+        this.showLogin=false;
+      },
 			confirmInputState: function(option, val) {
 				let that = this;
-      			var state = option[0].inputResult;
+      	var state = option[0].inputResult;
 				switch(val) {
-        			case 'usr' : {that.ifUsrInput = state == 'success' ? true : false;that.u_name = option[0].value};
+        			case 'rname' : {that.checkState.ifrUser = state == 'success' ? true : false;that.registerMessage.r_name = option[0].value};
           				break;
+              case 'rpassword' : {that.checkState.ifrPassword = state == 'success' ? true : false;that.registerMessage.r_password = option[0].value};
+                  break;
+              case 'repassword' : {that.checkState.ifrePassword = state == 'success' ? true : false;that.registerMessage.r_repassword = option[0].value};
+                  break;
+              case 'rtel' : {that.checkState.ifrTelInput = state == 'success' ? true : false;that.registerMessage.r_phone = option[0].value};
+                  break;
+              case 'rcheck' : {that.checkState.ifrCheck = state == 'success' ? true : false;that.registerMessage.r_check = option[0].value};
+                  break;
         			case 'ltel' : {that.checkState.iflTelInput = state == 'success' ? true : false;that.loginMessage.l_phone = option[0].value};
           				break;
-          			case 'lpassword' : {that.checkState.iflPassInput = state == 'success' ? true : false;that.loginMessage.l_password = option[0].value};
+          	  case 'lpassword' : {that.checkState.iflPassInput = state == 'success' ? true : false;that.loginMessage.l_password = option[0].value};
           				break;
+              case 'lpassword' : {that.checkState.iflPassInput = state == 'success' ? true : false;that.loginMessage.l_password = option[0].value};
+                  break;
       			}
       			// console.log(option[0]);
       			this.inputResultTotal();
@@ -184,7 +209,9 @@
     		inputResultTotal:function(){
       			if(this.checkState.iflTelInput && this.checkState.iflPassInput) {
         			this.logbtnClass.logBtned = true;
-      			}
+      			}else if(this.checkState.ifrUser && this.checkState.ifrPassword && this.checkState.ifrePassword && this.checkState.ifrTelInput && this.checkState.ifrCheck && this.registerMessage.r_password==this.registerMessage.r_repassword){
+              this.regbtnClass.regBtned = true;
+            }
     		},
 			showLogReg:function(val){
 				this.showLogin=true;
@@ -195,17 +222,16 @@
 				}
 			},
 			checklogin:function(){
-				let uid = document.getElementById("uid").value;
-				let upass = document.getElementById("upass").value;
 				let that = this;
 				console.log(uid+upass);
 				if(this.logbtnClass.logBtned){
+
 				  this.$http({
                 	url:"http://192.168.10.30:8080/guangmu/photologin/yanzheng.s",
                 	method:"post",
                 	data:{
-                		u_phone:uid,
-                		u_password: upass
+                		u_phone:that.loginMessage.l_phone,
+                		u_password: that.loginMessage.l_password
                 	},
   					transformRequest: [
     					function(data) {
@@ -244,6 +270,54 @@
 			}
 				
 			},
+      checkregister:function(){
+        let that = this;
+        console.log(uid+upass);
+        if(this.regbtnClass.regBtned){
+
+          this.$http({
+                  url:"http://192.168.10.30:8080/guangmu/photologin/yanzheng.s",
+                  method:"post",
+                  data:{
+                    // u_phone:that.loginMessage.l_phone,
+                    // u_password: that.loginMessage.l_password
+                  },
+            transformRequest: [
+              function(data) {
+                let ret = ''
+                for (let it in data) {
+                  ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) +'&'
+                }
+                return ret
+              }
+            ]
+          }).then(response => {
+                if(response.data == 1)
+                {
+                  console.log("success");
+            // console.log(uid+upass);
+                console.log(response);
+                that.islogin=true;
+                this.modalShow = true;
+                this.promptText = "注册成功";
+                this.promptKind = "success";
+                }else{
+                  console.log("error");
+              console.log(response);
+              this.modalShow = true;
+              this.promptText = "注册失败";
+              this.promptKind = "notsuccess";
+                }
+                
+            }, response => {
+              console.log("error");
+              console.log(response);
+              this.modalShow = true;
+              this.promptText = "注册失败";
+              this.promptKind = "notsuccess";
+            });
+      }
+      },
 			modalClose:function(){
 				this.modalShow = false;
 			},
