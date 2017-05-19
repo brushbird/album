@@ -2,13 +2,13 @@
   <div v-if="showPreview">
 	<div class="preView">
 		<div class="covery"></div>
-		<transition-group name='fade' tag="ul" class="imgs-wrapper" mode="out-in">		
+		<!-- <transition-group name='fade' tag="ul" class="imgs-wrapper" mode="out-in">		
 			<li v-for="(item,index) in preView" class="common" v-show="index == preViewShowIndex" :key='item' :style="move">
 				<img :src="item" >
 			</li>
 		</transition-group>
 		<button class="prebtn btn" @click="preClick">上一页</button>
-		<button class="backbtn btn" @click="backClick">下一页</button>
+		<button class="backbtn btn" @click="backClick">下一页</button> -->
 		<div class="closeBtn" @click="preViewClose">X</div>
 	</div>
 	<div class="payAlbum">
@@ -20,7 +20,7 @@
 				<span>{{item.name}}</span>
 			</div>
 		</div>
-		<label>收货人信息：</label>
+		<!-- <label>收货人信息：</label> -->
 		<!-- <div class="albumInputList">
 			<albumInput inputId="uName" @inputResult="confirmInputState(arguments,'usr')"  placeholder="请输入收货人姓名" name="usr" width="300"></albumInput>
 			<albumInput inputId="uPhone" @inputResult="confirmInputState(arguments,'tel')"  placeholder="请输入收货人手机号" name="tel" width="300"></albumInput>
@@ -31,12 +31,12 @@
 			<span class="mark">共计：</span>
 			<span class="markPrice">￥{{priceAll}}</span>
 		</div>
-		<!-- <button @click="sendJson" :class="btnClass">一键打印</button> -->
+		<button @click="sendJson" :class="btnClass">一键打印</button>
 	</div>
   </div>
 </template>
 <style lang="less" scoped>
-	@import "preView.less";
+	@import "userCenter.less";
 </style>
 <script>
 	import albumInput from '../input/input.vue'

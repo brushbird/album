@@ -1,6 +1,6 @@
 <template>
   <transition name="modal-wrap-2">
-    <span class="modal2-center" v-if="modalShow">
+    <span class="modal2-center" v-if="modalShow && modalType=='modal2'">
       <span class="modal2-icon" :class="modal2IconClass"></span>
       <span class="modal2-text">
         <slot>
@@ -8,6 +8,14 @@
         </slot>
       </span>
     </span>
+    <div class="modal-wrap" v-if="modalShow && modalType!='modal2'">
+      <transition :name="modalType" appear>
+        <div class="modal3-right" v-if="modalType == 'modal3' && modalShow">
+          <slot></slot>
+          <div class="modal-close modal3-close" @click="modalClose">X</div>
+        </div>
+      </transition>
+    </div>
   </transition>
 </template>
 
@@ -32,6 +40,10 @@ export default {
     hideTime: {
       default: 2000
     },
+    modalType:{
+      required: true,
+      default: 'modal2'
+    }
   },
   data() {
     return {
@@ -50,6 +62,7 @@ export default {
   },
   watch: {
     modalShow: function(){
+      if(this.modalType=="modal2"){
       if(this.promptKind == 'uerror') {
         setTimeout(() => {
           this.modalClose();
@@ -60,6 +73,7 @@ export default {
           this.modalClose();
         }, this.hideTime);
       }
+    }
     },
   }
 }

@@ -1,23 +1,26 @@
 <template>
   <div class="content">
   	<header>
-      <div class="userCenter"></div>
+      <!-- <div class="userCenter" v-if="islogin">
+      	<span>欢迎你</span>
+      	<span>{{userInfo.uName}}</span>
+      </div> -->
   		<input type="text" v-if="islogin" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
   		<div class="logOrreg" v-if="!islogin">
   			注册登录后才可以进行新建、预览、保存或生成相册等更多功能&nbsp;&nbsp;<span @click="showLogReg(0)">登录</span>&nbsp;/&nbsp;<span @click="showLogReg(1)">注册</span>
   		</div>
   		<div class="toolList" v-if="islogin">
-  			<div class="tool" @click="addJson">
-  				<span>保存</span>
-  			</div>
   			<div class="tool" @click="addCanvas">
   				<span>新建</span>
   			</div>
-  			<div class="tool" @click="setPreView">
-  				<span>预览</span>
+  			<div class="tool" @click="addJson">
+  				<span>保存</span>
   			</div>
-  			<div class="tool" @click="setPreView">
-  				<span>一键打印</span>
+  			<div class="tool" @click="showOrder">
+  				<span>订单管理</span>
+  			</div>
+  			<div class="tool" @click="sendJson">
+  				<span>一键生成</span>
   			</div>
   		</div>	
   		
@@ -36,7 +39,8 @@
   		<div class="logFrameMain" v-if="isLog">
   			<albumInput inputId="uPhone" @inputResult="confirmInputState(arguments,'ltel')"  placeholder="请输入手机号" name="tel" width="400"></albumInput>
   			<albumInput type="password" inputId="lpassword" @inputResult="confirmInputState(arguments,'lpassword')"  placeholder="请输入密码" name="pw" width="400"></albumInput>
-  			<button @click="checklogin" :class="logbtnClass">开启设计</button>
+  			<button :class="logbtnClass">开启设计</button>
+  			<!-- <button @click="checklogin" :class="logbtnClass">开启设计</button> -->
   		</div>
   		<div class="logFrameMain" v-if="!isLog">
         <albumInput inputId="rusr" @inputResult="confirmInputState(arguments,'rname')"  placeholder="请输入用户名" name="usr" width="400"></albumInput>
@@ -44,7 +48,8 @@
         <albumInput type="password" inputId="repassword" @inputResult="confirmInputState(arguments,'repassword')"  placeholder="请确认密码" name="pw" width="400"></albumInput>
         <albumInput inputId="rphone" @inputResult="confirmInputState(arguments,'rtel')"  placeholder="请输入手机号" name="tel" width="400"></albumInput>
         <albumInput inputId="rcheck" @inputResult="confirmInputState(arguments,'rcheck')"  placeholder="请输入验证码" name="yzm" width="400"></albumInput>
-        <button @click="checkregister" :class="regbtnClass">注册</button>
+        <button :class="regbtnClass">注册</button>
+        <!-- <button @click="checkregister" :class="regbtnClass">注册</button> -->
   		</div>
   	</div>
 	<fileCom :moduleLists="moduleLists" @creatIText="creatIText" @loadModules="loadModules" @drag="drag" @allowDrop="allowDrop"></fileCom>
@@ -84,15 +89,31 @@
 	 	@showItextStyle="showItextStyle"
 	 	@lowSize="lowSize"
 	 	@upSize="upSize"></objectTool>
-	 	
-	<preView :showPreview="showPreview" :preView="preView" @preViewClose="preViewClose" @sendJson="sendJson"></preView>
 	<mood :showMood="showMood" :moodText="moodText"></mood>
 	<modal
       :modalShow="modalShow"
       @modalClose="modalClose"
       :placeHolder="promptText"
       :promptKind="promptKind"
-    ></modal>
+      :modalType="modalType"
+    >
+    	<table class="listTable" v-if="modalType=='modal3'">
+            <tr class="tr-title">
+              <th>订单信息</th>
+              <th>收货地址</th>
+              <th>数量</th>
+              <th>共计</th>
+              <th>结算</th>
+            </tr>
+            <tr class="trStyle" v-for="item in orderManagement">
+            	<td>{{item.albumDetail}}</td>
+            	<td>{{item.address}}</td>
+              <td><button @click="countLow(item)">-</button>{{item.count}}<button @click="countUp(item)">+</button></td>
+            	<td class="order-no">{{item.count*10}}</td>
+            	<td><button>提交订单</button></td>
+            </tr>
+        </table>
+    </modal>
   </div>
 </template>
 
@@ -103,7 +124,6 @@
 <script>
 	import fileCom from "../fileModules/fileModules.vue";
 	import objectTool from "../objectTool/objectTool.vue";
-	import preView from "../preView/preView.vue";
 	import mood from "../mood/mood.vue";
 	import modal from "../modal/modal.vue";	
 	import albumInput from '../input/input.vue';
@@ -123,49 +143,57 @@
 				start: 0,
 				canvasList:[{},{}],
 				canvasJson:[],
-				preView:[{}],
 				photoJson:[],
 				objectToolShow:false,
 				objectIndex:0,
 				itextShow:false,
 				imageShow:false,
-				showPreview:false,
 				showMood:false,
 				modalShow:false,
 				promptText: '操作成功',
-        		promptKind: 'success',
-        		moodText:'',
-        		islogin:true,
-        		showLogin:false,
-        		isLog:true,
-        		logbtnClass:{
-        			btn:true,
-        			logBtned:false
-        		},
-        		regbtnClass:{
-        			btn:true,
-        			regBtned:false
-        		},
-        		loginMessage:{
-        			l_phone:'',
-        			l_password:'',
-        		},
-        		registerMessage:{
-        			r_name:'',
-        			r_phone:'',
-        			r_password:'',
-        			r_repassword:'',
-        			r_check:''
-        		},
-        		checkState:{
-        			iflTelInput:false,
-        			iflPassInput:false,
-              ifrUser:false,
-              ifrPassword:false,
-              ifrePassword:false,
-              ifrTelInput:false,
-              ifrCheck:false,
-        		}
+        promptKind: 'success',
+        modalType:'',
+        moodText:'',
+        islogin:true,
+        showLogin:false,
+        isLog:true,
+        logbtnClass:{
+        	btn:true,
+        	logBtned:false
+        },
+        regbtnClass:{
+        	btn:true,
+        	regBtned:false
+        },
+        loginMessage:{
+        	l_phone:'',
+        	l_password:'',
+        },
+        registerMessage:{
+        	r_name:'',
+        	r_phone:'',
+        	r_password:'',
+        	r_repassword:'',
+        	r_check:''
+        },
+        checkState:{
+        	iflTelInput:false,
+        	iflPassInput:false,
+        	ifrUser:false,
+        	ifrPassword:false,
+        	ifrePassword:false,
+        	ifrTelInput:false,
+        	ifrCheck:false,
+        },
+        userInfo:{
+        	uName:'',
+        	uPhone:'',
+        	uAdress:''
+        },
+        orderManagement:[
+        	{albumDetail:'A4硬壳哑光',address:'山东济南市中区山东济南市中区王官庄山东济南市中区山东济南市中区',count:1},
+        	{albumDetail:'A4硬壳哑光',address:'山东济南市中区山东济南市中区山东济南市中区山东济南市中区',count:1}
+        ]
 			}
 		},
 		props:{
@@ -321,6 +349,15 @@
 			modalClose:function(){
 				this.modalShow = false;
 			},
+      countUp:function(value){
+        console.log(value);
+        value.count++;
+      },
+      countLow:function(value){
+        if(value.count>1){
+          value.count--;
+        }
+      },
 			promptShow(options) {
         		this.modalShow = true;
         		this.promptText = options.promptText && options.promptText;
@@ -388,9 +425,9 @@
 				let that =this;
 				let length = this.canvasList.length;
 				if(length<11){
-					that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
+					// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					that.canvasList.push("");
-					that.preView.push("");
+					// that.preView.push("");
 					that.isActive = length;
 					that.$nextTick(function(){
 						let tag = document.getElementById("a"+length);
@@ -446,36 +483,38 @@
         			this.promptKind = "notsuccess";
 			  	}
 			},
-			sendJson:function(options){
+			showOrder:function(){
+				this.modalShow = true;
+        		this.modalType = "modal3";
+			},
+			sendJson:function(){
 				let that = this;
-				// this.bcPay();
 				let index = canvas.length;
-				let str="",listphote=[];
-				let fd = new FormData();
-				console.log(options);
-				// fd.set('u_name', options.uName);
-				// fd.set('u_phone', options.uPhone);
-				// fd.set('u_adress', options.uAdress);
-				this.showPreview=false;
-				this.showMood=true;
-				this.moodText="正在生成相册，请稍后~~";
-				for(let i = 0; i<index; i++)
-				{
-					let blob = that.dataURItoBlob(canvas[i].toDataURL());
-					fd.append("file2", blob, "image.png");
-				}	
-				this.$http({
-                	url:"http://192.168.10.30:8080/guangmu/photo/savephoto.s",
-                	method:"post",
-                	data:fd,
-  					headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    enctype:'application/x-www-form-urlencoded',
-                	processData:false,
-                	contentType:false,
-				}).then(response => {
-        				if(response == 1)
+				if(index == 11){
+					let str="",listphote=[];
+					let fd = new FormData();
+					fd.set('u_name', this.userInfo.uName);
+					fd.set('u_phone', this.userInfo.uPhone);
+					fd.set('u_adress', this.userInfo.uAdress);
+					this.showMood=true;
+					this.moodText="正在生成相册，请稍后~~";
+					for(let i = 0; i<index; i++)
+					{
+						let blob = that.dataURItoBlob(canvas[i].toDataURL());
+						fd.append("file2", blob, "image.png");
+					}	
+					this.$http({
+	                	url:"http://192.168.10.30:8080/guangmu/photo/savephoto.s",
+	                	method:"post",
+	                	data:fd,
+	  					headers: {
+	                        'Content-Type': 'application/x-www-form-urlencoded'
+	                    },
+	                    enctype:'application/x-www-form-urlencoded',
+    	            	processData:false,
+    	            	contentType:false,
+					}).then(response => {
+    	   				if(response == 1)
         				{
         					console.log("success");
         					console.log(response);
@@ -487,14 +526,20 @@
         				this.modalShow = true;
         				this.promptText = "成功";
         				this.promptKind = "success";
-      			}, response => {
-        			console.log("error");
-        			console.log(response);
-        			that.showMood=false;
-        			this.modalShow = true;
-        			this.promptText = "失败";
-        			this.promptKind = "notsuccess";
-      			});
+      				}, response => {
+        				console.log("error");
+        				console.log(response);
+        				that.showMood=false;
+        				this.modalShow = true;
+        				this.promptText = "失败";
+        				this.promptKind = "notsuccess";
+      				});
+				}else{
+					this.modalShow = true;
+          this.modalType="modal2";
+        	this.promptText = "必须完成11张相册才能生成相册哦";
+        	this.promptKind = "notsuccess";
+				}
 			},
 			bcPay:function(){
 				 BC.err = function(data) {
@@ -595,7 +640,6 @@
 				let that = this;
 				canvas[this.isActive].deactivateAll();
 				canvas[this.isActive].renderAll();
-				this.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 				this.objectToolShow=false;
 				this.isActive = index;
 			},
@@ -625,7 +669,6 @@
    				});
    				canvas[index].add(newImage);
 				canvas[index].setActiveObject(newImage);
-				// that.$set(that.preView,index,canvas[index].toDataURL());
    				return false;
             },
             dropBg:function(e,index){
@@ -635,7 +678,6 @@
     			}
    				canvas[index].setBackgroundImage(dom.src, canvas[index].renderAll.bind(canvas[index]));
 				this.isActive=index;
-				// that.$set(that.preView,index,canvas[index].toDataURL());
    				return false;
             },
             optionchange:function(event){
@@ -644,32 +686,26 @@
             	let index = this.objectIndex;
 				canvas[this.isActive].getObjects()[index].set({fontFamily : ev.value});
 				canvas[that.isActive].renderAll();
-				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             delObj:function(index){
             	let that=this;
             	canvas[this.isActive].getObjects()[index].remove();
-            	// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             upToCase:function(index){
             	let that = this;
 				canvas[this.isActive].bringForward(canvas[that.isActive].getObjects()[index]);
-				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             downToCase:function(index){
             	let that = this;
 				canvas[this.isActive].sendBackwards(canvas[that.isActive].getObjects()[index]);
-				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             upCase:function(index){
             	let that = this;
 				canvas[this.isActive].bringToFront(canvas[that.isActive].getObjects()[index]);
-				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             downCase:function(index){
             	let that = this;
 				canvas[this.isActive].sendToBack(canvas[that.isActive].getObjects()[index]);
-				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
             },
             preViewClose:function(){
             	this.showPreview=false;
@@ -783,7 +819,6 @@
 									canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 								}
 								canvas[that.isActive].renderAll();
-								// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 						 	}
 							
 					});	
@@ -807,7 +842,6 @@
 					  show.style.backgroundColor = 'rgb('+rgb+')';
 					  Tcolor.value = rgb;
 					  canvas[that.isActive].renderAll();
-					  // that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}
 					else if(chooseC == 'no'){
 						show.style.backgroundColor = 'rgb(0,0,0)';
@@ -818,7 +852,6 @@
 							canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 						}
 						canvas[that.isActive].renderAll();
-						// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}
 					else{
 					   	
@@ -831,7 +864,6 @@
 							canvas[that.isActive].getObjects()[that.objectIndex].set({fill:  'rgb('+rgb+')'});								
 						}
 						canvas[that.isActive].renderAll();
-						// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					}	
 
 				});
@@ -935,7 +967,6 @@
 					}
 				}
 				canvas[that.isActive].renderAll();
-				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 			},
 			upSize:function(){
 				let that = this;
@@ -945,12 +976,10 @@
 					canvas[that.isActive].getObjects()[that.objectIndex].set({strokeWidth:  swidth});
 				}
 				canvas[that.isActive].renderAll();
-				// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 			},
 			setPreView:function(){
 				let that = this;
-				that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
-				that.showPreview=true;
+				this.showPreview=true;
 			},
 			loadModules:function(options){
 				this.showMood=true;
@@ -991,14 +1020,12 @@
 							});
 							canvas[that.isActive].on({
     							'selection:cleared': function(){
-    								// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 									that.objectToolShow = false;
 									that.colorShow = false;
 									that.itextStyle = false;
 									that.imageShow=false;
 								}
 							});
-						// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 						let transformScale = document.body.clientWidth*0.56/4961;
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
 						that.showMood=false;
@@ -1026,7 +1053,6 @@
 							canvas[i] = new fabric.Canvas(tag);
 							canvas[i].loadFromJSON(that.canvasList[i]);
 							canvas[i].renderAll();
-							// that.$set(that.preView,i,canvas[i].toDataURL());
 							canvas[i].on({
     							'object:selected': function(e){
 									var index = canvas[i].getObjects().indexOf(e.target);
@@ -1054,11 +1080,9 @@
 									that.colorShow = false;
 									that.itextStyle = false;
 									that.imageShow=false;
-									// that.$set(that.preView,i,canvas[i].toDataURL());
 								}
 							});
 							canvas[i].on('object:scaling', (e) => {
-								that.$set(that.preView,i,canvas[i].toDataURL());
 								let o = e.target;
 								if (!o.strokeWidthUnscaled && o.strokeWidth) {
   									o.strokeWidthUnscaled = o.strokeWidth;
@@ -1073,7 +1097,7 @@
 						document.getElementsByClassName("main-list")[0].style.cssText="transform:scale("+transformScale+");            transform-origin:left top;";
                  	})
 		},
-		components:{fileCom,objectTool,preView,mood,modal,albumInput}
+		components:{fileCom,objectTool,mood,modal,albumInput}
 	}
 
 </script>

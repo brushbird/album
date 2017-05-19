@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
 }
+
 // @mainColor: '#fff';
 .placeholder(@a) {
     &::-webkit-input-placeholder {
@@ -67,7 +68,7 @@ input {
             position: absolute;
             top: 50%;
             right: 5px;
-            transform:translate(0,-50%);
+            transform: translate(0, -50%);
             .tool {
                 // height: 100%;
                 float: left;
@@ -76,7 +77,7 @@ input {
                 font-size: 15px;
                 margin: 0 10px 0 0;
                 line-height: 2.5;
-                &:hover{
+                &:hover {
                     color: #07aefc;
                 }
                 .tool-logo {
@@ -102,9 +103,10 @@ input {
             // font-size: 0.9em;
             // color: rgba(255, 255, 255, 0.8);
             position: absolute;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
             left: 50%;
             top: 50%;
+            padding: 5px;
             &:focus {
                 .placeholder( {
                     color: #fff;
@@ -113,43 +115,42 @@ input {
                 )
             }
         }
-        .logOrreg{
+        .logOrreg {
             margin: 0 auto;
             font-size: 0.9em;
             color: rgba(255, 255, 255, 0.8);
             position: absolute;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
             left: 50%;
             top: 50%;
-            span{
+            span {
                 color: #07aefc;
                 // font-weight: bold;
                 cursor: pointer;
             }
         }
-        
     }
-    .logMood{
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            left: 0;
-            top: 0;
-            z-index: 99;
-        }
-    .logFrame{
+    .logMood {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        left: 0;
+        top: 0;
+        z-index: 99;
+    }
+    .logFrame {
         width: 500px;
         position: absolute;
         left: 50%;
-        top: 25%;
+        top: 50%;
         background: #fff;
         box-shadow: 0 0 1px 1 rgba(255, 255, 255, 0.5);
-        transform: translate(-50%,0%);
+        transform: translate(-50%, -50%);
         z-index: 101;
         padding: 20px;
         border-radius: 20px;
-        .logregCloseBtn{
+        .logregCloseBtn {
             position: absolute;
             z-index: 101;
             font-size: 24px;
@@ -157,46 +158,46 @@ input {
             right: -30px;
             top: -30px;
             cursor: pointer;
-            &:hover{
+            &:hover {
                 color: red;
             }
         }
-        .logFrameHead{
+        .logFrameHead {
             width: 100%;
             height: 50px;
             display: block;
             float: left;
             margin-left: 30%;
-            .logcontain{
+            .logcontain {
                 width: 20%;
                 height: 100%;
                 display: inline-block;
                 float: left;
-                span{
+                span {
                     margin: auto;
                     font-size: 25px;
                     line-height: 2;
                     cursor: pointer;
-                    color: rgba(0,0,0,0.4);
+                    color: rgba(0, 0, 0, 0.4);
                 }
-                .logregActive{
+                .logregActive {
                     color: #000;
                     font-weight: bold;
                 }
             }
         }
-        .logFrameMain{
+        .logFrameMain {
             display: block;
             float: left;
             width: 100%;
             margin-top: 50px;
-            .btn{
-                width:138px;
-                height:36px;
+            .btn {
+                width: 138px;
+                height: 36px;
                 font-size: 1.2em;
                 line-height: 1;
                 color: #888;
-                text-shadow: 0 1px 0 rgba(255,255,255, 0.8);
+                text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
                 text-decoration: none;
                 text-align: center;
                 padding: 8px 12px;
@@ -205,21 +206,67 @@ input {
                 font-family: helvetica, arial, sans-serif;
                 border-radius: 4px;
                 border: 1px solid #bcbcbc;
-                -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-                box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-                background-image: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-                background-image: -moz-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-                background-image: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-                background-image: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
-                background-image: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 60%,rgba(225,223,226,1) 100%);
+                -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+                background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(239, 239, 239, 1) 60%, rgba(225, 223, 226, 1) 100%);
+                background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(239, 239, 239, 1) 60%, rgba(225, 223, 226, 1) 100%);
+                background-image: -o-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(239, 239, 239, 1) 60%, rgba(225, 223, 226, 1) 100%);
+                background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(239, 239, 239, 1) 60%, rgba(225, 223, 226, 1) 100%);
+                background-image: linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(239, 239, 239, 1) 60%, rgba(225, 223, 226, 1) 100%);
             }
-            .logBtned,.regBtned{
+            .logBtned,
+            .regBtned {
                 background-color: #07aefc;
                 color: #fff;
                 cursor: pointer;
             }
         }
     }
+    .listTable {
+                    border-collapse: separate;
+                    border-spacing:0px 5px;
+                    text-align: left;
+                    width: 100%;
+                    padding-top: 20px;
+                    table-layout: fixed;
+                    tr {
+                          border: 1px solid #000;
+                    }
+                    .trStyle {
+                        box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.16);
+                        .pre{
+                            font-size: 12px;
+                            display: block;
+                            line-height: 1;
+                        }
+                        .nor{
+                            font-size: 14px;
+                            display: block;
+                        }
+                        &:hover {
+                            background-color: #fff;
+                        }
+                        .order-no {
+                            word-wrap: break-word;
+                            span {
+                                user-select: auto;
+                                cursor: text;
+                            }
+                        }
+                    }
+                    .tr-title {
+                        background-color: #efefef;
+                        color: #9b9b9b;
+                    }
+                    th {
+                        text-align: left;
+                        padding: 10px 0 10px 30px;
+                    }
+                    td {
+                        padding: 15px 0 15px 30px;
+                        color: #626262;
+                    }
+                }
     .canvasContent {
         width: 80%;
         height: 94%;
@@ -229,7 +276,6 @@ input {
         top: 6%;
         pointer-events: none;
         overflow: hidden;
-        
         .left-list {
             //height: 132px;
             //overflow: hidden;
@@ -252,7 +298,7 @@ input {
                 img {
                     width: 164px;
                 }
-                span{
+                span {
                     font-size: 0.5em;
                 }
             }
@@ -278,7 +324,7 @@ input {
             left: 10%;
             top: 4%;
             pointer-events: auto;
-            .splitDot{
+            .splitDot {
                 position: absolute;
                 display: block;
                 height: 100%;

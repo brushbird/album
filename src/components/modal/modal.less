@@ -1,3 +1,43 @@
+.modal-wrap {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,.5);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+
+  .modal3-right {
+    position: absolute;
+    right: 0px;  
+    top: 0px;
+    height: 100%;
+    width: 65%;
+    background-color: #fbfbfb;
+
+    .modal3-close {
+      left: -36px;
+      top: 20px;
+      background-position: -58px -26px;
+      color: #fff;
+      font-size: 24px;
+      &:hover{
+        color: red;
+      }
+    }
+
+  }
+
+  .modal-close {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    // background-image: url(../../pages/startDesign/img/StartDesign.svg);
+    cursor: pointer;
+  }
+
+
+}
 .modal2-center {
   top: 50px;
   left: 50%;
@@ -37,4 +77,11 @@
 .modal-wrap-2-enter, .modal-wrap-2-leave-active {
   opacity: 0;
   transform: translate(-50%,-30px);
+}
+.modal3-enter-active, .modal3-leave-active {
+  transition: all .5s ease;
+}
+.modal3-enter, .modal3-leave-active {
+  transform: translateX(370px);
+  opacity: 0;
 }
