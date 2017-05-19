@@ -39,8 +39,13 @@
   		<div class="logFrameMain" v-if="isLog">
   			<albumInput inputId="uPhone" @inputResult="confirmInputState(arguments,'ltel')"  placeholder="请输入手机号" name="tel" width="400"></albumInput>
   			<albumInput type="password" inputId="lpassword" @inputResult="confirmInputState(arguments,'lpassword')"  placeholder="请输入密码" name="pw" width="400"></albumInput>
+<<<<<<< HEAD
   			<button :class="logbtnClass">开启设计</button>
   			<!-- <button @click="checklogin" :class="logbtnClass">开启设计</button> -->
+=======
+        <!-- <button @click="checklogin" :class="logbtnClass">开启设计</button> -->
+  			<button :class="logbtnClass">开启设计</button>
+>>>>>>> 3626ae576f6150c3d93814938524540a85ac732c
   		</div>
   		<div class="logFrameMain" v-if="!isLog">
         <albumInput inputId="rusr" @inputResult="confirmInputState(arguments,'rname')"  placeholder="请输入用户名" name="usr" width="400"></albumInput>
@@ -48,8 +53,13 @@
         <albumInput type="password" inputId="repassword" @inputResult="confirmInputState(arguments,'repassword')"  placeholder="请确认密码" name="pw" width="400"></albumInput>
         <albumInput inputId="rphone" @inputResult="confirmInputState(arguments,'rtel')"  placeholder="请输入手机号" name="tel" width="400"></albumInput>
         <albumInput inputId="rcheck" @inputResult="confirmInputState(arguments,'rcheck')"  placeholder="请输入验证码" name="yzm" width="400"></albumInput>
+<<<<<<< HEAD
         <button :class="regbtnClass">注册</button>
         <!-- <button @click="checkregister" :class="regbtnClass">注册</button> -->
+=======
+        <!-- <button @click="checkregister" :class="regbtnClass">注册</button> -->
+        <button :class="regbtnClass">注册</button>
+>>>>>>> 3626ae576f6150c3d93814938524540a85ac732c
   		</div>
   	</div>
 	<fileCom :moduleLists="moduleLists" @creatIText="creatIText" @loadModules="loadModules" @drag="drag" @allowDrop="allowDrop"></fileCom>
