@@ -3,7 +3,6 @@
     class="inputs-container"
     :class="{'input-error':isError,focusing:isFocus}"
     :name="name"
-    :style="boxStyle"
   >
     <slot></slot>
     <input

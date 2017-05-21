@@ -1,10 +1,6 @@
 <template>
   <div class="content">
   	<header>
-      <!-- <div class="userCenter" v-if="islogin">
-      	<span>欢迎你</span>
-      	<span>{{userInfo.uName}}</span>
-      </div> -->
   		<input type="text" v-if="islogin" name="mainName" class="mainName" placeholder="点这里，为你的相册添加名称">
   		<div class="logOrreg" v-if="!islogin">
   			注册登录后才可以进行新建、预览、保存或生成相册等更多功能&nbsp;&nbsp;<span @click="showLogReg(0)">登录</span>&nbsp;/&nbsp;<span @click="showLogReg(1)">注册</span>
@@ -23,7 +19,6 @@
   				<span>一键生成</span>
   			</div>
   		</div>	
-  		
   	</header>
   	<div class="logMood" v-if="showLogin"></div>
 	<div class="logFrame" v-if="showLogin">
@@ -39,27 +34,16 @@
   		<div class="logFrameMain" v-if="isLog">
   			<albumInput inputId="uPhone" @inputResult="confirmInputState(arguments,'ltel')"  placeholder="请输入手机号" name="tel" width="400"></albumInput>
   			<albumInput type="password" inputId="lpassword" @inputResult="confirmInputState(arguments,'lpassword')"  placeholder="请输入密码" name="pw" width="400"></albumInput>
-<<<<<<< HEAD
-  			<button :class="logbtnClass">开启设计</button>
-  			<!-- <button @click="checklogin" :class="logbtnClass">开启设计</button> -->
-=======
-        <!-- <button @click="checklogin" :class="logbtnClass">开启设计</button> -->
-  			<button :class="logbtnClass">开启设计</button>
->>>>>>> 3626ae576f6150c3d93814938524540a85ac732c
+  			<button @click="checklogin" :class="logbtnClass">开启设计</button>
   		</div>
   		<div class="logFrameMain" v-if="!isLog">
         <albumInput inputId="rusr" @inputResult="confirmInputState(arguments,'rname')"  placeholder="请输入用户名" name="usr" width="400"></albumInput>
         <albumInput type="password" inputId="rpassword" @inputResult="confirmInputState(arguments,'rpassword')"  placeholder="请输入密码" name="pw" width="400"></albumInput>
         <albumInput type="password" inputId="repassword" @inputResult="confirmInputState(arguments,'repassword')"  placeholder="请确认密码" name="pw" width="400"></albumInput>
         <albumInput inputId="rphone" @inputResult="confirmInputState(arguments,'rtel')"  placeholder="请输入手机号" name="tel" width="400"></albumInput>
-        <albumInput inputId="rcheck" @inputResult="confirmInputState(arguments,'rcheck')"  placeholder="请输入验证码" name="yzm" width="400"></albumInput>
-<<<<<<< HEAD
-        <button :class="regbtnClass">注册</button>
-        <!-- <button @click="checkregister" :class="regbtnClass">注册</button> -->
-=======
-        <!-- <button @click="checkregister" :class="regbtnClass">注册</button> -->
-        <button :class="regbtnClass">注册</button>
->>>>>>> 3626ae576f6150c3d93814938524540a85ac732c
+        <albumInput inputId="rcheck" @inputResult="confirmInputState(arguments,'rcheck')"  placeholder="请输入验证码" name="yzm" width="200"><button @click="sendCheck" class="checkbtn">发送验证码</button></albumInput>
+        <!-- <br> -->
+        <button @click="checkregister" :class="regbtnClass">注册</button>
   		</div>
   	</div>
 	<fileCom :moduleLists="moduleLists" @creatIText="creatIText" @loadModules="loadModules" @drag="drag" @allowDrop="allowDrop"></fileCom>
@@ -120,7 +104,7 @@
             	<td>{{item.address}}</td>
               <td><button @click="countLow(item)">-</button>{{item.count}}<button @click="countUp(item)">+</button></td>
             	<td class="order-no">{{item.count*10}}</td>
-            	<td><button>提交订单</button></td>
+            	<td><button @click="bcPay">提交订单</button></td>
             </tr>
         </table>
     </modal>
@@ -164,7 +148,7 @@
         promptKind: 'success',
         modalType:'',
         moodText:'',
-        islogin:true,
+        islogin:false,
         showLogin:false,
         isLog:true,
         logbtnClass:{
@@ -184,7 +168,8 @@
         	r_phone:'',
         	r_password:'',
         	r_repassword:'',
-        	r_check:''
+        	r_check:'',
+          checknum:""
         },
         checkState:{
         	iflTelInput:false,
@@ -196,14 +181,14 @@
         	ifrCheck:false,
         },
         userInfo:{
-        	uName:'',
-        	uPhone:'',
-        	uAdress:''
+        	uName:'A4硬壳哑光',
+        	uPhone:'17862910192',
+        	uAdress:'山东济南'
         },
         orderManagement:[
-        	{albumDetail:'A4硬壳哑光',address:'山东济南市中区山东济南市中区王官庄山东济南市中区山东济南市中区',count:1},
-        	{albumDetail:'A4硬壳哑光',address:'山东济南市中区山东济南市中区山东济南市中区山东济南市中区',count:1}
-        ]
+        	
+        ],
+
 			}
 		},
 		props:{
@@ -240,17 +225,16 @@
           				break;
               case 'lpassword' : {that.checkState.iflPassInput = state == 'success' ? true : false;that.loginMessage.l_password = option[0].value};
                   break;
-      			}
-      			// console.log(option[0]);
-      			this.inputResultTotal();
-    		},
-    		inputResultTotal:function(){
-      			if(this.checkState.iflTelInput && this.checkState.iflPassInput) {
-        			this.logbtnClass.logBtned = true;
-      			}else if(this.checkState.ifrUser && this.checkState.ifrPassword && this.checkState.ifrePassword && this.checkState.ifrTelInput && this.checkState.ifrCheck && this.registerMessage.r_password==this.registerMessage.r_repassword){
-              this.regbtnClass.regBtned = true;
-            }
-    		},
+      	}
+      	this.inputResultTotal();
+    	},
+    	inputResultTotal:function(){
+      		if(this.checkState.iflTelInput && this.checkState.iflPassInput) {
+       			this.logbtnClass.logBtned = true;
+      		}else if(this.checkState.ifrUser && this.checkState.ifrPassword && this.checkState.ifrePassword && this.checkState.ifrTelInput && this.checkState.ifrCheck && this.registerMessage.r_password==this.registerMessage.r_repassword && this.registerMessage.r_check == this.registerMessage.checknum){
+             this.regbtnClass.regBtned = true;
+          }
+    	},
 			showLogReg:function(val){
 				this.showLogin=true;
 				if(val == 0){
@@ -259,18 +243,45 @@
 					this.isLog = false;
 				}
 			},
+      sendCheck:function(){
+        let that = this;
+        this.$http({
+          url:"http://192.168.10.30:8080/guangmu/photologin/send.s",
+          method:"post",
+          data:{
+            u_phone:that.registerMessage.r_phone,
+          },
+          transformRequest: [
+            function(data) {
+              let ret = ''
+              for (let it in data) {
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) +'&'
+              }
+              return ret
+            }
+          ]
+        }).then(response => {
+            console.log(response.data);
+            that.registerMessage.checknum = response.data;
+        }, response => {
+            console.log("error");
+            console.log(response);
+            this.modalShow = true;
+            this.modalType="modal2";
+            this.promptText = "注册失败";
+            this.promptKind = "notsuccess";
+        });
+      },
 			checklogin:function(){
 				let that = this;
-				console.log(uid+upass);
 				if(this.logbtnClass.logBtned){
-
 				  this.$http({
-                	url:"http://192.168.10.30:8080/guangmu/photologin/yanzheng.s",
-                	method:"post",
-                	data:{
-                		u_phone:that.loginMessage.l_phone,
-                		u_password: that.loginMessage.l_password
-                	},
+            url:"http://192.168.10.30:8080/guangmu/photologin/yanzheng.s",
+           	method:"post",
+           	data:{
+           		u_phone:that.loginMessage.l_phone,
+           		u_password: that.loginMessage.l_password
+           	},
   					transformRequest: [
     					function(data) {
       					let ret = ''
@@ -280,46 +291,47 @@
       					return ret
     					}
   					]
-				  }).then(response => {
-        				if(response.data == 1)
-        				{
-        					console.log("success");
-						// console.log(uid+upass);
-        				console.log(response);
-        				that.islogin=true;
-        				this.modalShow = true;
-        				this.promptText = "登陆成功";
-        				this.promptKind = "success";
-        				}else{
-        					console.log("error");
-        			console.log(response);
-        			this.modalShow = true;
-        			this.promptText = "登陆失败";
-        			this.promptKind = "notsuccess";
-        				}
-        				
-      			}, response => {
-        			console.log("error");
-        			console.log(response);
-        			this.modalShow = true;
-        			this.promptText = "登陆失败";
-        			this.promptKind = "notsuccess";
-      			});
-			}
-				
+			  }).then(response => {
+    			if(response.data == 1)
+    			{
+    				console.log("success");
+     				console.log(response);
+     				that.islogin = true;
+            that.showLogin =false;
+    				this.modalShow = true;
+            this.modalType="modal2";
+     				this.promptText = "登陆成功";
+     				this.promptKind = "success";
+         // that.userInfo.uName = response
+    			}else{
+    				console.log("error");
+            console.log(response);
+            this.modalShow = true;
+            this.modalType="modal2";
+            this.promptText = "登陆失败";
+            this.promptKind = "notsuccess";
+        	}
+   			}, response => {
+      			console.log("error");
+      			console.log(response);
+       			this.modalShow = true;
+            this.modalType="modal2";
+       			this.promptText = "登陆失败";
+       			this.promptKind = "notsuccess";
+  			});
+			}				
 			},
       checkregister:function(){
         let that = this;
-        console.log(uid+upass);
         if(this.regbtnClass.regBtned){
-
           this.$http({
-                  url:"http://192.168.10.30:8080/guangmu/photologin/yanzheng.s",
-                  method:"post",
-                  data:{
-                    // u_phone:that.loginMessage.l_phone,
-                    // u_password: that.loginMessage.l_password
-                  },
+            url:"http://192.168.10.30:8080/guangmu/photologin/zhuce.s",
+            method:"post",
+            data:{
+              u_name:that.registerMessage.r_name,
+              u_phone:that.registerMessage.r_phone,
+              u_password:that.registerMessage.r_password,                    
+            },
             transformRequest: [
               function(data) {
                 let ret = ''
@@ -330,30 +342,32 @@
               }
             ]
           }).then(response => {
-                if(response.data == 1)
-                {
-                  console.log("success");
-            // console.log(uid+upass);
+              if(response.data == 1)
+              {
+                console.log("success");
                 console.log(response);
                 that.islogin=true;
+                that.showLogin =false;
                 this.modalShow = true;
+                this.modalType="modal2";
                 this.promptText = "注册成功";
                 this.promptKind = "success";
-                }else{
-                  console.log("error");
-              console.log(response);
-              this.modalShow = true;
-              this.promptText = "注册失败";
-              this.promptKind = "notsuccess";
-                }
-                
-            }, response => {
-              console.log("error");
-              console.log(response);
-              this.modalShow = true;
-              this.promptText = "注册失败";
-              this.promptKind = "notsuccess";
-            });
+              }else{
+                console.log("error");
+                console.log(response);
+                this.modalShow = true;
+                this.modalType="modal2";
+                this.promptText = "注册失败";
+                this.promptKind = "notsuccess";
+              }
+          }, response => {
+            console.log("error");
+            console.log(response);
+            this.modalShow = true;
+            this.modalType="modal2";
+            this.promptText = "注册失败";
+            this.promptKind = "notsuccess";
+        });
       }
       },
 			modalClose:function(){
@@ -369,10 +383,10 @@
         }
       },
 			promptShow(options) {
-        		this.modalShow = true;
-        		this.promptText = options.promptText && options.promptText;
-        		this.promptKind = options.promptKind && options.promptKind;
-      		},
+        this.modalShow = true;
+        this.promptText = options.promptText && options.promptText;
+        this.promptKind = options.promptKind && options.promptKind;
+      },
 			judgeItext:function(){
 				let that =this;
 				let index = this.objectIndex;
@@ -435,15 +449,12 @@
 				let that =this;
 				let length = this.canvasList.length;
 				if(length<11){
-					// that.$set(that.preView,that.isActive,canvas[that.isActive].toDataURL());
 					that.canvasList.push("");
-					// that.preView.push("");
 					that.isActive = length;
 					that.$nextTick(function(){
 						let tag = document.getElementById("a"+length);
 						canvas[length] = new fabric.Canvas(tag);
 						canvas[length].renderAll();
-						// that.$set(that.preView,length,canvas[length].toDataURL());
 						canvas[length].on({
     								'object:selected': function(e){
     									that.colorShow=false;
@@ -494,8 +505,39 @@
 			  	}
 			},
 			showOrder:function(){
-				this.modalShow = true;
-        		this.modalType = "modal3";
+				let that=this;
+        this.orderManagement=[];
+          this.$http({
+            url:"http://192.168.10.30:8080/guangmu/photo/selectindent.s",
+            method:"post",
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            enctype:'application/x-www-form-urlencoded',
+            processData:false,
+            contentType:false,
+          }).then(response => {
+                if(response == 1)
+                {
+                  console.log("success");
+                  console.log(response);
+                }
+                console.log("success");
+                console.log(response);
+                for (let i = 0; i<response.data.length; i++) {
+                  let list = {albumDetail:response.data[i].d_name,address:response.data[i].d_adress,count:1};
+                  that.orderManagement.push(list);
+                }
+                that.modalShow = true;
+                that.modalType = "modal3";
+              }, response => {
+                console.log("error");
+                console.log(response);
+                that.showMood=false;
+                this.modalShow = true;
+                this.promptText = "失败";
+                this.promptKind = "notsuccess";
+              });
 			},
 			sendJson:function(){
 				let that = this;
@@ -503,9 +545,9 @@
 				if(index == 11){
 					let str="",listphote=[];
 					let fd = new FormData();
-					fd.set('u_name', this.userInfo.uName);
-					fd.set('u_phone', this.userInfo.uPhone);
-					fd.set('u_adress', this.userInfo.uAdress);
+					fd.set('d_name', that.userInfo.uName);
+					// fd.set('u_phone', that.userInfo.uPhone);
+					fd.set('d_adress', that.userInfo.uAdress);
 					this.showMood=true;
 					this.moodText="正在生成相册，请稍后~~";
 					for(let i = 0; i<index; i++)
@@ -514,15 +556,15 @@
 						fd.append("file2", blob, "image.png");
 					}	
 					this.$http({
-	                	url:"http://192.168.10.30:8080/guangmu/photo/savephoto.s",
-	                	method:"post",
-	                	data:fd,
-	  					headers: {
-	                        'Content-Type': 'application/x-www-form-urlencoded'
-	                    },
-	                    enctype:'application/x-www-form-urlencoded',
-    	            	processData:false,
-    	            	contentType:false,
+	          url:"http://192.168.10.30:8080/guangmu/photo/savephoto.s",
+	          method:"post",
+	          data:fd,
+	  				headers: {
+	            'Content-Type': 'application/x-www-form-urlencoded'
+	          },
+	          enctype:'application/x-www-form-urlencoded',
+    	      processData:false,
+    	      contentType:false,
 					}).then(response => {
     	   				if(response == 1)
         				{
@@ -536,6 +578,7 @@
         				this.modalShow = true;
         				this.promptText = "成功";
         				this.promptKind = "success";
+
       				}, response => {
         				console.log("error");
         				console.log(response);
@@ -607,14 +650,14 @@
 					str+=JSON.stringify(canvas[i].toJSON())+"~";
 				}	
 				this.showMood=true;
-				this.moodText="正在生成模板，请稍后~~";	
+				this.moodText="正在保存操作，请稍后~~";	
 				var config = {
   					method: 'post',
-  					url: 'http://192.168.10.30:8080/guangmu/photo/insertphoto.s',
+  					url: 'http://192.168.10.30:8080/guangmu/photo/inserthistory.s',
   					data: {
   						m_js:str,
-  						m_name:'jinan',
-  						m_num: 1,
+              u_name:"wzt",
+              u_phone:that.loginMessage.l_phone,
   					},
   					transformRequest: [
     					function(data) {
@@ -637,11 +680,13 @@
         				that.showMood=false;
         				that.moodText="";
         				this.modalShow = true;
-        				this.promptText = "成功";
+                this.modalType="modal2";
+        				this.promptText = "保存成功";
         				this.promptKind = "success";
       			}, response => {
         			that.showMood=false;
         			this.modalShow = true;
+                this.modalType="modal2";
         			this.promptText = "失败";
         			this.promptKind = "notsuccess";
       			});
@@ -1041,6 +1086,7 @@
 						that.showMood=false;
 						that.moodText="";
         				this.modalShow = true;
+                this.modalType="modal2";
         				this.promptText = "成功";
         				this.promptKind = "success";
                  	})
@@ -1049,6 +1095,7 @@
               			console.log(that.canvasJson[0]);
               			that.showMood=false;
         				this.modalShow = true;
+                this.modalType="modal2";
         				this.promptText = "失败";
         				this.promptKind = "error";
             		});

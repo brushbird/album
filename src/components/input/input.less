@@ -28,6 +28,7 @@ input {
   position: relative;
   background-color: #fbfbfb;
   box-sizing: border-box;
+  width: 400px;
   // height: 40px;
   font-size: 14px;
   color: #4A4A4A;
@@ -43,7 +44,7 @@ input {
   &[class~="input-error"]{
     box-shadow: 0 2px 4px 0 rgba(255,61,103,0.16); //红色
   }
-
+  
   input{
     width: 100%;
     float: left;
@@ -62,6 +63,24 @@ input {
       outline:none;
     }
 
+  }
+  #rcheck{
+    width: 50%;
+    float: left;
+    padding-left: 16px;
+    box-sizing: border-box;
+    background-color: #fbfbfb;
+    height: 40px;
+    border: none;
+
+    &:-moz-placeholder,&::-webkit-input-placeholder, &:-ms-input-placeholder{
+      color: #cdcdcd;
+      font-size: 14px;
+    }
+
+    &:focus{
+      outline:none;
+    }
   }
 textarea{
     width: 100%;
